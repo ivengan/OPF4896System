@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Multi-Function System</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/icons/icon-192.png">
+    <style>
+        /*! modern-normalize v1.1.0 */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}button,input{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}button{cursor:pointer}
+        body { background-color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; }
+        a { text-decoration: none; }
+        .header { background: white; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .title { font-size: 1.25rem; font-weight: 800; color: #1f2937; }
+        .nav-btn { background: #3b82f6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: background 0.2s; }
+        .nav-btn:hover { background: #2563eb; }
+        .main-container { flex: 1; padding: 1.5rem; max-width: 36rem; margin: 0 auto; width: 100%; }
+        
+        .settings-card { background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .card-title { margin-top: 0; color: #111827; font-size: 1.25rem; margin-bottom: 1rem; border-bottom: 2px solid #f3f4f6; padding-bottom: 0.5rem; }
+        
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-info { display: flex; flex-direction: column; flex: 1; padding-right: 1rem; }
+        .setting-title { font-weight: 700; color: #1f2937; font-size: 1.125rem; }
+        .setting-desc { font-size: 0.875rem; color: #6b7281; margin-top: 0.25rem; }
+        
+        /* Toggle Switch CSS */
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #10b981; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* Input Fields CSS */
+        .input-group { display: flex; flex-direction: column; width: 100px; }
+        .input-group input { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; text-align: center; font-weight: 700; color: #1f2937; }
+        .input-group input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .input-suffix { display: flex; align-items: center; gap: 0.5rem; justify-content: flex-end; }
+        .text-sm-bold { font-size: 0.875rem; font-weight: 700; color: #4b5563; }
+
+        .save-btn { width: 100%; background: #10b981; color: white; border: none; padding: 1rem; border-radius: 0.75rem; font-weight: 700; font-size: 1.125rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: background 0.2s; margin-bottom: 2rem;}
+        .save-btn:hover { background: #059669; }
+        .save-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <script>
+        if (!localStorage.getItem('loginExpiry') || Date.now() >= parseInt(localStorage.getItem('loginExpiry'))) {
+            localStorage.removeItem('loginExpiry'); window.location.href = '/index.html';
+        }
+    </script>
+
+    <div class="header">
+        <a href="dashboard2.html" class="nav-btn">&larr; Back to Admin Panel</a>
+        <div class="title">System Settings</div>
+    </div>
+
+    <div class="main-container">
+        <div id="notification-area" style="margin-bottom: 1rem;"></div>
+
+        <div class="settings-card">
+            <h2 class="card-title">Delivery Order (D/O) Automation</h2>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Auto-Print D/O</span>
+                    <span class="setting-desc">Trigger physical print dialogue automatically when hitting 'Depart & Process'</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-print">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Send PDF via WhatsApp</span>
+                    <span class="setting-desc">Generate PDF and redirect to WhatsApp with the document link automatically</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-wa">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2 class="card-title">Container Tare Weights</h2>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Crate Weight</span>
+                    <span class="setting-desc">Standard weight for plastic crates</span>
+                </div>
+                <div class="input-suffix">
+                    <div class="input-group">
+                        <input type="number" step="0.1" id="tare-crate" placeholder="1.8">
+                    </div>
+                    <span class="text-sm-bold">KG</span>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Basket Weight</span>
+                    <span class="setting-desc">Standard weight for chicken baskets</span>
+                </div>
+                <div class="input-suffix">
+                    <div class="input-group">
+                        <input type="number" step="0.1" id="tare-basket" placeholder="8.7">
+                    </div>
+                    <span class="text-sm-bold">KG</span>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Barrel Weight</span>
+                    <span class="setting-desc">Standard weight for ice barrels</span>
+                </div>
+                <div class="input-suffix">
+                    <div class="input-group">
+                        <input type="number" step="0.1" id="tare-barrel" placeholder="5.0">
+                    </div>
+                    <span class="text-sm-bold">KG</span>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">"R" (Extra Tare) Weight</span>
+                    <span class="setting-desc">Additional tare weight applied when "R" is checked</span>
+                </div>
+                <div class="input-suffix">
+                    <div class="input-group">
+                        <input type="number" step="0.1" id="tare-r" placeholder="4.7">
+                    </div>
+                    <span class="text-sm-bold">KG</span>
+                </div>
+            </div>
+        </div>
+
+        <button id="save-settings-btn" class="save-btn">Save All Settings</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.appspot.com",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // DOM Elements
+        const printToggle = document.getElementById('toggle-print');
+        const waToggle = document.getElementById('toggle-wa');
+        
+        const tareCrateInput = document.getElementById('tare-crate');
+        const tareBasketInput = document.getElementById('tare-basket');
+        const tareBarrelInput = document.getElementById('tare-barrel');
+        const tareRInput = document.getElementById('tare-r');
+        
+        const saveBtn = document.getElementById('save-settings-btn');
+        const notifArea = document.getElementById('notification-area');
+
+        function showNotification(msg, isSuccess = true) {
+            notifArea.innerHTML = `<div style="padding: 1rem; border-radius: 0.5rem; color: white; font-weight: bold; background-color: ${isSuccess ? '#10b981' : '#ef4444'}; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">${msg}</div>`;
+            setTimeout(() => notifArea.innerHTML = '', 3000);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function loadSettings() {
+            try {
+                // Load D/O Automation Settings
+                const doDoc = await db.collection('config').doc('do_settings').get();
+                if (doDoc.exists) {
+                    const data = doDoc.data();
+                    printToggle.checked = data.autoPrint || false;
+                    waToggle.checked = data.autoWhatsapp || false;
+                }
+
+                // Load Container Pricing/Tare Settings
+                const pricingDoc = await db.collection('config').doc('pricing').get();
+                if (pricingDoc.exists) {
+                    const data = pricingDoc.data();
+                    tareCrateInput.value = data.tare_crate || 1.8;
+                    tareBasketInput.value = data.tare_basket || 8.7;
+                    tareBarrelInput.value = data.tare_barrel || 5.0;
+                    tareRInput.value = data.tare_r || 4.7;
+                } else {
+                    // Fallback to strict defaults if completely empty
+                    tareCrateInput.value = 1.8;
+                    tareBasketInput.value = 8.7;
+                    tareBarrelInput.value = 5.0;
+                    tareRInput.value = 4.7;
+                }
+            } catch (e) {
+                console.error("Failed to load settings", e);
+            }
+        }
+
+        saveBtn.addEventListener('click', async () => {
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Saving...";
+            
+            // Format numbers safely
+            const tareCrate = parseFloat(tareCrateInput.value) || 0;
+            const tareBasket = parseFloat(tareBasketInput.value) || 0;
+            const tareBarrel = parseFloat(tareBarrelInput.value) || 0;
+            const tareR = parseFloat(tareRInput.value) || 0;
+
+            try {
+                // Batch write to update both config documents simultaneously
+                const batch = db.batch();
+                
+                const doRef = db.collection('config').doc('do_settings');
+                batch.set(doRef, {
+                    autoPrint: printToggle.checked,
+                    autoWhatsapp: waToggle.checked
+                }, { merge: true });
+
+                const pricingRef = db.collection('config').doc('pricing');
+                batch.set(pricingRef, {
+                    tare_crate: tareCrate,
+                    tare_basket: tareBasket,
+                    tare_barrel: tareBarrel,
+                    tare_r: tareR
+                }, { merge: true });
+
+                await batch.commit();
+
+                showNotification("All settings saved successfully!");
+            } catch (e) {
+                console.error(e);
+                showNotification("Failed to save settings.", false);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save All Settings";
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+</body>
+</html>

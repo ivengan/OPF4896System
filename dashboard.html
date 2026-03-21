@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Multi-Function System</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/icons/icon-192.png">
+    <style>
+        /*! modern-normalize v1.1.0 */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}button{cursor:pointer}
+        
+        body { 
+            background-color: #f3f4f6; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        /* Global no-underline */
+        a { text-decoration: none; }
+
+        .header { 
+            background: white; 
+            padding: 1rem; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10;
+        }
+        
+        .title { font-size: 1.25rem; font-weight: 800; color: #1f2937; }
+        
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: #eab308; 
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: background 0.2s;
+        }
+        .nav-btn:active { background: #ca8a04; }
+
+        .logout-btn { 
+            background: #ef4444; 
+            color: white; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 0.5rem; 
+            font-weight: 600; 
+            font-size: 0.875rem; 
+            transition: background 0.2s;
+        }
+        .logout-btn:active { background: #dc2626; }
+        
+        .main-container { 
+            flex: 1; 
+            padding: 1.5rem; 
+            max-width: 30rem; 
+            margin: 0 auto; 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+        }
+        
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 1rem; 
+        }
+
+        .menu-btn { 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+            padding: 1.5rem; 
+            border-radius: 1rem; 
+            border: none; 
+            color: white; 
+            font-weight: 700; 
+            font-size: 1.125rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            transition: transform 0.1s ease-in-out;
+            text-decoration: none; 
+            width: 100%;
+            text-align: left; 
+            -webkit-appearance: none;
+        }
+        
+        .menu-btn:active { transform: scale(0.98); }
+        
+        .menu-btn span { 
+            margin-left: 1rem; 
+            flex: 1;
+        }
+        
+        .menu-btn svg { 
+            width: 2rem; 
+            height: 2rem; 
+            flex-shrink: 0;
+        }
+
+        /* Button Gradients */
+        .btn-order { background: linear-gradient(135deg, #3b82f6, #2563eb); } 
+        .btn-stock { background: linear-gradient(135deg, #4b5563, #374151); } 
+        .btn-broiler { background: linear-gradient(135deg, #f59e0b, #d97706); } 
+        .btn-parts { background: linear-gradient(135deg, #10b981, #059669); } 
+        .btn-lembik { background: linear-gradient(135deg, #db2777, #be185d); } /* Pink/Rose for Lembik */
+        .btn-do { background: linear-gradient(135deg, #8b5cf6, #7c3aed); } 
+        .btn-chiller { background: linear-gradient(135deg, #06b6d4, #0891b2); } 
+
+        /* Modal Styles */
+        .hidden { display: none !important; }
+        .fixed { position: fixed; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .z-50 { z-index: 50; }
+        .bg-opacity-50 { --tw-bg-opacity: 0.5; background-color: rgba(17, 24, 39, var(--tw-bg-opacity)); }
+        .bg-white { background-color: #fff; }
+        .rounded-2xl { border-radius: 1rem; }
+        .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .w-full { width: 100%; }
+        .max-w-sm { max-width: 24rem; }
+        .p-6 { padding: 1.5rem; }
+        .text-center { text-align: center; }
+        .gap-3 { gap: 0.75rem; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .justify-center { justify-content: center; }
+        .items-center { align-items: center; }
+        .text-gray-800 { color: #1f293d; }
+        .text-xl { font-size: 1.25rem; font-weight: 700; }
+        .mt-4 { margin-top: 1rem; }
+        .text-gray-500 { color: #6b7281; }
+        
+        .modal-link {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1.125rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .bg-cyan-500 { background-color: #06b6d4; }
+        .bg-blue-500 { background-color: #3b82f6; }
+        
+    </style>
+</head>
+<body>
+
+    <script>
+        const loginExpiry = localStorage.getItem('loginExpiry');
+        if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
+            localStorage.removeItem('loginExpiry');
+            window.location.href = '/index.html';
+        }
+    </script>
+
+    <div class="header">
+        <div class="title">Main Menu</div>
+        <div class="header-actions">
+            <button class="nav-btn" onclick="window.location.href='dashboard2.html'">TO ADMIN PANEL</button>
+            <button id="logout-btn" class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="menu-grid">
+            
+            <a href="order.html" class="menu-btn btn-order">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span>Submit Order</span>
+                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="broiler_dsptch.html" class="menu-btn btn-broiler">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <span>Broiler Dispatch</span>
+                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="parts_dsptch.html" class="menu-btn btn-parts">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span>Parts Dispatch</span>
+                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="parts_lembik.html" class="menu-btn btn-lembik">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span>Parts Dispatch (Lembik)</span>
+                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="d_o.html" class="menu-btn btn-do">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span>Delivery Orders (D/O)</span>
+                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="stock_in.html" class="menu-btn btn-stock">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <span>Stock In</span>
+                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <button onclick="openStockModal()" class="menu-btn btn-chiller">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <span>Chiller/ Freezer Stocks</span>
+                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+
+        </div>
+    </div>
+
+    <div id="stock-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4" onclick="handleModalClick(event)">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+            <h2 class="text-xl font-bold text-gray-800 text-center">Select Stock Type</h2>
+            
+            <div class="flex flex-col gap-3">
+                <a href="chiller_stck.html" class="modal-link bg-cyan-500 hover:opacity-90">
+                    Chiller Stock
+                </a>
+                <a href="freezer_stck.html" class="modal-link bg-blue-500 hover:opacity-90">
+                    Freezer Stock
+                </a>
+            </div>
+
+            <button onclick="closeStockModal()" class="w-full mt-4 text-gray-500 font-semibold py-2">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function openStockModal() {
+            document.getElementById('stock-modal').classList.remove('hidden');
+        }
+
+        function closeStockModal() {
+            document.getElementById('stock-modal').classList.add('hidden');
+        }
+
+        function handleModalClick(event) {
+            const modal = document.getElementById('stock-modal');
+            if (event.target === modal) {
+                closeStockModal();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('loginExpiry');
+            window.location.href = '/index.html';
+        }
+    </script>
+</body>
+</html>

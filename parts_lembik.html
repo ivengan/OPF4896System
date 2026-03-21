@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parts Dispatch (Lembik) - Multi-Function System</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/icons/icon-192.png">
+    <style>
+        /*! modern-normalize v1.1.0 */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}b,strong{font-weight:bolder}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}button,input,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}img,video{max-width:100%;height:auto}[hidden]{display:none}.fixed{position:fixed}.inset-0{top:0;right:0;bottom:0;left:0}.z-50{z-index:50}.flex{display:flex}.h-16{height:4rem}.h-8{height:2rem}.w-8{width:2rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.max-w-md{max-width:28rem}.flex-col{flex-direction:column}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border{border-width:1px}.border-gray-100{border-color:#f3f4f6}.border-gray-200{border-color:#e5e7eb}.border-gray-300{border-color:#d1d5db}.border-red-200{border-color:#fecaca}.border-red-300{border-color:#fca5a5}.bg-white{background-color:#fff}.bg-gray-50{background-color:#f9fafb}.bg-gray-100{background-color:#f3f4f6}.bg-blue-50{background-color:#eff6ff}.bg-blue-100{background-color:#dbeafe}.bg-pink-100{background-color:#fce7f3}.bg-pink-600{background-color:#db2777}.bg-green-100{background-color:#d1fae5}.text-green-800{color:#065f46}.bg-yellow-100{background-color:#fef9c3}.text-yellow-800{color:#854d0e}.bg-red-50{background-color:#fef2f2}.bg-red-500{background-color:#ef4444}.hover\:bg-red-600:hover{background-color:#dc2626}.bg-red-700{background-color:#b91c1c}.hover\:bg-red-800:hover{background-color:#991b1b}.text-red-500{color:#ef4444}.text-red-600{color:#dc2626}.text-red-700{color:#b91c1c}.hover\:bg-red-50:hover{background-color:#fef2f2}.hover\:border-red-300:hover{border-color:#fca5a5}.bg-green-500{background-color:#10b981}.hover\:bg-green-600:hover{background-color:#059669}.bg-gray-900{background-color:#111827}.bg-opacity-50{--tw-bg-opacity:0.5;background-color:rgba(17,24,39,var(--tw-bg-opacity))}.text-blue-500{color:#3b82f6}.text-blue-600{color:#2563eb}.text-pink-600{color:#db2777}.text-pink-800{color:#9d174d}.hover\:text-blue-700:hover{color:#1d4ed8}.p-1{padding:.25rem}.p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-8{padding-top:2rem;padding-bottom:2rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-2xl{font-size:1.5rem;line-height:2rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.text-base{font-size:1rem;line-height:1.5rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.font-medium{font-weight:500}.text-white{color:#fff}.text-gray-500{color:#6b7281}.text-gray-600{color:#4b5563}.text-gray-700{color:#374151}.text-gray-800{color:#1f293d}.text-gray-900{color:#111827}.shadow-md{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06)}.shadow-lg{box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)}.shadow-sm{box-shadow:0 1px 2px 0 rgba(0,0,0,.05)}.transition{transition-property:background-color,border-color,color,fill,stroke,opacity,box-shadow,transform,filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.mx-auto{margin-left:auto;margin-right:auto}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mb-1{margin-bottom:.25rem}.mb-4{margin-bottom:1rem}.pt-2{padding-top:.5rem}.pt-6{padding-top:1.5rem}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-end{justify-content:flex-end}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus\:ring-green-500:focus{--tw-ring-color:#10b981}.focus\:ring-red-500:focus{--tw-ring-color:#ef4444}.w-max{width:max-content}
+        .hidden { display: none; }
+        .opacity-50 { opacity: 0.5; pointer-events: none; }
+        .customer-card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1rem; overflow: hidden; border: 1px solid #e5e7eb; }
+        .customer-header { padding: 1rem; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .part-row { padding: 0.75rem 1rem; border-bottom: 1px solid #f3f4f6; display: flex; flex-direction: column; transition: background-color 0.15s; }
+        .part-row:last-child { border-bottom: none; }
+        .part-row:hover { background-color: #f8fafc; }
+        .part-main { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .part-actions { display: flex; gap: 0.5rem; justify-content: flex-end; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #f3f4f6; }
+        .expand-btn { width: 100%; text-align: center; padding: 0.75rem; background-color: #f9fafb; color: #4b5563; font-size: 0.875rem; font-weight: 500; cursor: pointer; border-top: 1px solid #e5e7eb; transition: background 0.2s; }
+        .expand-btn:hover { background-color: #f3f4f6; color: #111827; }
+        .part-row.hidden-row { display: none; }
+        .bg-yellow-500 { background-color: #eab308; }
+        .hover\:bg-yellow-600:hover { background-color: #ca8a04; }
+        .border-yellow-200 { border-color: #fde047; }
+        .hover\:bg-yellow-50:hover { background-color: #fefce8; }
+        .text-yellow-600 { color: #ca8a04; }
+        .rotate-180 { transform: rotate(180deg); } 
+        .select-none { user-select: none; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <script>
+        if (!localStorage.getItem('loginExpiry') || Date.now() >= parseInt(localStorage.getItem('loginExpiry'))) {
+            localStorage.removeItem('loginExpiry'); window.location.href = '/index.html';
+        }
+    </script>
+
+    <header class="bg-white shadow-md sticky top-0 z-10">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="flex justify-between items-center h-16">
+                 <div class="flex items-center gap-4">
+                     <a href="dashboard.html" class="text-blue-500 hover:text-blue-700">&larr; Back</a>
+                     <h1 class="text-xl sm:text-2xl font-extrabold text-pink-600">PARTS DISPATCH (LEMBIK)</h1>
+                 </div>
+                 <div class="flex items-center gap-2">
+                     <button id="del-all-btn" class="bg-red-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-800 transition shadow-md">DEL ALL</button>
+                     <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition">Logout</button>
+                 </div>
+             </div>
+             <div class="flex justify-end pb-2">
+                 <select id="sort-select" class="border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-pink-500">
+                     <option value="driver">Sort by: Driver (Default)</option>
+                     <option value="dispatched">Sort by: Already Dispatched</option>
+                     <option value="yet">Sort by: Yet Dispatched</option>
+                 </select>
+             </div>
+         </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div id="notification-area" class="mb-4 fixed top-20 right-4 z-50"></div>
+        <div id="dispatch-list" class="space-y-6">
+            <p class="p-4 text-center text-gray-500">Loading Lembik dispatch data...</p>
+        </div>
+    </main>
+
+    <div id="dispatch-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-800">Add Parts Dispatch</h2>
+                <button id="modal-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
+            </div>
+            
+            <p class="text-sm text-gray-500">Enter weight to ADD to the current dispatched total.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Dispatch Amount</label>
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="modal-dispatch-amount" step="0.1" class="w-full border border-gray-300 rounded-lg p-4 text-2xl font-bold text-center text-gray-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500" placeholder="0.0">
+                        <span class="text-gray-600 font-bold text-xl">KG</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <input type="checkbox" id="modal-keluar-lembik" checked class="h-8 w-8 text-red-600 rounded focus:ring-red-500 cursor-pointer border-red-300">
+                    <label for="modal-keluar-lembik" class="text-red-700 font-bold text-base cursor-pointer">Keluar lembik (No Pack / Lama)</label>
+                </div>
+            </div>
+
+            <div class="pt-6">
+                <button id="modal-submit-btn" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Add & Update</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-800">Edit Dispatch</h2>
+                <button id="edit-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
+            </div>
+            <p class="text-sm text-gray-500">Enter amount to <span class="font-bold text-red-600">DEDUCT</span> from dispatched total.</p>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Deduction Amount</label>
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="edit-deduct-amount" step="0.1" class="w-full border border-gray-300 rounded-lg p-4 text-2xl font-bold text-center text-red-600 focus:ring-2 focus:ring-red-500" placeholder="0.0">
+                        <span class="text-gray-600 font-bold text-xl">KG</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Current Dispatched: <span id="current-disp-val" class="font-bold">0</span> KG</p>
+                </div>
+            </div>
+            <div class="pt-6">
+                <button id="edit-submit-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-sm">Update & Deduct</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-customer-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-800">Edit Customer Order</h2>
+                <button id="edit-cust-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
+            </div>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Re-assign Driver (Lorry)</label>
+                    <select id="edit-cust-driver" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500">
+                        <option value="JUQ 5168">JUQ 5168</option>
+                        <option value="JWP 9168">JWP 9168</option>
+                        <option value="JXK 3168">JXK 3168</option>
+                        <option value="JJJ 9528">JJJ 9528</option>
+                        <option value="Unassigned">Unassigned</option>
+                        <option value="None">None</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Edit Remark</label>
+                    <input type="text" id="edit-cust-remark" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500" placeholder="Customer remark...">
+                </div>
+            </div>
+
+            <div class="pt-6 mt-2">
+                <button id="edit-cust-save-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-sm">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-item-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-800">Edit Item Remark</h2>
+                <button id="edit-item-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
+            </div>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Edit Remark for <span id="edit-item-name-display" class="font-bold text-blue-600"></span></label>
+                    <input type="text" id="edit-item-remark" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500" placeholder="Item remark...">
+                </div>
+            </div>
+
+            <div class="pt-6 mt-2">
+                <button id="edit-item-save-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-sm">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="assign-choice-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center space-y-4">
+            <h2 class="text-lg font-bold text-gray-800">Assign Item?</h2>
+            <p class="text-gray-600">Are you assigning this deducted item to another customer?</p>
+            
+            <div class="flex gap-4 pt-2">
+                <button id="assign-no-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-xl transition">NO</button>
+                <button id="assign-yes-btn" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition">YES</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customer-select-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-800">Select Customer</h2>
+                <button id="cust-select-close" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Assign To:</label>
+                <input list="customer-list-dl" id="assign-customer-input" class="w-full border border-gray-300 rounded-lg p-3" placeholder="Type to search...">
+                <datalist id="customer-list-dl"></datalist>
+            </div>
+
+            <div class="pt-2">
+                <button id="confirm-assign-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition">Confirm Assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="verify-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4 text-center">
+            <h2 class="text-xl font-bold text-gray-800">Staff Verification</h2>
+            <p class="text-gray-500 text-sm mb-4">Enter phone number and password to authorize deletion.</p>
+            
+            <div>
+                <input type="tel" id="verify-phone" placeholder="Phone Number" class="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-blue-500 outline-none">
+                <input type="password" id="verify-password" placeholder="Password" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-blue-500 outline-none">
+                <button id="confirm-delete-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition shadow-md">Verify & Delete</button>
+            </div>
+
+            <button id="cancel-verify-btn" class="mt-2 text-gray-500 underline text-sm hover:text-gray-700">Cancel</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.appspot.com",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let allOrders = []; 
+        let customerMap = {}; 
+        let currentModalTarget = null;
+        let itemToDelete = null; 
+        let isDeletingAll = false;
+        let currentEditCustomerOrder = null; 
+        let currentEditItemOrder = null; 
+        
+        let deductedItem = null;
+        let deductedAmount = 0;
+
+        const dispatchListDiv = document.getElementById('dispatch-list');
+        const sortSelect = document.getElementById('sort-select');
+        const dispatchModal = document.getElementById('dispatch-modal');
+        const editModal = document.getElementById('edit-modal');
+        const notificationArea = document.getElementById('notification-area');
+        
+        function showNotification(message, type) {
+             notificationArea.innerHTML = `<div class="px-4 py-2 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">${message}</div>`;
+            setTimeout(() => { notificationArea.innerHTML = ''; }, 3000);
+        }
+
+        async function initialize() {
+            try {
+                const customersSnapshot = await db.collection('customers').get();
+                customersSnapshot.docs.forEach(doc => {
+                    const d = doc.data();
+                    customerMap[d.displayName] = { 
+                        lorry: d.lorry || 'Unassigned',
+                        description: d.description || '',
+                        defaultStock: d.defaultStock || 'Freeze' // Core routing property
+                    };
+                });
+
+                db.collection('orders')
+                  .where('productType', '==', 'parts')
+                  .where('status', '==', 'pending')
+                  .onSnapshot(snapshot => {
+                      processOrders(snapshot.docs);
+                  });
+
+            } catch (error) {
+                dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error loading data.</p>`;
+            }
+        }
+
+        function processOrders(docs) {
+            allOrders = [];
+            docs.forEach(doc => {
+                const data = doc.data();
+                const custName = data.customerName;
+                const custInfo = customerMap[custName] || { lorry: 'Unassigned', description: '', defaultStock: 'Freeze' };
+                
+                const activeLorry = data.assignedLorry || custInfo.lorry;
+
+                if (data.parts && Array.isArray(data.parts)) {
+                    data.parts.forEach((item, index) => {
+                        
+                        // --- CORE ROUTING LOGIC ---
+                        let defaultStock = custInfo.defaultStock || 'Freeze';
+                        let specificStock = item.stockType || ''; // Could be empty, 'Lembik', or 'Freeze'
+                        let finalRouting = specificStock ? specificStock : defaultStock;
+                        
+                        // IF NOT LEMBIK, DO NOT SHOW IN THIS HTML
+                        if (finalRouting !== 'Lembik') return;
+
+                        // BAG KG PARSING LOGIC
+                        let isBag = /bag/i.test(item.unit) || /bag/i.test(item.name) || /bag/i.test(item.remark);
+                        let targetWeightKg = parseFloat(item.qty) || 0;
+                        let weightPerBag = 1; 
+
+                        if (isBag) {
+                            const combinedString = `${item.name} ${item.unit} ${item.remark || ''}`.toLowerCase();
+                            const weightMatch = combinedString.match(/(\d+(?:\.\d+)?)\s*kg/i);
+                            if (weightMatch) {
+                                weightPerBag = parseFloat(weightMatch[1]);
+                            } else if (combinedString.includes('whole leg') || combinedString.includes('w/leg')) {
+                                weightPerBag = 1;
+                            }
+                            targetWeightKg = targetWeightKg * weightPerBag;
+                        }
+
+                        allOrders.push({
+                            orderId: doc.id,
+                            partIndex: index,
+                            customerName: custName,
+                            customerDesc: custInfo.description,
+                            lorry: activeLorry,
+                            customerRemark: data.customerRemark || '',
+                            itemName: item.name, 
+                            itemUnit: item.unit || 'KG',
+                            itemRemark: item.remark || '',
+                            orderedQty: parseFloat(item.qty),
+                            isBag: isBag,
+                            weightPerBag: weightPerBag,
+                            targetWeightKg: targetWeightKg,
+                            dispatchedQty: parseFloat(item.dispatchedQty) || 0,
+                            totalWeight: parseFloat(item.totalWeight) || 0,
+                            isInvoiced: item.isInvoiced || false, 
+                            history: item.history || []
+                        });
+                    });
+                }
+            });
+            renderDispatchList();
+        }
+
+        function renderDispatchList() {
+            const mode = sortSelect.value;
+            dispatchListDiv.innerHTML = '';
+
+            if (allOrders.length === 0) {
+                dispatchListDiv.innerHTML = '<p class="text-center text-gray-500">No Lembik parts pending.</p>';
+                return;
+            }
+
+            let sortedItems = [...allOrders];
+
+            if (mode === 'driver') {
+                sortedItems = sortedItems.filter(i => !i.isInvoiced);
+            } else if (mode === 'dispatched') {
+                sortedItems = sortedItems.filter(i => i.dispatchedQty > 0);
+            } else {
+                sortedItems = sortedItems.filter(i => i.dispatchedQty === 0 && !i.isInvoiced);
+            }
+
+            const groupedByLorry = {};
+            sortedItems.forEach(item => {
+                if (!groupedByLorry[item.lorry]) groupedByLorry[item.lorry] = {};
+                if (!groupedByLorry[item.lorry][item.customerName]) groupedByLorry[item.lorry][item.customerName] = [];
+                groupedByLorry[item.lorry][item.customerName].push(item);
+            });
+
+            const lorries = Object.keys(groupedByLorry).sort();
+
+            lorries.forEach(lorry => {
+                const lorrySection = document.createElement('div');
+                lorrySection.className = 'mb-4';
+
+                if(mode === 'driver') {
+                    const header = document.createElement('div');
+                    header.className = 'flex justify-between items-center text-lg font-bold text-gray-900 bg-gray-200 p-3 rounded-lg sticky top-0 shadow-sm z-10 cursor-pointer select-none';
+                    header.innerHTML = `<span>${lorry}</span><svg class="text-gray-600 transition-transform duration-200" style="width: 1.5rem; height: 1.5rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+
+                    const listGroup = document.createElement('div');
+                    listGroup.className = 'space-y-3 mt-2 hidden'; 
+
+                    const customers = Object.keys(groupedByLorry[lorry]).sort();
+                    customers.forEach(custName => {
+                        listGroup.appendChild(buildCustomerCard(custName, groupedByLorry[lorry][custName]));
+                    });
+
+                    header.addEventListener('click', () => {
+                        listGroup.classList.toggle('hidden');
+                        header.querySelector('svg').classList.toggle('rotate-180'); 
+                    });
+
+                    lorrySection.appendChild(header);
+                    lorrySection.appendChild(listGroup);
+                    dispatchListDiv.appendChild(lorrySection);
+                } else {
+                    const customers = Object.keys(groupedByLorry[lorry]).sort();
+                    customers.forEach(custName => {
+                        dispatchListDiv.appendChild(buildCustomerCard(custName, groupedByLorry[lorry][custName]));
+                    });
+                }
+            });
+        }
+
+        function buildCustomerCard(custName, items) {
+            const custInfo = items[0]; 
+            const card = document.createElement('div');
+            card.className = 'customer-card';
+            
+            let headerHtml = `<div class="customer-header border-b-4 border-pink-500 customer-name-target" style="-webkit-touch-callout: none; -webkit-user-select: none; user-select: none;">
+                <div>
+                    <div class="font-bold text-gray-800 text-lg">${custName}</div>
+                    ${custInfo.customerDesc ? `<div class="text-sm text-gray-500">${custInfo.customerDesc}</div>` : ''}
+                    ${custInfo.customerRemark ? `<div class="text-xs text-blue-600 italic mt-1">Note: ${custInfo.customerRemark}</div>` : ''}
+                </div>
+            </div>`;
+            card.innerHTML = headerHtml;
+
+            // --- LONG PRESS LOGIC (CUSTOMER) ---
+            let custPressTimer;
+            const custTarget = card.querySelector('.customer-name-target');
+            
+            const handleCustStart = (e) => {
+                custTarget.dataset.longPressCust = 'false';
+                custPressTimer = window.setTimeout(() => {
+                    custTarget.dataset.longPressCust = 'true';
+                    openEditCustomerModal(items);
+                }, 3000); 
+            };
+            const handleCustEnd = () => { clearTimeout(custPressTimer); };
+
+            custTarget.addEventListener('mousedown', handleCustStart);
+            custTarget.addEventListener('touchstart', handleCustStart, {passive: true});
+            custTarget.addEventListener('mouseup', handleCustEnd);
+            custTarget.addEventListener('mouseleave', handleCustEnd);
+            custTarget.addEventListener('touchend', handleCustEnd);
+            custTarget.addEventListener('touchmove', handleCustEnd);
+            custTarget.addEventListener('touchcancel', handleCustEnd);
+
+
+            const listContainer = document.createElement('div');
+            items.forEach((item, idx) => {
+                const row = createPartRow(item);
+                if (idx >= 3) row.classList.add('hidden-row');
+                listContainer.appendChild(row);
+            });
+            card.appendChild(listContainer);
+
+            if (items.length > 3) {
+                const expandBtn = document.createElement('div');
+                expandBtn.className = 'expand-btn';
+                expandBtn.textContent = `Show ${items.length - 3} more items...`;
+                expandBtn.onclick = function() {
+                    listContainer.querySelectorAll('.part-row').forEach((r, i) => {
+                        if (i >= 3) r.style.display = r.style.display === 'flex' ? 'none' : 'flex';
+                    });
+                    this.textContent = this.textContent.includes('Show') ? 'Show Less' : `Show ${items.length - 3} more items...`;
+                };
+                card.appendChild(expandBtn);
+            }
+            return card;
+        }
+
+        function createPartRow(item) {
+            const row = document.createElement('div');
+            row.className = 'part-row';
+            
+            const isCompleted = item.dispatchedQty >= item.targetWeightKg;
+            const isInvoiced = item.isInvoiced;
+            const percent = item.targetWeightKg > 0 ? Math.min(100, (item.dispatchedQty / item.targetWeightKg) * 100) : 0;
+            
+            let barColor = isCompleted ? 'bg-green-500' : (isInvoiced ? 'bg-gray-500' : 'bg-pink-600');
+
+            let orderDisplayLabel = item.isBag ? `${item.orderedQty} Bags` : `${item.orderedQty} ${item.itemUnit}`;
+            let kgSubText = item.isBag ? `<span class="text-xs text-pink-600 block text-right mt-1 font-semibold">Target: ${item.orderedQty} x ${item.weightPerBag}KG = ${item.targetWeightKg} KG</span>` : '';
+
+            row.innerHTML = `
+                <div class="part-main cursor-pointer pb-2 item-name-target" style="-webkit-touch-callout: none; -webkit-user-select: none; user-select: none;">
+                    <div class="w-full">
+                        <span class="font-semibold text-gray-700">${item.itemName}</span> 
+                        <span class="text-xs bg-pink-100 text-pink-800 px-2 py-0.5 rounded font-bold">${orderDisplayLabel}</span>
+                        ${item.itemRemark ? `<span class="text-xs text-gray-500 italic block mt-1">(${item.itemRemark})</span>` : ''}
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-2">
+                        <span class="text-xl font-bold ${isCompleted ? 'text-green-700' : 'text-gray-800'}">${parseFloat(item.dispatchedQty).toFixed(1)}</span>
+                        <span class="text-gray-400 text-sm font-medium">/${item.targetWeightKg} KG</span>
+                        ${kgSubText}
+                    </div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1">
+                    <div class="${barColor} h-1.5 rounded-full" style="width: ${percent}%"></div>
+                </div>
+                
+                ${!isInvoiced ? `
+                <div class="mt-2 pt-2 border-t border-gray-100">
+                    <label class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-gray-50 transition w-max">
+                        <input type="checkbox" class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 move-freeze-chk">
+                        <span class="text-xs font-extrabold text-blue-600">Keluar Ais (Move to Freeze Board) ➔</span>
+                    </label>
+                </div>
+                ` : ''}
+
+                <div class="part-actions flex justify-between items-center w-full">
+                    <button class="px-3 py-1.5 bg-white text-red-600 border border-red-200 rounded-lg text-xs font-bold shadow-sm hover:bg-red-50 hover:border-red-300 transition" onclick="event.stopPropagation(); initiateDelete(this.itemRef)">DEL</button>
+                    <div class="flex gap-2">
+                        ${item.dispatchedQty > 0 && !isInvoiced ? `<button class="px-3 py-1.5 bg-white text-yellow-600 border border-yellow-200 rounded-lg text-xs font-bold shadow-sm hover:bg-yellow-50 hover:border-yellow-300 transition" onclick="event.stopPropagation(); openEditModal(this.itemRef)">EDIT</button>` : ''}
+                        ${!isInvoiced ? `<button class="px-4 py-1.5 bg-green-500 text-white rounded-lg text-xs font-bold shadow-sm hover:bg-green-600 transition" onclick="event.stopPropagation(); handleInvoice(this.itemRef)">Submit</button>` : `<span class="text-xs text-gray-500 font-bold border px-2 py-1 rounded bg-gray-100">Invoiced</span>`}
+                    </div>
+                </div>
+            `;
+
+            row.querySelectorAll('button').forEach(btn => btn.itemRef = item);
+            
+            // --- LONG PRESS LOGIC (ITEM) ---
+            let itemPressTimer;
+            const itemTarget = row.querySelector('.item-name-target');
+            
+            const handleItemStart = (e) => {
+                row.dataset.longPressItem = 'false';
+                itemPressTimer = window.setTimeout(() => {
+                    row.dataset.longPressItem = 'true';
+                    openEditItemModal(item);
+                }, 3000); 
+            };
+            const handleItemEnd = () => { clearTimeout(itemPressTimer); };
+
+            itemTarget.addEventListener('mousedown', handleItemStart);
+            itemTarget.addEventListener('touchstart', handleItemStart, {passive: true});
+            itemTarget.addEventListener('mouseup', handleItemEnd);
+            itemTarget.addEventListener('mouseleave', handleItemEnd);
+            itemTarget.addEventListener('touchend', handleItemEnd);
+            itemTarget.addEventListener('touchmove', handleItemEnd);
+            itemTarget.addEventListener('touchcancel', handleItemEnd);
+
+            if (!isInvoiced) {
+                row.querySelector('.part-main').addEventListener('click', (e) => {
+                    if (row.dataset.longPressItem === 'true') {
+                        row.dataset.longPressItem = 'false'; 
+                        return; 
+                    }
+                    openDispatchModal(item);
+                });
+            }
+
+            // MOVEMENT LOGIC
+            const moveChk = row.querySelector('.move-freeze-chk');
+            if(moveChk && !isInvoiced) {
+                moveChk.addEventListener('change', async (e) => {
+                    if(e.target.checked) {
+                        if(!confirm("Move this order to Parts Dispatch (Freeze / Ais)?")) { e.target.checked = false; return; }
+                        try {
+                            const orderRef = db.collection('orders').doc(item.orderId);
+                            const docSnap = await orderRef.get();
+                            const parts = docSnap.data().parts;
+                            parts[item.partIndex].stockType = 'Freeze';
+                            await orderRef.update({parts: parts});
+                            showNotification("Moved to Freeze Board.", "success");
+                        } catch(err) { alert("Error moving order."); e.target.checked = false; }
+                    }
+                });
+            }
+
+            return row;
+        }
+
+        // --- Modals & Handlers ---
+
+        // 1. Edit Customer Modal
+        function openEditCustomerModal(items) {
+            currentEditCustomerOrder = items;
+            const firstItem = items[0];
+            
+            const dropdown = document.getElementById('edit-cust-driver');
+            dropdown.value = firstItem.lorry;
+            if (dropdown.selectedIndex === -1) dropdown.value = "Unassigned"; 
+
+            document.getElementById('edit-cust-remark').value = firstItem.customerRemark || '';
+            document.getElementById('edit-customer-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('edit-cust-close-x').addEventListener('click', () => {
+            document.getElementById('edit-customer-modal').classList.add('hidden');
+        });
+
+        document.getElementById('edit-cust-save-btn').addEventListener('click', async () => {
+            if (!currentEditCustomerOrder || currentEditCustomerOrder.length === 0) return;
+            
+            const newLorry = document.getElementById('edit-cust-driver').value;
+            const newRemark = document.getElementById('edit-cust-remark').value.trim();
+            const btn = document.getElementById('edit-cust-save-btn');
+            
+            btn.disabled = true;
+            btn.textContent = "Saving...";
+
+            try {
+                const batch = db.batch();
+                const uniqueIds = [...new Set(currentEditCustomerOrder.map(i => i.orderId))];
+                uniqueIds.forEach(id => {
+                    batch.update(db.collection('orders').doc(id), {
+                        assignedLorry: newLorry,
+                        customerRemark: newRemark
+                    });
+                });
+                await batch.commit();
+                
+                showNotification("Customer order updated.", "success");
+                document.getElementById('edit-customer-modal').classList.add('hidden');
+            } catch (e) {
+                console.error(e);
+                alert("Failed to update customer details.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Save Changes";
+            }
+        });
+
+        // 2. Edit Specific Item Modal
+        function openEditItemModal(item) {
+            currentEditItemOrder = item;
+            document.getElementById('edit-item-name-display').textContent = item.itemName;
+            document.getElementById('edit-item-remark').value = item.itemRemark || '';
+            document.getElementById('edit-item-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('edit-item-close-x').addEventListener('click', () => {
+            document.getElementById('edit-item-modal').classList.add('hidden');
+        });
+
+        document.getElementById('edit-item-save-btn').addEventListener('click', async () => {
+            if (!currentEditItemOrder) return;
+            
+            const newRemark = document.getElementById('edit-item-remark').value.trim();
+            const btn = document.getElementById('edit-item-save-btn');
+            
+            btn.disabled = true;
+            btn.textContent = "Saving...";
+
+            try {
+                const orderRef = db.collection('orders').doc(currentEditItemOrder.orderId);
+                const docSnap = await orderRef.get();
+                if(docSnap.exists) {
+                    const data = docSnap.data();
+                    const parts = data.parts;
+                    parts[currentEditItemOrder.partIndex].remark = newRemark;
+                    
+                    await orderRef.update({ parts: parts });
+                    showNotification("Item remark updated.", "success");
+                    document.getElementById('edit-item-modal').classList.add('hidden');
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Failed to update item remark.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Save Changes";
+            }
+        });
+
+        function openDispatchModal(item) {
+            currentModalTarget = item;
+            document.getElementById('modal-dispatch-amount').value = ''; 
+            document.getElementById('modal-keluar-lembik').checked = true; // Auto check in Lembik
+            dispatchModal.classList.remove('hidden');
+            setTimeout(() => document.getElementById('modal-dispatch-amount').focus(), 100);
+        }
+
+        function openEditModal(item) {
+            currentModalTarget = item;
+            document.getElementById('edit-deduct-amount').value = '';
+            document.getElementById('current-disp-val').textContent = parseFloat(item.dispatchedQty).toFixed(1);
+            editModal.classList.remove('hidden');
+        }
+
+        document.getElementById('modal-close-x').addEventListener('click', () => dispatchModal.classList.add('hidden'));
+        document.getElementById('edit-close-x').addEventListener('click', () => editModal.classList.add('hidden'));
+
+        document.getElementById('edit-submit-btn').addEventListener('click', async () => {
+            const deduct = parseFloat(document.getElementById('edit-deduct-amount').value);
+            if(!deduct || deduct <= 0 || deduct > currentModalTarget.dispatchedQty) return alert("Invalid deduction amount.");
+            
+            const orderRef = db.collection('orders').doc(currentModalTarget.orderId);
+            const doc = await orderRef.get();
+            const parts = doc.data().parts;
+            const part = parts[currentModalTarget.partIndex];
+            
+            part.dispatchedQty = parseFloat(part.dispatchedQty) - deduct;
+            part.totalWeight = parseFloat(part.totalWeight) - deduct; 
+            if(!part.history) part.history = [];
+            part.history.push({ qty: -deduct, net: -deduct, type: 'deduction', timestamp: new Date().toISOString() });
+
+            await orderRef.update({ parts: parts });
+            showNotification(`Deducted ${deduct} KG.`, 'success');
+            editModal.classList.add('hidden');
+        });
+
+        async function handleInvoice(item) {
+            if (item.dispatchedQty < item.targetWeightKg) {
+                if (!confirm(`Warning: Only ${item.dispatchedQty}/${item.targetWeightKg} KG dispatched. Complete order?`)) return;
+            } else {
+                if (!confirm(`Confirm dispatch complete for ${item.customerName}?`)) return;
+            }
+            try {
+                const orderRef = db.collection('orders').doc(item.orderId);
+                const doc = await orderRef.get();
+                const parts = doc.data().parts;
+                parts[item.partIndex].isInvoiced = true;
+                await orderRef.update({ parts: parts });
+                showNotification('Completed.', 'success');
+            } catch (e) { alert("Error."); }
+        }
+
+        function initiateDelete(item) {
+            if (!confirm("⚠️ Delete this order item?")) return;
+            try {
+                const orderRef = db.collection('orders').doc(item.orderId);
+                orderRef.get().then(doc => {
+                    const parts = doc.data().parts.filter((_, i) => i !== item.partIndex);
+                    if (parts.length === 0 && (!doc.data().broilers || doc.data().broilers.length === 0)) orderRef.delete(); 
+                    else orderRef.update({ parts: parts });
+                });
+                showNotification("Item deleted.", "success");
+            } catch (e) { alert("Delete failed."); }
+        }
+
+        document.getElementById('modal-submit-btn').addEventListener('click', async () => {
+            if (!currentModalTarget) return;
+            const btn = document.getElementById('modal-submit-btn');
+            const qty = parseFloat(document.getElementById('modal-dispatch-amount').value) || 0;
+            const isKeluarLembik = document.getElementById('modal-keluar-lembik').checked;
+
+            if (qty <= 0) return alert("Invalid amount");
+
+            btn.disabled = true; btn.textContent = 'Saving...';
+
+            let finalIsLama = false;
+            
+            let basePartName = currentModalTarget.itemName.replace(/(\d+(?:\.\d+)?)\s*kg/i, '').replace(/x\s*\d*\s*bags?/i, '').replace(/\(no pack\)/i, '').replace(/\(\s*\)/g, '').trim();
+
+            try {
+                if (isKeluarLembik) {
+                    let noPackStock = 0;
+                    const stockSnap = await db.collection('stock_entries').where('category', '==', 'Parts').get();
+                    stockSnap.forEach(doc => {
+                        let data = doc.data();
+                        let dbPartName = (data.categoryDetails?.partName || data.category || '').trim();
+                        let pack = data.categoryDetails?.packSize || '';
+                        let isNoPack = !pack || pack === 'No pack = 0KG' || pack === 'KG';
+                        if (isNoPack && dbPartName.toLowerCase() === basePartName.toLowerCase()) {
+                            noPackStock += parseFloat(data.netWeight) || 0;
+                        }
+                    });
+
+                    const ordersSnap = await db.collection('orders').where('productType', '==', 'parts').get();
+                    ordersSnap.forEach(doc => {
+                        let data = doc.data();
+                        if (data.parts) {
+                            data.parts.forEach(p => {
+                                let rawName = p.name || '';
+                                let pPackMatch = rawName.match(/(\d+(?:\.\d+)?)\s*kg/i);
+                                let isPNoPack = !pPackMatch;
+                                let pBaseName = rawName.replace(/(\d+(?:\.\d+)?)\s*kg/i, '').replace(/x\s*\d*\s*bags?/i, '').replace(/\(no pack\)/i, '').replace(/\(\s*\)/g, '').trim();
+
+                                if (isPNoPack && pBaseName.toLowerCase() === basePartName.toLowerCase() && p.history) {
+                                    p.history.forEach(h => {
+                                        if (!h.ayamLama) noPackStock -= parseFloat(h.net) || 0;
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    if (noPackStock >= qty) {
+                        finalIsLama = true;
+                    } else {
+                        showNotification(`Insufficient NO PACK stock (${noPackStock.toFixed(2)} KG). Auto-changed to OUT (new).`, 'error');
+                        finalIsLama = false; 
+                    }
+                }
+
+                const orderRef = db.collection('orders').doc(currentModalTarget.orderId);
+                const docSnap = await orderRef.get();
+                const parts = docSnap.data().parts;
+                const itemData = parts[currentModalTarget.partIndex];
+                
+                const existingQty = parseFloat(itemData.dispatchedQty) || 0;
+                const newTotalQty = existingQty + qty;
+
+                let safeTargetKg = parseFloat(itemData.qty) || 0;
+                let safeIsBag = /bag/i.test(itemData.unit) || /bag/i.test(itemData.name) || /bag/i.test(itemData.remark);
+                if (safeIsBag) {
+                    let wPerBag = 1;
+                    const m = (itemData.name + ' ' + itemData.unit + ' ' + (itemData.remark || '')).toLowerCase().match(/(\d+(?:\.\d+)?)\s*kg/i);
+                    if (m) wPerBag = parseFloat(m[1]);
+                    safeTargetKg = safeTargetKg * wPerBag;
+                }
+
+                if (newTotalQty > safeTargetKg) {
+                    if (!confirm(`Warning: Total dispatched (${newTotalQty} KG) exceeds target quantity (${safeTargetKg} KG).\n\nProceed with over-dispatch?`)) {
+                        btn.disabled = false; btn.textContent = 'Add & Update'; return;
+                    }
+                }
+
+                itemData.dispatchedQty = newTotalQty;
+                itemData.totalWeight = newTotalQty; 
+                itemData.lastDispatch = { grossWeight: newTotalQty, timestamp: new Date().toISOString(), ayamLama: finalIsLama };
+                
+                if(!itemData.history) itemData.history = [];
+                itemData.history.push({ qty: qty, net: qty, ayamLama: finalIsLama, timestamp: new Date().toISOString() });
+
+                await orderRef.update({ parts: parts });
+
+                if (finalIsLama) {
+                    await db.collection('stock_entries').add({
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        grossWeight: 0, tareWeight: 0, netWeight: -qty, 
+                        category: 'Parts', categoryDetails: { partName: basePartName, packSize: 'No pack = 0KG' },
+                        container: 'None', containerDetails: {},
+                        remark: `Keluar Lembik Deduction (Order ID: ${currentModalTarget.orderId})`
+                    });
+                }
+
+                showNotification(`Added ${qty} KG.`, 'success');
+                dispatchModal.classList.add('hidden');
+            } catch (e) { alert("Failed to update."); } 
+            finally { btn.disabled = false; btn.textContent = 'Add & Update'; }
+        });
+
+        sortSelect.addEventListener('change', renderDispatchList);
+        
+        // --- Delete all verification
+        document.getElementById('del-all-btn').addEventListener('click', () => {
+            if (!confirm("⚠️ DANGER: This will delete ALL pending PARTS orders.\n\nThis action cannot be undone. Proceed?")) return;
+            isDeletingAll = true; 
+            document.getElementById('verify-phone').value = '';
+            document.getElementById('verify-password').value = '';
+            verifyModal.classList.remove('hidden');
+        });
+
+        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+            const phone = document.getElementById('verify-phone').value.trim();
+            const pass = document.getElementById('verify-password').value.trim();
+            const btn = document.getElementById('confirm-delete-btn');
+            
+            if (!phone || !pass) return alert("Enter phone number and password.");
+
+            btn.disabled = true;
+            btn.textContent = "Verifying...";
+            
+            try {
+                const staffQuery = await db.collection('staff').where('phoneNumber', '==', phone).limit(1).get();
+                if (staffQuery.empty) {
+                    alert("Unauthorized or user not found.");
+                    btn.disabled = false;
+                    btn.textContent = "Verify & Delete";
+                    return;
+                }
+                
+                const data = staffQuery.docs[0].data();
+                const dbPassword = data.password !== undefined ? String(data.password).trim() : 
+                                   data.Password !== undefined ? String(data.Password).trim() : null;
+                
+                if (dbPassword === pass) {
+                    if (isDeletingAll) { await performBatchDelete(); } 
+                    else { await performDelete(itemToDelete); }
+                    verifyModal.classList.add('hidden');
+                } else {
+                    alert("Incorrect Password.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Verification failed.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Verify & Delete";
+            }
+        });
+        
+        async function performBatchDelete() {
+            try {
+                const snapshot = await db.collection('orders')
+                    .where('status', '==', 'pending')
+                    .where('productType', '==', 'parts')
+                    .get();
+
+                if (snapshot.empty) { showNotification("No orders to delete.", "error"); return; }
+
+                const batch = db.batch();
+                snapshot.docs.forEach(doc => { batch.delete(doc.ref); });
+                await batch.commit();
+                showNotification("All pending parts orders have been deleted.", "success");
+            } catch (e) {
+                console.error(e);
+                showNotification("Error performing batch delete.", "error");
+            } finally {
+                isDeletingAll = false; 
+            }
+        }
+        
+        document.getElementById('cancel-verify-btn').addEventListener('click', () => { verifyModal.classList.add('hidden'); isDeletingAll = false; });
+        
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loginExpiry'); window.location.href = '/index.html';
+        });
+        document.addEventListener('DOMContentLoaded', initialize);
+
+    </script>
+</body>
+</html>
