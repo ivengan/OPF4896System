@@ -24,13 +24,17 @@
             100% { transform: scale(1); opacity: 1; } 
         }
         .animate-pop { animation: popIn 0.2s ease-out forwards; }
+            .whitespace-nowrap { white-space: nowrap; }
+        .inline-flex { display: inline-flex; }
+        .min-h-16 { min-height: 4rem; }
+            .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
     </style>
 </head>
 <body class="bg-gray-100 h-screen flex items-center justify-center font-sans text-gray-800 text-[17px] leading-relaxed">
 
     <div class="w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl m-4 relative z-0">
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Welcome</h1>
+            <h1 class="text-xl font-bold text-gray-900 tracking-tight">Welcome</h1>
             <p class="text-gray-500 mt-2">Sign in to OPF4896System</p>
         </div>
 
@@ -52,7 +56,7 @@
 
     <div id="modal-login-choice" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-pop">
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-6">Choose Login Method</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-6">Choose Login Method</h2>
             
             <button id="btn-use-biometric" class="hidden w-full mb-3 bg-gray-800 text-white font-bold py-3 rounded-xl hover:bg-gray-900 transition flex items-center justify-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
@@ -69,7 +73,7 @@
 
     <div id="modal-enter-password" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-pop">
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-4">Enter Password</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-4">Enter Password</h2>
             
             <input type="password" id="login-password-input" placeholder="Password" autocomplete="current-password"
                 class="w-full px-4 py-3 mb-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
@@ -89,7 +93,7 @@
             <div class="mx-auto w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-2">Unregistered Phone Number</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Unregistered Phone Number</h2>
             <p class="text-gray-600 mb-6">Would you like to register your phone number?</p>
             
             <div class="flex gap-3">
@@ -101,7 +105,7 @@
 
     <div id="modal-registration" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-pop relative">
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-6">New Registration</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-6">New Registration</h2>
             
             <div class="space-y-4">
                 <div>
@@ -132,7 +136,7 @@
             <div class="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-2">Enable Biometric Login?</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Enable Biometric Login?</h2>
             <p class="text-gray-600 mb-6 text-[17px]">You can login faster next time using your face or fingerprint.</p>
             
             <div class="flex gap-3">
@@ -147,7 +151,7 @@
             <div class="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-2">Login Successful</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Login Successful</h2>
             <p class="text-gray-600 mb-6 text-[17px]">Where would you like to go?</p>
             
             <div class="flex flex-col gap-3">

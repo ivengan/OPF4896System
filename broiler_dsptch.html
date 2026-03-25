@@ -33,6 +33,9 @@
             100% { transform: scale(1); opacity: 1; }
         }
         .animate-bounce-in { animation: bounceIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+            .whitespace-nowrap { white-space: nowrap; }
+        .inline-flex { display: inline-flex; }
+        .min-h-16 { min-height: 4rem; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
@@ -47,10 +50,10 @@
 
     <header class="bg-white shadow-md sticky top-0 z-20">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="flex justify-between items-center h-16">
+             <div class="flex justify-between items-center min-h-16 py-2">
                  <div class="flex items-center gap-4">
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
-                     <h1 class="text-2xl font-bold text-gray-900 tracking-tight sm:">BROILER DISPATCH</h1>
+                     <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">BROILER DISPATCH</h1>
                  </div>
                  <div class="flex items-center gap-2">
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition shadow-md">DEL ALL</button>
@@ -77,7 +80,7 @@
     <div id="dispatch-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Add to Dispatch</h2>
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Add to Dispatch</h2>
                 <button id="modal-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
             </div>
             
@@ -146,10 +149,10 @@
 
     <div id="insufficient-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center p-4 cursor-pointer" style="z-index: 60;" onclick="this.classList.add('hidden')">
         <div class="bg-white rounded-2xl shadow-2xl p-8 text-center animate-bounce-in max-w-sm w-full">
-            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+            <div class="mx-auto flex items-center justify-center min-h-16 py-2 w-16 rounded-full bg-red-100 mb-4">
                 <svg class="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-2">Insufficient Ayam Lama</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Insufficient Ayam Lama</h2>
             <p class="text-gray-600 text-md">There are not enough broilers in your current chiller/freezer stock to fulfill this quantity.</p>
             <p class="text-base text-gray-400 mt-6 font-bold">(Tap anywhere to close)</p>
         </div>
@@ -158,7 +161,7 @@
     <div id="edit-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Edit Dispatch (Deduct)</h2>
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Edit Dispatch (Deduct)</h2>
                 <button id="edit-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
             </div>
             
@@ -220,7 +223,7 @@
     <div id="edit-customer-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Edit Customer Order</h2>
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Edit Customer Order</h2>
                 <button id="edit-cust-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
             </div>
             
@@ -251,7 +254,7 @@
     <div id="edit-item-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Edit Item Remark</h2>
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Edit Item Remark</h2>
                 <button id="edit-item-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
             </div>
             
@@ -270,7 +273,7 @@
 
     <div id="assign-choice-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center space-y-4">
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Assign Item?</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Assign Item?</h2>
             <p class="text-gray-600">Are you assigning this deducted item to another customer?</p>
             
             <div class="flex gap-4 pt-2">
@@ -283,7 +286,7 @@
     <div id="customer-select-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Select Customer</h2>
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Select Customer</h2>
                 <button id="cust-select-close" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
             </div>
             
@@ -301,7 +304,7 @@
 
     <div id="verify-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4 text-center">
-            <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Staff Verification</h2>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Staff Verification</h2>
             <p class="text-gray-500 text-[17px] mb-4">Enter phone number and password to authorize deletion.</p>
             
             <div>
