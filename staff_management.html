@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management - OPF4896System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .animate-pop { animation: popIn 0.2s ease-out forwards; }
+        @keyframes popIn { 
+            0% { transform: scale(0.95); opacity: 0; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans text-gray-800 text-[17px]">
+
+    <!-- Header -->
+    <div class="bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-10">
+        <button onclick="window.location.href='dashboard2.html'" class="text-blue-600 font-bold flex items-center gap-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            Back
+        </button>
+        <h1 class="text-lg font-bold">Staff Management</h1>
+        <div class="w-10"></div> <!-- Placeholder for balance -->
+    </div>
+
+    <div class="max-w-md mx-auto p-4 space-y-6">
+        
+        <!-- Add New Staff Form -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 animate-pop">
+            <h2 class="text-xl font-bold mb-4 text-indigo-700">Add New Staff</h2>
+            <div id="form-msg" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+            
+            <form id="add-staff-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">Phone Number</label>
+                    <input type="tel" id="staff-phone" placeholder="01xxxxxxxxx" maxlength="11" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-lg font-semibold tracking-wide">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">Default Password</label>
+                    <input type="text" id="staff-password" placeholder="Enter password" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <button type="submit" id="submit-btn" 
+                    class="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 active:scale-95 transition shadow-lg">
+                    CREATE ACCOUNT
+                </button>
+            </form>
+        </div>
+
+        <!-- Staff List -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 animate-pop">
+            <h2 class="text-xl font-bold mb-4 flex items-center justify-between text-gray-700">
+                Current Staff
+                <span id="staff-count" class="bg-gray-100 text-gray-500 text-sm py-1 px-3 rounded-full">0</span>
+            </h2>
+            <div id="staff-list" class="divide-y divide-gray-100 max-h-96 overflow-y-auto pr-1">
+                <div class="py-10 text-center text-gray-400">Loading staff list...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // FIREBASE INIT
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.firebasestorage.app",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const form = document.getElementById('add-staff-form');
+        const listContainer = document.getElementById('staff-list');
+        const countBadge = document.getElementById('staff-count');
+        const formMsg = document.getElementById('form-msg');
+
+        function showMsg(text, type) {
+            formMsg.textContent = text;
+            formMsg.className = `mb-4 p-3 rounded-lg text-sm font-bold animate-pop ${type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+            formMsg.classList.remove('hidden');
+            setTimeout(() => formMsg.classList.add('hidden'), 5000);
+        }
+
+        // LOAD STAFF LIST
+        function loadStaff() {
+            db.collection('staff').orderBy('phoneNumber', 'asc').onSnapshot(snapshot => {
+                countBadge.textContent = snapshot.size;
+                if (snapshot.empty) {
+                    listContainer.innerHTML = '<div class="py-10 text-center text-gray-400">No staff found</div>';
+                    return;
+                }
+                listContainer.innerHTML = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const phone = data.phoneNumber || data.PhoneNumber || 'Unknown';
+                    const pass = data.password || data.Password || '****';
+                    return `
+                        <div class="py-4 flex items-center justify-between">
+                            <div>
+                                <div class="font-bold text-gray-900">${phone}</div>
+                                <div class="text-sm text-gray-400 font-mono">PWD: ${pass}</div>
+                            </div>
+                            <button onclick="deleteStaff('${doc.id}', '${phone}')" class="p-2 text-red-400 hover:text-red-600 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            }, error => {
+                console.error(error);
+                listContainer.innerHTML = '<div class="py-10 text-center text-red-400">Failed to load staff</div>';
+            });
+        }
+
+        // ADD STAFF
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('staff-phone').value.replace(/\D/g, '');
+            const pass = document.getElementById('staff-password').value.trim();
+            const btn = document.getElementById('submit-btn');
+
+            if (!/^01\d{7,10}$/.test(phone)) return showMsg('Invalid phone format (01xxxxxxxx)', 'error');
+            if (pass.length < 4) return showMsg('Password too short', 'error');
+
+            btn.disabled = true;
+            btn.textContent = 'Creating...';
+
+            try {
+                // Check if already exists
+                const existing = await db.collection('staff').where('phoneNumber', '==', phone).get();
+                if (!existing.empty) {
+                    throw new Error('This phone number is already registered.');
+                }
+
+                await db.collection('staff').add({
+                    phoneNumber: phone,
+                    password: pass,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    isAdminCreated: true
+                });
+
+                showMsg('Staff account created successfully!', 'success');
+                form.reset();
+            } catch (err) {
+                showMsg(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'CREATE ACCOUNT';
+            }
+        };
+
+        // DELETE STAFF
+        window.deleteStaff = async (id, phone) => {
+            if (!confirm(`Are you sure you want to delete staff account for ${phone}?`)) return;
+            try {
+                await db.collection('staff').doc(id).delete();
+                alert('Account deleted.');
+            } catch (err) {
+                alert('Delete failed: ' + err.message);
+            }
+        };
+
+        loadStaff();
+    </script>
+</body>
+</html>
