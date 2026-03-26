@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "service-worker.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "firebase serve --port 5000 --host 0.0.0.0"
   },
   "keywords": [],
   "author": "",
