@@ -57,6 +57,7 @@
         </div>
     </div>
 
+    <!-- Login Choice Modal -->
     <div id="modal-login-choice" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-pop">
             <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-6">Choose Login Method</h2>
@@ -74,6 +75,7 @@
         </div>
     </div>
 
+    <!-- Enter Password Modal -->
     <div id="modal-enter-password" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-pop">
             <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-4">Enter Password</h2>
@@ -91,16 +93,73 @@
         </div>
     </div>
 
+    <!-- Unregistered Modal (Conditional for localhost) -->
     <div id="modal-unregistered" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-pop">
             <div class="mx-auto w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
             <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Unregistered Phone Number</h2>
-            <p class="text-gray-600 mb-6">This phone number is not registered. Please contact the Administrator to create an account.</p>
+            
+            <!-- Standard message for network access -->
+            <div id="msg-contact-admin" class="text-gray-600 mb-6">
+                This phone number is not registered. Please contact the Administrator to create an account.
+            </div>
+            
+            <!-- Hidden registration prompt for localhost only -->
+            <div id="msg-reg-prompt" class="hidden mb-6">
+                <p class="text-gray-600 mb-4 font-bold text-indigo-600">TEST MODE: Registration enabled on localhost.</p>
+                <p class="text-gray-600">Would you like to register this phone number?</p>
+            </div>
             
             <div class="flex gap-3">
-                <button onclick="closeModal('modal-unregistered')" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-300 transition">CLOSE</button>
+                <button id="btn-close-unreg" onclick="closeModal('modal-unregistered')" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-300 transition">CLOSE</button>
+                <button id="btn-reg-yes" class="hidden flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition shadow-md">YES, REGISTER</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="modal-registration" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-pop relative">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-6">New Registration</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-base font-bold text-gray-500 mb-1">PHONE NUMBER</label>
+                    <input type="tel" id="reg-phone" placeholder="01xxxxxxxxx" maxlength="11" disabled
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-blue-500 outline-none bg-gray-100 text-gray-500 cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-base font-bold text-gray-500 mb-1">CREATE PASSWORD</label>
+                    <input type="password" id="reg-password" placeholder="Mix alphabets, numbers, symbols"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-blue-500 outline-none bg-gray-50">
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button id="btn-reg-submit" class="flex-1 bg-green-500 text-white font-bold py-3 rounded-xl hover:bg-green-600 transition shadow-md">Submit</button>
+                <button id="btn-reg-clear" class="flex-1 bg-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-300 transition">CLEAR</button>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="#" id="link-reg-back" onclick="closeModal('modal-registration')" class="text-blue-500 font-bold text-[17px] hover:underline">Back</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biometric Modal -->
+    <div id="modal-enable-bio" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-pop">
+            <div class="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Enable Biometric Login?</h2>
+            <p class="text-gray-600 mb-6 text-[17px]">You can login faster next time using your face or fingerprint.</p>
+            
+            <div class="flex gap-3">
+                <button id="btn-bio-no" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-300 transition">NO</button>
+                <button id="btn-bio-yes" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition shadow-md">YES</button>
             </div>
         </div>
     </div>
@@ -145,6 +204,7 @@
         // --- 2. STATE & HELPERS ---
         let currentPhone = '';
         let currentDocId = null;
+        const DEFAULT_ADMIN = { phone: '0176405645', pass: 'admin123' };
         
         const notification = document.getElementById('main-notification');
         function notify(msg, type) {
@@ -159,11 +219,13 @@
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
 
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
         // --- 3. ON PAGE LOAD: CHECK SESSION ---
         window.addEventListener('DOMContentLoaded', () => {
             const loginExpiry = localStorage.getItem('loginExpiry');
             if (loginExpiry && Date.now() < parseInt(loginExpiry)) {
-                openModal('modal-destination'); // If already logged in, show choices immediately
+                openModal('modal-destination');
             }
             if (window.PasswordCredential) {
                 document.getElementById('btn-use-biometric').classList.remove('hidden');
@@ -186,21 +248,26 @@
             btn.disabled = true;
 
             try {
+                // DEFAULT ADMIN BYPASS check for testing
+                if (currentPhone === DEFAULT_ADMIN.phone) {
+                    currentDocId = 'fixed-admin'; 
+                    openModal('modal-login-choice');
+                    return;
+                }
+
                 currentDocId = null;
                 const query = await db.collection('staff').where('phoneNumber', '==', currentPhone).limit(1).get();
                 
                 if (query.empty) {
-                    openModal('modal-unregistered');
+                    handleUnregistered();
                 } else {
                     const doc = query.docs[0];
                     const data = doc.data();
-                    
-                    const dbPassword = data.password !== undefined ? String(data.password).trim() : 
-                                       data.Password !== undefined ? String(data.Password).trim() : null;
+                    const dbPassword = data.password || data.Password || null;
 
-                    if (!dbPassword || dbPassword === 'undefined' || dbPassword === '') {
+                    if (!dbPassword) {
                         currentDocId = doc.id; 
-                        openModal('modal-unregistered');
+                        handleUnregistered();
                     } else {
                         currentDocId = doc.id;
                         openModal('modal-login-choice');
@@ -215,8 +282,26 @@
             }
         });
 
+        function handleUnregistered() {
+            if (isLocal) {
+                document.getElementById('msg-contact-admin').classList.add('hidden');
+                document.getElementById('msg-reg-prompt').classList.remove('hidden');
+                document.getElementById('btn-reg-yes').classList.remove('hidden');
+                document.getElementById('btn-close-unreg').textContent = 'NO, CANCEL';
+            } else {
+                document.getElementById('msg-contact-admin').classList.remove('hidden');
+                document.getElementById('msg-reg-prompt').classList.add('hidden');
+                document.getElementById('btn-reg-yes').classList.add('hidden');
+                document.getElementById('btn-close-unreg').textContent = 'CLOSE';
+            }
+            openModal('modal-unregistered');
+        }
+
         // --- 5. LOGIN METHOD HANDLERS ---
         document.getElementById('btn-use-biometric').addEventListener('click', async () => {
+             // Bypass for default admin if docId is fixed-admin
+            if (currentDocId === 'fixed-admin') return alert("Biometric login not available for Master Account. Please use password.");
+
             if (!window.PasswordCredential) return alert("Biometrics not supported on this device/browser.");
             
             try {
@@ -226,8 +311,7 @@
                     
                     const doc = await db.collection('staff').doc(currentDocId).get();
                     const data = doc.data();
-                    const dbPassword = data.password !== undefined ? String(data.password).trim() : 
-                                       data.Password !== undefined ? String(data.Password).trim() : null;
+                    const dbPassword = data.password || data.Password || null;
 
                     if (dbPassword === cred.password) {
                         performLogin();
@@ -248,12 +332,6 @@
             setTimeout(() => document.getElementById('login-password-input').focus(), 100);
         });
 
-        document.getElementById('login-password-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                document.getElementById('btn-submit-password').click();
-            }
-        });
-
         document.getElementById('btn-submit-password').addEventListener('click', async () => {
             const pwd = document.getElementById('login-password-input').value.trim();
             if (!pwd) return alert("Enter password");
@@ -263,43 +341,105 @@
             btn.disabled = true;
 
             try {
-                const doc = await db.collection('staff').doc(currentDocId).get();
-                const data = doc.data();
-                
-                const dbPassword = data.password !== undefined ? String(data.password).trim() : 
-                                   data.Password !== undefined ? String(data.Password).trim() : null;
-
-                if (dbPassword === pwd) {
+                // DEFAULT ADMIN BYPASS check for testing
+                if (currentPhone === DEFAULT_ADMIN.phone && pwd === DEFAULT_ADMIN.pass) {
+                    // Also ensure they are in DB if they aren't
+                    const check = await db.collection('staff').where('phoneNumber', '==', currentPhone).get();
+                    if (check.empty) {
+                        await db.collection('staff').add({
+                            phoneNumber: currentPhone,
+                            password: pwd,
+                            role: 'admin',
+                            isAdminCreated: true
+                        });
+                    }
                     performLogin();
+                    return;
+                }
+
+                if (currentDocId === 'fixed-admin') {
+                     alert("Incorrect Password for Master Account.");
                 } else {
-                    alert("Incorrect Password");
-                    btn.textContent = 'Login';
-                    btn.disabled = false;
-                    document.getElementById('login-password-input').value = ''; 
-                    document.getElementById('login-password-input').focus();
+                    const doc = await db.collection('staff').doc(currentDocId).get();
+                    const data = doc.data();
+                    const dbPassword = data.password || data.Password || null;
+
+                    if (dbPassword === pwd) {
+                        performLogin();
+                    } else {
+                        alert("Incorrect Password");
+                    }
                 }
             } catch (e) {
                 alert("Error verifying connection");
+            } finally {
+                btn.textContent = 'Login';
                 btn.disabled = false;
             }
         });
 
-        // --- 7. COMMON LOGIN FUNCTION (OPENS DESTINATION MODAL) ---
+        // --- 6. REGISTRATION FLOW (Restored for testing) ---
+        document.getElementById('btn-reg-yes').onclick = () => {
+            closeModal('modal-unregistered');
+            document.getElementById('reg-phone').value = currentPhone;
+            document.getElementById('reg-password').value = '';
+            openModal('modal-registration');
+        };
+
+        document.getElementById('btn-reg-submit').onclick = async () => {
+            const pass = document.getElementById('reg-password').value.trim();
+            if (!pass) return alert("Password required");
+            closeModal('modal-registration');
+            openModal('modal-enable-bio');
+        };
+
+        document.getElementById('btn-bio-no').onclick = async () => { await finalizeRegistration(false); };
+        document.getElementById('btn-bio-yes').onclick = async () => { await finalizeRegistration(true); };
+
+        async function finalizeRegistration(enableBio) {
+            const pass = document.getElementById('reg-password').value.trim();
+            const bNo = document.getElementById('btn-bio-no');
+            const bYes = document.getElementById('btn-bio-yes');
+            bNo.disabled = true; bYes.disabled = true;
+
+            try {
+                const check = await db.collection('staff').where('phoneNumber', '==', currentPhone).get();
+                if (check.empty) {
+                    await db.collection('staff').add({
+                        phoneNumber: currentPhone,
+                        password: pass,
+                        isAdminCreated: false,
+                        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    await db.collection('staff').doc(check.docs[0].id).update({
+                        password: pass,
+                        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+                if (enableBio && window.PasswordCredential) {
+                    const cred = new PasswordCredential({ id: currentPhone, password: pass, name: 'Staff' });
+                    await navigator.credentials.store(cred);
+                }
+                performLogin();
+            } catch (e) {
+                alert("Failed: " + e.message);
+                bNo.disabled = false; bYes.disabled = false;
+            }
+        }
+
+        // --- 7. COMMON LOGIN FUNCTION ---
         function performLogin() {
             const sessionDuration = 12 * 60 * 60 * 1000;
             localStorage.setItem('loginExpiry', Date.now() + sessionDuration);
             localStorage.setItem('user_phone', currentPhone);
-
-            // Hide all other modals to be safe
             closeModal('modal-enter-password');
             closeModal('modal-login-choice');
             closeModal('modal-unregistered');
-
-            // Open the new destination choice modal
             openModal('modal-destination');
         }
 
-        // --- 8. PWA ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
         }
