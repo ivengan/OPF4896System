@@ -4,7 +4,9 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "run_local.bat",
+      "run_local.ps1"
     ]
   }
 }
