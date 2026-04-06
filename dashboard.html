@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Multi-Function System</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="/icons/icon-192.png">
+    <link rel="icon" href="icons/icon-192.png">
     <style>
         /*! modern-normalize v1.1.0 */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}button{cursor:pointer}
         
@@ -170,7 +170,7 @@
         const loginExpiry = localStorage.getItem('loginExpiry');
         if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
             localStorage.removeItem('loginExpiry');
-            window.location.href = '/index.html';
+            window.location.href = 'index.html';
         }
     </script>
 
@@ -265,7 +265,7 @@
 
         function logout() {
             localStorage.removeItem('loginExpiry');
-            window.location.href = '/index.html';
+            window.location.href = 'index.html';
         }
     </script>
 </body>
