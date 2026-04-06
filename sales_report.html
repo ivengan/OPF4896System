@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Analysis - OPF4896System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans text-gray-800 text-[17px] leading-relaxed">
+
+    <header class="bg-white shadow p-4 mb-6 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <a href="dashboard2.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
+            <h1 class="text-xl font-bold text-gray-900 tracking-tight">Sales Analysis</h1>
+        </div>
+        <button onclick="logout()" class="text-red-500 font-semibold">Logout</button>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4">
+        
+        <div class="bg-white p-4 rounded-lg shadow mb-6 flex flex-wrap gap-4 items-end">
+            <div>
+                <label class="block text-[17px] font-bold text-gray-700">Start Date</label>
+                <input type="date" id="start-date" class="border p-2 rounded w-full">
+            </div>
+            <div>
+                <label class="block text-[17px] font-bold text-gray-700">End Date</label>
+                <input type="date" id="end-date" class="border p-2 rounded w-full">
+            </div>
+            <button onclick="generateReport()" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">
+                Generate Report
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
+                <h3 class="text-gray-500 text-[17px] font-semibold">Estimated Revenue</h3>
+                <p class="text-3xl font-bold text-gray-800" id="total-revenue">RM 0.00</p>
+                <p class="text-base text-gray-400 mt-1">*Based on avg unit prices</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+                <h3 class="text-gray-500 text-[17px] font-semibold">Total Broilers Sold</h3>
+                <p class="text-3xl font-bold text-gray-800" id="total-broilers">0</p>
+                <p class="text-base text-gray-400 mt-1">Whole birds only</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
+                <h3 class="text-gray-500 text-[17px] font-semibold">Top Customer</h3>
+                <p class="text-xl font-bold text-gray-800 truncate" id="top-customer">-</p>
+                <p class="text-base text-gray-400 mt-1" id="top-customer-amt">RM 0.00</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="font-bold mb-4 text-gray-700">Sales by Top 5 Customers</h3>
+                <canvas id="customerChart"></canvas>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="font-bold mb-4 text-gray-700">Product Mix</h3>
+                <canvas id="productChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script src="public/js/firebase-config.js"></script>
+    <script src="public/js/auth.js"></script>
+
+    <script>
+        // Default to current month
+        const today = new Date();
+        document.getElementById('end-date').valueAsDate = today;
+        document.getElementById('start-date').valueAsDate = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        let charts = {};
+
+        async function generateReport() {
+            const start = new Date(document.getElementById('start-date').value);
+            const end = new Date(document.getElementById('end-date').value);
+            end.setHours(23, 59, 59); // Include the full end day
+
+            // Assuming prices since they aren't in your order object explicitly
+            const AVG_BROILER_PRICE = 15.00; 
+            const AVG_PART_PRICE = 12.00;
+
+            try {
+                // Fetch orders within date range
+                const snapshot = await db.collection('orders')
+                    .where('timestamp', '>=', start)
+                    .where('timestamp', '<=', end)
+                    .get();
+
+                let totalRevenue = 0;
+                let totalBroilers = 0;
+                let customerSales = {};
+                let productMix = { 'Broiler': 0, 'Slices': 0, 'Parts': 0 };
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    let orderValue = 0;
+
+                    // Calculate Broilers
+                    if (data.broilers) {
+                        data.broilers.forEach(b => {
+                            const qty = parseInt(b.qty) || 0;
+                            if (b.description === 'Broiler') {
+                                totalBroilers += qty;
+                                productMix['Broiler'] += qty;
+                            } else {
+                                productMix['Slices'] += qty;
+                            }
+                            orderValue += (qty * AVG_BROILER_PRICE);
+                        });
+                    }
+
+                    // Calculate Parts
+                    if (data.parts) {
+                        data.parts.forEach(p => {
+                            const qty = parseFloat(p.qty) || 0;
+                            productMix['Parts'] += qty;
+                            orderValue += (qty * AVG_PART_PRICE);
+                        });
+                    }
+
+                    // Aggregate
+                    totalRevenue += orderValue;
+                    customerSales[data.customerName] = (customerSales[data.customerName] || 0) + orderValue;
+                });
+
+                // Update UI Text
+                document.getElementById('total-revenue').innerText = `RM ${totalRevenue.toLocaleString('en-MY', {minimumFractionDigits: 2})}`;
+                document.getElementById('total-broilers').innerText = totalBroilers;
+
+                // Sort Customers
+                const sortedCust = Object.entries(customerSales).sort((a,b) => b[1] - a[1]);
+                if (sortedCust.length > 0) {
+                    document.getElementById('top-customer').innerText = sortedCust[0][0];
+                    document.getElementById('top-customer-amt').innerText = `RM ${sortedCust[0][1].toFixed(2)}`;
+                }
+
+                // Render Charts
+                renderCharts(sortedCust.slice(0, 5), productMix);
+
+            } catch (error) {
+                console.error("Report Error:", error);
+                alert("Error generating report. Ensure Firestore indexes are created.");
+            }
+        }
+
+        function renderCharts(topCustomers, productMix) {
+            // Destroy old charts if they exist
+            if (charts.cust) charts.cust.destroy();
+            if (charts.prod) charts.prod.destroy();
+
+            // Customer Bar Chart
+            const ctx1 = document.getElementById('customerChart').getContext('2d');
+            charts.cust = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: topCustomers.map(c => c[0]),
+                    datasets: [{
+                        label: 'Revenue (RM)',
+                        data: topCustomers.map(c => c[1]),
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 5
+                    }]
+                }
+            });
+
+            // Product Doughnut Chart
+            const ctx2 = document.getElementById('productChart').getContext('2d');
+            charts.prod = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(productMix),
+                    datasets: [{
+                        data: Object.values(productMix),
+                        backgroundColor: ['#10b981', '#f59e0b', '#8b5cf6']
+                    }]
+                }
+            });
+        }
+    </script>
+</body>
+</html>

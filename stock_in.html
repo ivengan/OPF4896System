@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock In - Multi-Function System</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    <style>
+        /*! modern-normalize v1.1.0 */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}b,strong{font-weight:bolder}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{opacity:1}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}img,video{max-width:100%;height:auto}[hidden]{display:none}.fixed{position:fixed}.inset-0{top:0;right:0;bottom:0;left:0}.z-50{z-index:50}.flex{display:flex}.h-4{height:1rem}.h-16{height:4rem}.w-4{width:1rem}.w-full{width:100%}.max-w-lg{max-width:32rem}.max-w-7xl{max-width:80rem}.flex-col{flex-direction:column}.gap-2{gap:.5rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-gray-300{border-color:#d1d5db}.bg-white{background-color:#fff}.bg-gray-100{background-color:#f3f4f6}.bg-gray-200{background-color:#e5e7eb}.hover\:bg-gray-300:hover{background-color:#d1d5db}.bg-gray-500{background-color:#6b7281}.hover\:bg-gray-600:hover{background-color:#4b5563}.bg-gray-900{background-color:#111827}.bg-opacity-50{--tw-bg-opacity:0.5;background-color:rgba(17,24,39,var(--tw-bg-opacity))}.bg-green-100{background-color:#d1fae5}.bg-green-500{background-color:#10b981}.hover\:bg-green-600:hover{background-color:#059669}.bg-red-100{background-color:#fee2e2}.bg-red-500{background-color:#ef4444}.hover\:bg-red-600:hover{background-color:#dc2626}.bg-blue-500{background-color:#3b82f6}.hover\:text-blue-700:hover{color:#1d4ed8}.bg-blue-100{background-color:#dbeafe}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-8{padding-top:2rem;padding-bottom:2rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.text-white{color:#fff}.text-gray-500{color:#6b7281}.text-gray-700{color:#374151}.text-gray-800{color:#1f293d}.text-gray-900{color:#111827}.text-green-700{color:#047857}.text-red-700{color:#b91c1c}.shadow-md{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06)}.shadow-lg{box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.transition{transition-property:background-color,border-color,color,fill,stroke,opacity,box-shadow,transform,filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.ml-3{margin-left:.75rem}.mr-2{margin-right:.5rem}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.mb-6{margin-bottom:1.5rem}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.space-y-4>:not([hidden])~:not([hidden]){margin-top:1rem}.space-y-6>:not([hidden])~:not([hidden]){margin-top:1.5rem}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus\:ring-offset-2:focus{--tw-ring-offset-width:2px}.focus\:ring-red-500:focus{--tw-ring-color:#ef4444}.focus\:ring-blue-500:focus{--tw-ring-color:#3b82f6}.active-segment{background-color:#3b82f6;color:white}.inactive-segment{background-color:#e5e7eb;color:#374151}@media (min-width:640px){.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}
+        .hidden { display: none; }
+        .rounded-l-lg { border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; }
+        .rounded-r-lg { border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem; }
+        
+        .stock-card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .stock-card:hover { border-color: #3b82f6; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .stock-card h3 { font-size: 1.1rem; font-weight: 700; color: #374151; margin-bottom: 0.5rem; }
+        .stock-card p { font-size: 0.9rem; color: #6b7281; }
+        .icon-circle { width: 3rem; height: 3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; font-size: 1.5rem; color: white; }
+            .whitespace-nowrap { white-space: nowrap; }
+        .inline-flex { display: inline-flex; }
+        .min-h-16 { min-height: 4rem; }
+            .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
+    <script>
+        const loginExpiry = localStorage.getItem('loginExpiry');
+        if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
+            localStorage.removeItem('loginExpiry');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center min-h-16 py-2">
+                <div class="flex items-center gap-4">
+                    <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Stock In</h1>
+                </div>
+                <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-lg mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div id="notification-area" class="mb-6"></div>
+        <div class="bg-white p-6 rounded-lg shadow space-y-6">
+            <div class="flex items-center justify-between">
+                <label class="text-lg font-semibold text-gray-700">Weight:</label>
+                <div class="flex items-center gap-2">
+                    <input type="number" id="weight-input" step="0.1" placeholder="0.0" class="w-32 border border-gray-300 rounded-lg p-2 text-center text-lg focus:ring-2 focus:ring-blue-500">
+                    <span class="text-lg font-semibold text-gray-500">KG</span>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <label class="text-lg font-semibold text-gray-700">Category:</label>
+                <div class="flex rounded-lg shadow-sm">
+                    <button id="category-broiler-btn" class="inactive-segment font-semibold py-2 px-3 rounded-l-lg">Broiler</button>
+                    <button id="category-slices-btn" class="inactive-segment font-semibold py-2 px-3">Slices</button>
+                    <button id="category-parts-btn" class="inactive-segment font-semibold py-2 px-3">Parts</button>
+                    <button id="category-waste-btn" class="inactive-segment font-semibold py-2 px-3 rounded-r-lg">Waste</button>
+                </div>
+            </div>
+             <div id="category-summary" class="text-right text-gray-500 font-semibold"></div>
+            <div class="flex items-center justify-between">
+                <label id="container-label" class="text-lg font-semibold text-gray-700 transition">Container:</label>
+                <div id="container-buttons" class="flex rounded-lg shadow-sm transition">
+                    <button id="container-crate-btn" class="inactive-segment font-semibold py-2 px-4 rounded-l-lg">Crate</button>
+                    <button id="container-basket-btn" class="inactive-segment font-semibold py-2 px-4">Basket</button>
+                    <button id="container-barrel-btn" class="inactive-segment font-semibold py-2 px-4 rounded-r-lg">Barrel</button>
+                </div>
+            </div>
+            <div id="container-summary" class="text-right text-gray-500 font-semibold"></div>
+        </div>
+        <div class="mt-8 flex gap-2">
+            <button id="clear-btn" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold text-lg py-4 rounded-lg shadow-md transition">Clear</button>
+            <button id="final-ok-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-4 rounded-lg shadow-md transition">OK</button>
+        </div>
+    </main>
+    
+    <div id="broiler-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4">
+            <h3 class="text-xl font-bold">Select Broiler Type</h3>
+            <div class="space-y-4">
+                <div class="flex items-center"><input type="radio" name="broiler-type" value="H/P" id="b-hp" class="h-4 w-4"><label for="b-hp" class="ml-3 block text-lg text-gray-700">H/P</label></div>
+                <div class="flex items-center"><input type="radio" name="broiler-type" value="Slices" id="b-slices" class="h-4 w-4"><label for="b-slices" class="ml-3 block text-lg text-gray-700">Slices</label></div>
+                <div class="flex items-center"><input type="radio" name="broiler-type" value="Kopek" id="b-kopek" class="h-4 w-4"><label for="b-kopek" class="ml-3 block text-lg text-gray-700">Kopek</label></div>
+                <div class="flex items-center"><input type="radio" name="broiler-type" value="Remark" id="b-remark" class="h-4 w-4"><label for="b-remark" class="ml-3 block text-lg text-gray-700">Remark</label></div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button id="broiler-cancel-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg text-gray-700">Cancel</button>
+                <button id="broiler-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="broiler-count-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4">
+            <h3 class="text-xl font-bold">How many broiler/slices?</h3>
+            <input type="number" id="broiler-count-input" placeholder="e.g., 5" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg">
+            <div class="flex gap-2 mt-4">
+                <button id="broiler-count-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
+                <button id="broiler-count-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="remark-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4">
+            <h3 class="text-xl font-bold">Enter Remark</h3>
+            <textarea id="remark-text" class="w-full border border-gray-300 rounded-lg p-2" rows="3"></textarea>
+             <div class="flex gap-2 mt-4">
+                <button data-modal-id="remark-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="remark-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+    <div id="parts-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4">
+            <h3 class="text-xl font-bold">Select Part and Pack Size</h3>
+            <select id="parts-picker" class="w-full border border-gray-300 rounded-lg p-3"></select>
+            <select id="pack-size-picker" class="w-full border border-gray-300 rounded-lg p-3">
+                <option value="No pack = 0KG">No pack = 0KG</option>
+                <option value="1 KG">1 KG</option>
+                <option value="2 KG">2 KG</option>
+                <option value="5 KG">5 KG</option>
+                <option value="10 KG">10 KG</option>
+            </select>
+             <div class="flex gap-2 mt-4">
+                <button data-modal-id="parts-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="parts-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+    <div id="crate-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6">
+            <h3 class="text-xl font-bold">Crate Details</h3>
+            <div>
+                <label class="font-semibold">Number of Crates:</label>
+                <input id="crate-count" type="number" min="1" max="15" value="1" class="w-full border border-gray-300 rounded-lg p-3 text-center mt-2">
+            </div>
+            <div>
+                <label class="font-semibold">Options:</label>
+                <div class="mt-2"><input type="checkbox" id="crate-r" class="mr-2"><label for="crate-r">"R"</label></div>
+            </div>
+             <div class="flex gap-2 mt-4">
+                <button data-modal-id="crate-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="crate-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+    <div id="basket-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6">
+            <h3 class="text-xl font-bold">Basket Details</h3>
+            <div>
+                <label class="font-semibold">"Besi":</label>
+                <div class="mt-2"><input type="checkbox" id="basket-besi" class="mr-2"><label for="basket-besi">1 Besi</label></div>
+            </div>
+            <div>
+                <label class="font-semibold">Options:</label>
+                <div class="mt-2"><input type="checkbox" id="basket-r" class="mr-2"><label for="basket-r">"R"</label></div>
+            </div>
+             <div class="flex gap-2 mt-4">
+                <button data-modal-id="basket-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="basket-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+     <div id="barrel-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6">
+            <h3 class="text-xl font-bold">Barrel Details</h3>
+            <div>
+                <label class="font-semibold">Options:</label>
+                <div class="mt-2"><input type="checkbox" id="barrel-r" class="mr-2"><label for="barrel-r">"R"</label></div>
+            </div>
+             <div class="flex gap-2 mt-4">
+                <button data-modal-id="barrel-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="barrel-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="config-warning-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center space-y-4">
+            <div class="mx-auto w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-2">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Settings Required</h2>
+            <p class="text-gray-600 text-[17px]">Your system is missing the container weights. Please go to the Settings page and save your container weights before continuing.</p>
+            
+            <div class="flex flex-col gap-3 mt-4">
+                <button onclick="window.location.href='setting.html'" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-md">Go to Settings</button>
+                <button onclick="hideModal(document.getElementById('config-warning-modal'))" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-xl transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.firebasestorage.app",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let selectedCategory = null;
+        let selectedCategoryDetails = null;
+        let selectedContainer = null;
+        let selectedContainerDetails = null;
+        let tempBroilerType = null;
+        let tempRemarkText = null;
+
+        const weightInput = document.getElementById('weight-input');
+        const catBroilerBtn = document.getElementById('category-broiler-btn');
+        const catSlicesBtn = document.getElementById('category-slices-btn');
+        const catPartsBtn = document.getElementById('category-parts-btn');
+        const catWasteBtn = document.getElementById('category-waste-btn');
+        const conCrateBtn = document.getElementById('container-crate-btn');
+        const conBasketBtn = document.getElementById('container-basket-btn');
+        const conBarrelBtn = document.getElementById('container-barrel-btn');
+        const categorySummary = document.getElementById('category-summary');
+        const containerSummary = document.getElementById('container-summary');
+        const finalOkBtn = document.getElementById('final-ok-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const notificationArea = document.getElementById('notification-area');
+        
+        const broilerModal = document.getElementById('broiler-modal');
+        const broilerCountModal = document.getElementById('broiler-count-modal');
+        const remarkModal = document.getElementById('remark-modal');
+        const partsModal = document.getElementById('parts-modal');
+        const crateModal = document.getElementById('crate-modal');
+        const basketModal = document.getElementById('basket-modal');
+        const barrelModal = document.getElementById('barrel-modal');
+        const configWarningModal = document.getElementById('config-warning-modal');
+        
+        function showModal(modal) { modal.classList.remove('hidden'); }
+        function hideModal(modal) { modal.classList.add('hidden'); }
+
+        function showNotification(message, type) {
+            notificationArea.innerHTML = `<div class="p-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${message}</div>`;
+            setTimeout(() => { notificationArea.innerHTML = ''; }, 4000);
+        }
+
+        function resetPage() {
+            weightInput.value = '';
+            resetCategorySelection();
+            resetContainerSelection();
+            document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
+            document.querySelectorAll('textarea, select').forEach(el => { if(el) el.value = ''; });
+            const crateCount = document.getElementById('crate-count');
+            if(crateCount) crateCount.value = 1;
+            const broilerCount = document.getElementById('broiler-count-input');
+            if(broilerCount) broilerCount.value = '';
+        }
+
+        function resetCategorySelection() {
+            selectedCategory = null;
+            selectedCategoryDetails = null;
+            [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
+            categorySummary.textContent = '';
+        }
+
+        function resetContainerSelection() {
+            selectedContainer = null;
+            selectedContainerDetails = null;
+            [conCrateBtn, conBasketBtn, conBarrelBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
+            containerSummary.textContent = '';
+        }
+
+        function handleSegmentClick(btn, group, stateVar, value) {
+            if (btn.classList.contains('active-segment')) {
+                if (stateVar === 'category') resetCategorySelection();
+                if (stateVar === 'container') resetContainerSelection();
+                return null;
+            } else {
+                group.forEach(b => b.classList.replace('active-segment', 'inactive-segment'));
+                btn.classList.replace('inactive-segment', 'active-segment');
+                return value;
+            }
+        }
+
+        document.querySelectorAll('.modal-cancel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modalId = btn.dataset.modalId;
+                if (['broiler-modal', 'remark-modal', 'parts-modal'].includes(modalId)) {
+                    if(!selectedCategoryDetails) resetCategorySelection();
+                }
+                if (['crate-modal', 'basket-modal', 'barrel-modal'].includes(modalId)) {
+                   if(!selectedContainerDetails) resetContainerSelection();
+                }
+                hideModal(document.getElementById(modalId));
+            });
+        });
+        
+        catBroilerBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catBroilerBtn, [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn], 'category', 'Broiler');
+            if(value) {
+                selectedCategory = value;
+                showModal(broilerModal);
+            }
+        });
+
+        catSlicesBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catSlicesBtn, [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn], 'category', 'Slices');
+            if(value) {
+                selectedCategory = value;
+                tempBroilerType = 'Slices'; 
+                showModal(broilerCountModal); 
+            }
+        });
+        
+        catPartsBtn.addEventListener('click', async () => {
+            const value = handleSegmentClick(catPartsBtn, [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn], 'category', 'Parts');
+            if(value) {
+                selectedCategory = value;
+                try {
+                    const doc = await db.collection('config').doc('pricing').get();
+                    const partsPicker = document.getElementById('parts-picker');
+                    partsPicker.innerHTML = '';
+                    if (doc.exists && doc.data().parts) {
+                        Object.keys(doc.data().parts).sort().forEach(part => {
+                            partsPicker.innerHTML += `<option value="${part}">${part}</option>`;
+                        });
+                    } else {
+                         partsPicker.innerHTML = '<option>No parts found</option>';
+                    }
+                } catch(e) { console.error("Could not fetch parts list", e); }
+                showModal(partsModal);
+            }
+        });
+        
+        catWasteBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catWasteBtn, [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn], 'category', 'Waste');
+            if(value) {
+                selectedCategory = value;
+                selectedCategoryDetails = { type: 'Waste' };
+                categorySummary.textContent = 'Selected: Waste';
+            }
+        });
+
+        conCrateBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(conCrateBtn, [conCrateBtn, conBasketBtn, conBarrelBtn], 'container', 'Crate');
+            if(value) {
+                selectedContainer = value;
+                showModal(crateModal);
+            }
+        });
+
+        conBasketBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(conBasketBtn, [conCrateBtn, conBasketBtn, conBarrelBtn], 'container', 'Basket');
+            if(value) {
+                selectedContainer = value;
+                showModal(basketModal);
+            }
+        });
+
+        conBarrelBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(conBarrelBtn, [conCrateBtn, conBasketBtn, conBarrelBtn], 'container', 'Barrel');
+            if(value) {
+                selectedContainer = value;
+                showModal(barrelModal);
+            }
+        });
+
+        clearBtn.addEventListener('click', resetPage);
+        
+        document.getElementById('broiler-ok-btn').addEventListener('click', () => {
+            const selectedRadio = document.querySelector('input[name="broiler-type"]:checked');
+            if (!selectedRadio) {
+                alert("Please select a type.");
+                return;
+            }
+            tempBroilerType = selectedRadio.value;
+            hideModal(broilerModal);
+            if (tempBroilerType === 'Remark') {
+                showModal(remarkModal);
+            } else {
+                showModal(broilerCountModal);
+            }
+        });
+
+        document.getElementById('broiler-cancel-btn').addEventListener('click', () => {
+            hideModal(broilerModal);
+            if(!selectedCategoryDetails) resetCategorySelection();
+        });
+
+        document.getElementById('broiler-count-clear-btn').addEventListener('click', () => {
+            document.getElementById('broiler-count-input').value = '';
+        });
+
+        document.getElementById('broiler-count-ok-btn').addEventListener('click', () => {
+            const count = parseInt(document.getElementById('broiler-count-input').value);
+            if (isNaN(count) || count <= 0) {
+                alert('Please enter a valid number.');
+                return;
+            }
+            if (tempBroilerType === 'Remark') {
+                selectedCategoryDetails = { type: tempBroilerType, count: count, text: tempRemarkText };
+                categorySummary.textContent = `Remark: ${tempRemarkText.substring(0,15)}... (x${count})`;
+            } else {
+                selectedCategoryDetails = { type: tempBroilerType, count: count };
+                categorySummary.textContent = `Selected: ${tempBroilerType} (x${count})`;
+            }
+            hideModal(broilerCountModal);
+        });
+        
+        document.getElementById('remark-ok-btn').addEventListener('click', () => {
+            tempRemarkText = document.getElementById('remark-text').value;
+            hideModal(remarkModal);
+            showModal(broilerCountModal);
+        });
+        
+        document.getElementById('parts-ok-btn').addEventListener('click', () => {
+            const partName = document.getElementById('parts-picker').value;
+            const packSize = document.getElementById('pack-size-picker').value;
+            selectedCategoryDetails = { partName, packSize };
+            categorySummary.textContent = `Part: ${partName} (${packSize})`;
+            hideModal(partsModal);
+        });
+
+        document.getElementById('crate-ok-btn').addEventListener('click', () => {
+            const count = parseInt(document.getElementById('crate-count').value);
+            const hasR = document.getElementById('crate-r').checked;
+            selectedContainerDetails = { type: 'Crate', count, hasR };
+            containerSummary.textContent = `${count} Crate(s)${hasR ? ' with R' : ''}`;
+            hideModal(crateModal);
+        });
+
+        document.getElementById('basket-ok-btn').addEventListener('click', () => {
+            const hasBesi = document.getElementById('basket-besi').checked;
+            const hasR = document.getElementById('basket-r').checked;
+            selectedContainerDetails = { type: 'Basket', hasBesi, hasR };
+            containerSummary.textContent = `Basket${hasBesi ? ' with 1 Besi' : ''}${hasR ? ' with R' : ''}`;
+            hideModal(basketModal);
+        });
+
+        document.getElementById('barrel-ok-btn').addEventListener('click', () => {
+            const hasR = document.getElementById('barrel-r').checked;
+            selectedContainerDetails = { type: 'Barrel', hasR };
+            containerSummary.textContent = `Barrel${hasR ? ' with R' : ''}`;
+            hideModal(barrelModal);
+        });
+
+        // --- STRICT CONFIG CHECK LOGIC ---
+        finalOkBtn.addEventListener('click', async () => {
+            const grossWeight = parseFloat(weightInput.value);
+            if (isNaN(grossWeight) || !selectedCategory || !selectedContainer) {
+                showNotification('Please fill in all fields: Weight, Category, and Container.', 'error');
+                return;
+            }
+
+            finalOkBtn.disabled = true;
+            finalOkBtn.textContent = "Processing...";
+
+            try {
+                // Fetch pricing config
+                const configSnap = await db.collection('config').doc('pricing').get();
+                
+                // Check if document exists at all
+                if (!configSnap.exists) {
+                    showModal(configWarningModal);
+                    return;
+                }
+
+                const config = configSnap.data();
+
+                // Check if specific container weights are missing (undefined or empty)
+                if (config.tare_crate === undefined || config.tare_basket === undefined || 
+                    config.tare_barrel === undefined || config.tare_r === undefined ||
+                    config.tare_crate === "" || config.tare_basket === "") {
+                    
+                    showModal(configWarningModal);
+                    return;
+                }
+
+                // If they exist, parse them securely
+                const tareCrate = parseFloat(config.tare_crate);
+                const tareBasket = parseFloat(config.tare_basket);
+                const tareBarrel = parseFloat(config.tare_barrel);
+                const tareR = parseFloat(config.tare_r);
+
+                // Final safety check against NaN from database parsing
+                if (isNaN(tareCrate) || isNaN(tareBasket) || isNaN(tareBarrel) || isNaN(tareR)) {
+                    showModal(configWarningModal);
+                    return;
+                }
+
+                // --- Calculate Net Weight ---
+                let tareWeight = 0;
+                if (selectedContainer === 'Crate') {
+                    const { count, hasR } = selectedContainerDetails;
+                    tareWeight = (count * tareCrate) + (hasR ? tareR : 0);
+                } else if (selectedContainer === 'Basket') {
+                    const { hasBesi, hasR } = selectedContainerDetails;
+                    tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0); // Assuming 1 Besi remains a constant 0.5KG
+                } else if (selectedContainer === 'Barrel') {
+                    const { hasR } = selectedContainerDetails;
+                    tareWeight = tareBarrel + (hasR ? tareR : 0);
+                }
+
+                const netWeight = grossWeight - tareWeight;
+                
+                const stockEntry = {
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    grossWeight: grossWeight,
+                    tareWeight: tareWeight,
+                    netWeight: netWeight,
+                    category: selectedCategory,
+                    categoryDetails: selectedCategoryDetails,
+                    container: selectedContainer,
+                    containerDetails: selectedContainerDetails
+                };
+
+                await db.collection('stock_entries').add(stockEntry);
+                showNotification(`Stock recorded successfully! Net weight: ${netWeight.toFixed(2)} KG`, 'success');
+                resetPage();
+                
+            } catch (error) {
+                console.error("Error saving stock entry: ", error);
+                showNotification('Failed to save stock entry.', 'error');
+            } finally {
+                finalOkBtn.disabled = false;
+                finalOkBtn.textContent = "OK";
+            }
+        });
+        
+        document.getElementById('logout-btn').addEventListener('click', () => {
+		    localStorage.removeItem('loginExpiry');
+            window.location.href = 'index.html';
+        });
+
+        document.querySelectorAll('input[type="number"], input[type="text"], textarea').forEach(el => {
+            el.addEventListener('focus', function() {
+                this.value = '';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freezer Stock - Multi-Function System</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    <style>
+        /*! modern-normalize v1.1.0 */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}b,strong{font-weight:bolder}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}button,input,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}img,video{max-width:100%;height:auto}[hidden]{display:none}.fixed{position:fixed}.inset-0{top:0;right:0;bottom:0;left:0}.z-50{z-index:50}.flex{display:flex}.h-16{height:4rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.max-w-md{max-width:28rem}.flex-col{flex-direction:column}.gap-2{gap:.5rem}.gap-4{gap:1rem}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border-b{border-bottom-width:1px}.border{border-width:1px}.border-gray-200{border-color:#e5e7eb}.bg-white{background-color:#fff}.bg-gray-50{background-color:#f9fafb}.bg-gray-100{background-color:#f3f4f6}.bg-gray-200{background-color:#e5e7eb}.bg-blue-100{background-color:#dbeafe}.text-green-800{color:#065f46}.bg-red-500{background-color:#ef4444}.hover\:bg-red-600:hover{background-color:#dc2626}.text-red-600{color:#dc2626}.text-green-600{color:#16a34a}.bg-gray-900{background-color:#111827}.bg-opacity-50{--tw-bg-opacity:0.5;background-color:rgba(17,24,39,var(--tw-bg-opacity))}.text-blue-500{color:#3b82f6}.text-blue-600{color:#2563eb}.text-blue-700{color:#1d4ed8}.hover\:text-blue-700:hover{color:#1d4ed8}.p-3{padding:.75rem}.p-4{padding:1rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-[17px]{font-size:.875rem;line-height:1.25rem}.text-base{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.text-white{color:#fff}.text-gray-500{color:#6b7281}.text-gray-600{color:#4b5563}.text-gray-700{color:#374151}.text-gray-800{color:#1f293d}.text-gray-900{color:#111827}.shadow-md{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06)}.transition{transition-property:background-color,border-color,color,fill,stroke,opacity,box-shadow,transform,filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.mx-auto{margin-left:auto;margin-right:auto}.mt-4{margin-top:1rem}.mb-4{margin-bottom:1rem}.items-center{align-items:center}.justify-between{justify-content:space-between}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}
+        
+        /* Table Styles */
+        .overflow-x-auto { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .min-w-full { min-width: 100%; }
+        .divide-y > :not([hidden]) ~ :not([hidden]) { border-top-width: 1px; border-color: #e5e7eb; }
+        .whitespace-nowrap { white-space: nowrap; }
+        .text-left { text-align: left; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .uppercase { text-transform: uppercase; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        
+        .table-container { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; overflow: hidden; }
+        th { background-color: #f3f4f6; letter-spacing: 0.05em; padding: 1rem; font-size: 0.75rem; color: #4b5563; }
+        td { padding: 1rem; font-size: 0.95rem; font-weight: 700; color: #111827; }
+        
+        /* Intermittent (Zebra) Background Styles */
+        #inventory-tbody tr:nth-child(odd) { background-color: #ffffff; }
+        #inventory-tbody tr:nth-child(even) { background-color: #f9fafb; }
+        
+        /* Hover Effect - excluding the closing column so it stays blue */
+        #inventory-tbody tr:hover td:not(.bg-blue-50) { background-color: #f3f4f6; transition: background-color 0.15s; cursor: default; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
+
+    <script> 
+        const loginExpiry = localStorage.getItem('loginExpiry');
+        if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
+            localStorage.removeItem('loginExpiry');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <header class="bg-white shadow-md sticky top-0 z-20">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="flex justify-between items-center min-h-16 py-2">
+                 <div class="flex items-center gap-4">
+                     <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
+                     <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">Freezer Stock</h1>
+                 </div>
+                 <div class="flex items-center gap-2">
+                     <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none transition shadow-sm">Logout</button>
+                 </div>
+             </div>
+         </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        
+        <div class="mb-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Parts Inventory Ledger</h2>
+            <span class="text-[17px] font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full" id="date-display"></span>
+        </div>
+
+        <div class="table-container overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="text-center font-extrabold">ITEMS</th>
+                        <th class="text-center font-extrabold">OPENING</th>
+                        <th class="text-center font-extrabold text-red-600">OUT (lama)</th>
+                        <th class="text-center font-extrabold text-green-600">IN (lama)</th>
+                        <th class="text-center font-extrabold text-red-600">OUT (new)</th>
+                        <th class="text-center font-extrabold text-green-600">IN (new)</th>
+                        <th class="text-center font-extrabold text-blue-700 border-l border-gray-200">CLOSING</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-tbody" class="divide-y divide-gray-200">
+                    <tr>
+                        <td colspan="7" class="text-center text-gray-500 font-normal py-8 bg-white">Loading inventory data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.appspot.com",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Enable offline persistence
+        db.enablePersistence().catch(function(err) {
+            if (err.code == 'failed-precondition') console.warn('Persistence failed: Multiple tabs open.');
+            else if (err.code == 'unimplemented') console.warn('Persistence failed: Browser not supported.');
+        });
+
+        // Set Date to DD/MM/YYYY format
+        const tDate = new Date();
+        const dd = String(tDate.getDate()).padStart(2, '0');
+        const mm = String(tDate.getMonth() + 1).padStart(2, '0');
+        const yyyy = tDate.getFullYear();
+        document.getElementById('date-display').textContent = `${dd}/${mm}/${yyyy}`;
+
+        let rawStockData = [];
+        let rawOrderData = [];
+        let rawInventoryData = []; 
+
+        function formatItemName(name, pack) {
+            let cleanName = (name || 'Unknown').trim();
+            if (!pack || pack === 'No pack = 0KG' || pack === 'KG') return cleanName;
+            
+            if (cleanName.toLowerCase().includes(pack.toLowerCase())) return cleanName;
+            
+            if (pack.toLowerCase().includes('pack')) return `${cleanName} ${pack}`;
+            return `${cleanName} ${pack}/pack`;
+        }
+
+        // Display '-' instead of 0.00 KG
+        function formatVal(val) {
+            if (val === 0 || Math.abs(val) < 0.001) return '-';
+            return val.toFixed(2) + ' KG';
+        }
+
+        function processInventory() {
+            let inventoryMap = {};
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); 
+
+            function getOrInit(name) {
+                if (!inventoryMap[name]) {
+                    inventoryMap[name] = { name: name, opening: 0, inLama: 0, outLama: 0, inNew: 0, outNew: 0, closing: 0 };
+                }
+                return inventoryMap[name];
+            }
+
+            // 0. PRE-LOAD ALL REGISTERED INVENTORY ITEMS (From edit_inv.html)
+            rawInventoryData.forEach(data => {
+                let name = data.itemName || data.name || data.partName || data.description || '';
+                let pack = data.packSize || data.unit || data.pack || '';
+                if (name) {
+                    getOrInit(formatItemName(name, pack));
+                }
+            });
+
+            // 1. Process Stock IN (From stock_entries)
+            rawStockData.forEach(data => {
+                if (data.category !== 'Parts') return;
+
+                let dateObj = data.timestamp ? data.timestamp.toDate() : new Date();
+                let isToday = dateObj >= today;
+                let qty = parseFloat(data.netWeight) || 0;
+
+                let rawName = data.categoryDetails?.partName || data.category || 'Unknown Part';
+                let pack = data.categoryDetails?.packSize || '';
+                let itemName = formatItemName(rawName, pack);
+
+                let remark = (data.remark || '').toLowerCase();
+                let isLama = remark.includes('lama') || remark.includes('kopek') || remark.includes('sisa');
+
+                let item = getOrInit(itemName);
+
+                if (!isToday) {
+                    item.opening += qty; 
+                } else {
+                    if (isLama) item.inLama += qty;
+                    else item.inNew += qty;
+                }
+            });
+
+            // 2. Process Dispatches OUT (From orders)
+            rawOrderData.forEach(data => {
+                if (data.parts && Array.isArray(data.parts)) {
+                    data.parts.forEach(p => {
+                        let rawName = p.name || 'Unknown Part';
+                        let packMatch = rawName.match(/(\d+(?:\.\d+)?)\s*kg/i);
+                        let packStr = packMatch ? `${packMatch[1]} KG` : '';
+                        let itemName = formatItemName(rawName.replace(packMatch ? packMatch[0] : '', '').trim(), packStr);
+
+                        if (p.history && Array.isArray(p.history)) {
+                            p.history.forEach(h => {
+                                let hDate = h.timestamp ? new Date(h.timestamp) : new Date();
+                                let isToday = hDate >= today;
+                                let qty = parseFloat(h.net) || 0; 
+                                let isLama = h.ayamLama === true;
+
+                                let item = getOrInit(itemName);
+
+                                if (!isToday) {
+                                    item.opening -= qty;
+                                } else {
+                                    if (isLama) item.outLama += qty;
+                                    else item.outNew += qty;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            // 3. Render Table
+            const tbody = document.getElementById('inventory-tbody');
+            tbody.innerHTML = '';
+
+            // Convert Map to Array and sort Alphabetically
+            let itemsArray = Object.values(inventoryMap);
+            itemsArray.sort((a, b) => a.name.localeCompare(b.name));
+
+            if (itemsArray.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500 font-normal py-8 bg-white">No inventory items recorded.</td></tr>';
+                return;
+            }
+
+            itemsArray.forEach(item => {
+                // Formula: OPENING + IN(lama) + IN(new) - OUT(lama) - OUT(new)
+                item.closing = item.opening + item.inLama + item.inNew - item.outLama - item.outNew;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="text-left font-extrabold text-gray-800 whitespace-nowrap">${item.name}</td>
+                    <td class="text-center text-gray-600 whitespace-nowrap">${formatVal(item.opening)}</td>
+                    <td class="text-center text-red-500 whitespace-nowrap">${formatVal(item.outLama)}</td>
+                    <td class="text-center text-green-600 whitespace-nowrap">${formatVal(item.inLama)}</td>
+                    <td class="text-center text-red-500 whitespace-nowrap">${formatVal(item.outNew)}</td>
+                    <td class="text-center text-green-600 whitespace-nowrap">${formatVal(item.inNew)}</td>
+                    <td class="text-center font-extrabold text-blue-700 bg-blue-50 border-l border-gray-200 whitespace-nowrap">${formatVal(item.closing)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- REAL-TIME LISTENERS ---
+
+        db.collection('inventory').onSnapshot(snap => {
+            rawInventoryData = snap.docs.map(d => d.data());
+            processInventory();
+        }, err => {
+            console.log("Checking alternative inventory collection name...");
+            db.collection('inventory_items').onSnapshot(snap2 => {
+                rawInventoryData = snap2.docs.map(d => d.data());
+                processInventory();
+            });
+        });
+
+        db.collection('stock_entries').onSnapshot(snap => {
+            rawStockData = snap.docs.map(d => d.data());
+            processInventory();
+        });
+
+        db.collection('orders').where('productType', '==', 'parts').onSnapshot(snap => {
+            rawOrderData = snap.docs.map(d => d.data());
+            processInventory();
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loginExpiry');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

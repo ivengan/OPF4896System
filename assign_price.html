@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Pricing - Multi-Function System</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    <style>
+        /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}b,strong{font-weight:bolder}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}img,video{max-width:100%;height:auto}[hidden]{display:none}.flex{display:flex}.h-16{height:4rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.flex-col{flex-direction:column}.flex-shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}.gap-4{gap:1rem}.rounded-lg{border-radius:.5rem}.border-b{border-bottom-width:1px}.border{border-width:1px}.border-gray-200{border-color:#e5e7eb}.border-gray-300{border-color:#d1d5db}.bg-white{background-color:#fff}.bg-gray-100{background-color:#f3f4f6}.bg-green-100{background-color:#d1fae5}.bg-green-500{background-color:#10b981}.hover\:bg-green-600:hover{background-color:#059669}.bg-red-100{background-color:#fee2e2}.bg-red-500{background-color:#ef4444}.hover\:bg-red-600:hover{background-color:#dc2626}.hover\:text-blue-700:hover{color:#1d4ed8}.text-blue-500{color:#3b82f6}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-[17px]{font-size:.875rem;line-height:1.25rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.text-white{color:#fff}.text-gray-500{color:#6b7281}.text-gray-700{color:#374151}.text-gray-800{color:#1f293d}.text-gray-900{color:#111827}.text-green-700{color:#047857}.text-red-700{color:#b91c1c}.shadow-md{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06)}.shadow-sm{box-shadow:0 1px 2px 0 rgba(0,0,0,.05)}.transition{transition-property:background-color,border-color,color,fill,stroke,opacity,box-shadow,transform,filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.mx-auto{margin-left:auto;margin-right:auto}.ml-4{margin-left:1rem}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-end{justify-content:flex-end}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus\:ring-offset-2:focus{--tw-ring-offset-width:2px}.focus\:ring-red-500:focus{--tw-ring-color:#ef4444}.focus\:ring-blue-500:focus{--tw-ring-color:#3b82f6}@media (min-width:640px){.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}}@media (min-width:768px){.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}
+            .whitespace-nowrap { white-space: nowrap; }
+        .inline-flex { display: inline-flex; }
+        .min-h-16 { min-height: 4rem; }
+            .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
+<script>
+    // Session Gatekeeper
+    const loginExpiry = localStorage.getItem('loginExpiry');
+    if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
+        localStorage.removeItem('loginExpiry');
+        window.location.href = 'index.html';
+    }
+</script>
+
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center min-h-16 py-2">
+                <div class="flex items-center gap-4">
+                    <a href="dashboard2.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Assign Pricing</h1>
+                </div>
+                <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div id="notification-area" class="mb-6"></div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-4">Assign Price to Customers</h2>
+            <div id="customer-tier-list" class="space-y-4">
+                </div>
+        </div>
+
+        <div class="mt-8 bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-4">Special Price Overrides</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <input list="customer-names-list" id="sp-cust-name" placeholder="Customer Name" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+                <input list="item-names-list" id="sp-item-name" placeholder="Item Name" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+                <input type="number" id="sp-price" placeholder="Special Price (RM)" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="flex justify-end mt-4">
+                <button id="sp-confirm-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg">CONFIRM</button>
+            </div>
+            
+            <datalist id="customer-names-list"></datalist>
+            <datalist id="item-names-list"></datalist>
+
+            <div id="special-price-list" class="mt-6">
+                </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.appspot.com",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // --- DOM References ---
+        const customerTierListDiv = document.getElementById('customer-tier-list');
+        const spCustNameInput = document.getElementById('sp-cust-name');
+        const spItemNameInput = document.getElementById('sp-item-name');
+        const spPriceInput = document.getElementById('sp-price');
+        const spConfirmBtn = document.getElementById('sp-confirm-btn');
+        const specialPriceListDiv = document.getElementById('special-price-list');
+        const customerDatalist = document.getElementById('customer-names-list');
+        const itemDatalist = document.getElementById('item-names-list');
+        const notificationArea = document.getElementById('notification-area');
+        
+        let allCustomers = [];
+
+        function showNotification(message, type) {
+            notificationArea.innerHTML = `<div class="p-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${message}</div>`;
+            setTimeout(() => { notificationArea.innerHTML = ''; }, 4000);
+        }
+
+        async function loadData() {
+            try {
+                const [customersSnapshot, pricesDoc] = await Promise.all([
+                    db.collection('customers').orderBy('lorry').orderBy('name').get(),
+                    db.collection('config').doc('pricing').get()
+                ]);
+
+                allCustomers = customersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                displayCustomerTiers(allCustomers);
+                displaySpecialPrices(allCustomers);
+                populateDatalists(allCustomers, pricesDoc.data());
+
+            } catch (error) {
+                console.error("Error loading data:", error);
+                showNotification('Error loading page data. Ensure Firestore indexes are built.', 'error');
+            }
+        }
+        
+        function populateDatalists(customers, prices) {
+            customerDatalist.innerHTML = '';
+            customers.forEach(cust => {
+                customerDatalist.innerHTML += `<option value="${cust.displayName}"></option>`;
+            });
+
+            itemDatalist.innerHTML = '';
+            if (prices) {
+                if(prices.broiler_wholesale !== undefined) itemDatalist.innerHTML += `<option value="Wholesale"></option>`;
+                if(prices.broiler_msrp !== undefined) itemDatalist.innerHTML += `<option value="MSRP"></option>`;
+                if(prices.broiler_slices !== undefined) itemDatalist.innerHTML += `<option value="Slices"></option>`;
+                if (prices.parts) {
+                    Object.keys(prices.parts).forEach(partName => {
+                        itemDatalist.innerHTML += `<option value="${partName}"></option>`;
+                    });
+                }
+            }
+        }
+
+        function displayCustomerTiers(customers) {
+            customerTierListDiv.innerHTML = '';
+            const groupedByLorry = customers.reduce((acc, customer) => {
+                (acc[customer.lorry] = acc[customer.lorry] || []).push(customer);
+                return acc;
+            }, {});
+
+            const lorryOrder = ['JUQ 5168', 'JWP 9168', 'JXK 3168', 'JJJ 9528', 'None'];
+            lorryOrder.forEach(lorry => {
+                if (groupedByLorry[lorry]) {
+                    const groupContainer = document.createElement('div');
+                    groupContainer.innerHTML = `<h3 class="font-bold text-lg text-gray-700">${lorry}</h3>`;
+                    const listContainer = document.createElement('div');
+                    listContainer.className = 'bg-white rounded-lg shadow-sm overflow-hidden mt-2';
+                    
+                    groupedByLorry[lorry].forEach(customer => {
+                        const custDiv = document.createElement('div');
+                        // NEW COMPACT LAYOUT
+                        custDiv.className = 'flex justify-between items-center p-3 border-b border-gray-200';
+                        
+                        const priceTiers = ['Wholesale', 'MSRP', 'Slices', 'Cash buy'];
+                        const optionsHTML = priceTiers.map(tier => 
+                            `<option value="${tier}" ${customer.priceTier === tier ? 'selected' : ''}>${tier}</option>`
+                        ).join('');
+
+                        custDiv.innerHTML = `
+                            <div class="flex-grow">
+                                <p class="font-semibold text-gray-800">${customer.displayName}</p>
+                                <p class="text-[17px] text-gray-500">${customer.description || ''}</p>
+                            </div>
+                            <div class="flex-shrink-0 ml-4">
+                                <select data-cust-id="${customer.id}" class="tier-select w-full sm:w-auto border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                    ${optionsHTML}
+                                </select>
+                            </div>
+                        `;
+                        listContainer.appendChild(custDiv);
+                    });
+                    groupContainer.appendChild(listContainer);
+                    customerTierListDiv.appendChild(groupContainer);
+                }
+            });
+        }
+        
+        // CORRECTED LOGIC for displaying ONLY special prices
+        function displaySpecialPrices(customers) {
+            specialPriceListDiv.innerHTML = '<h3 class="text-lg font-bold text-gray-900 mt-6">Recorded Special Prices</h3>';
+            let hasSpecialPrices = false;
+            const listContainer = document.createElement('div');
+            listContainer.className = 'bg-white rounded-lg shadow-sm overflow-hidden mt-2';
+
+            customers.forEach(customer => {
+                if (customer.specialPrices && Object.keys(customer.specialPrices).length > 0) {
+                    hasSpecialPrices = true;
+                    Object.entries(customer.specialPrices).forEach(([itemName, price]) => {
+                        const spDiv = document.createElement('div');
+                        spDiv.className = 'flex justify-between items-center p-3 border-b border-gray-200';
+                        spDiv.innerHTML = `
+                            <div>
+                                <p class="font-semibold text-gray-800">${customer.displayName}</p>
+                                <p class="text-[17px] text-gray-500">${itemName} @ RM ${price.toFixed(2)}</p>
+                            </div>
+                            <button data-cust-id="${customer.id}" data-item-name="${itemName}" class="del-sp-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg">DEL</button>
+                        `;
+                        listContainer.appendChild(spDiv);
+                    });
+                }
+            });
+
+            if (!hasSpecialPrices) {
+                listContainer.innerHTML = '<p class="p-4 text-gray-500">No special prices have been set.</p>';
+            }
+            specialPriceListDiv.appendChild(listContainer);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        customerTierListDiv.addEventListener('change', async (e) => {
+            if (e.target.classList.contains('tier-select')) {
+                const customerId = e.target.dataset.custId;
+                const newTier = e.target.value;
+                try {
+                    await db.collection('customers').doc(customerId).update({ priceTier: newTier });
+                    showNotification('Price tier updated!', 'success');
+                    // No reload needed, as this section is self-contained.
+                } catch (error) {
+                    showNotification('Error updating price tier.', 'error');
+                }
+            }
+        });
+        
+        spConfirmBtn.addEventListener('click', async () => {
+            const custName = spCustNameInput.value;
+            const itemName = spItemNameInput.value;
+            const price = parseFloat(spPriceInput.value);
+
+            const customer = allCustomers.find(c => c.displayName === custName);
+            if (!customer) {
+                showNotification(`Customer "${custName}" not found.`, 'error');
+                return;
+            }
+            if (!itemName || isNaN(price)) {
+                showNotification('Please enter a valid item name and price.', 'error');
+                return;
+            }
+
+            try {
+                await db.collection('customers').doc(customer.id).set({
+                    specialPrices: { [itemName]: price }
+                }, { merge: true });
+                showNotification(`Special price for ${itemName} set for ${custName}.`, 'success');
+                spCustNameInput.value = '';
+                spItemNameInput.value = '';
+                spPriceInput.value = '';
+                loadData();
+            } catch (error) {
+                 showNotification('Error setting special price.', 'error');
+            }
+        });
+        
+        specialPriceListDiv.addEventListener('click', async (e) => {
+            const delButton = e.target.closest('.del-sp-btn');
+            if (delButton) {
+                const customerId = delButton.dataset.custId;
+                const itemName = delButton.dataset.itemName;
+
+                if (confirm(`Are you sure you want to remove the special price for "${itemName}"?`)) {
+                    try {
+                        await db.collection('customers').doc(customerId).update({
+                            [`specialPrices.${itemName}`]: firebase.firestore.FieldValue.delete()
+                        });
+                        showNotification('Special price removed.', 'success');
+                        loadData();
+                    } catch (error) {
+                        showNotification('Error removing special price.', 'error');
+                    }
+                }
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+		localStorage.removeItem('loginExpiry'); // Clear the session
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
