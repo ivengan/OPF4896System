@@ -178,7 +178,8 @@
         const db = firebase.firestore();
 
         // --- GEMINI API SETUP ---
-        const GEMINI_API_KEY = "AIzaSyDspXZfloL6mNmoojE9-p20kxCnuXBdCHE"; 
+        // We load the key from localStorage to avoid exposing it in public GitHub repositories.
+        let GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY') || ""; 
         
         let allCustomers = [];
         let allInventory = [];
@@ -225,13 +226,25 @@
                 console.error("AI Diagnostic Error:", e);
                 indicator.innerHTML = `❌ Connection Error: ${e.message}<br>Check API Key & Permissions.`;
                 indicator.className = "text-base font-mono p-2 bg-red-100 text-red-700 rounded mb-2";
+                
+                // If it's a 400-level error (like 403 or 400), prompt the user for a new key.
+                if (e.message.includes('403') || e.message.includes('400') || !GEMINI_API_KEY) {
+                    const newKey = prompt("API Key Error (403 Forbidden). Your key might have been revoked because it was exposed on GitHub.\n\nPlease enter a new valid Gemini API Key from Google AI Studio:");
+                    if (newKey) {
+                        localStorage.setItem('GEMINI_API_KEY', newKey.trim());
+                        GEMINI_API_KEY = newKey.trim();
+                        // Retry connection
+                        setTimeout(checkAPIStatus, 500);
+                    }
+                }
             }
         }
 
         async function processAIOrder(text) {
-            if (!availableModel) {
-                alert("AI service is not connected. Please check the status indicator.");
-                return;
+            if (!availableModel || !GEMINI_API_KEY) {
+                // Try to reconnect if model isn't set
+                await checkAPIStatus();
+                if (!availableModel) return;
             }
 
             const customerListStr = allCustomers.map(c => c.searchName).join(', ');
