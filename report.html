@@ -3,61 +3,577 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports - Multi-Function System</title>
+    <title>Reports Dashboard - Operations & Yield</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}b,strong{font-weight:bolder}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}button,input,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}img,video{max-width:100%;height:auto}[hidden]{display:none}.no-underline{text-decoration:none}.flex{display:flex}.min-h-\[160px\]{min-height:160px}.h-16{height:4rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.grid{display:grid}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.gap-8{gap:2rem}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.bg-white{background-color:#fff}.bg-gray-100{background-color:#f3f4f6}.bg-red-500{background-color:#ef4444}.hover\:bg-red-600:hover{background-color:#dc2626}.bg-lime-500{background-color:#84cc16}.hover\:bg-lime-600:hover{background-color:#65a30d}.bg-fuchsia-500{background-color:#d946ef}.hover\:bg-fuchsia-600:hover{background-color:#c026d3}.bg-amber-500{background-color:#f59e0b}.hover\:bg-amber-600:hover{background-color:#d97706}.bg-sky-500{background-color:#0ea5e9}.hover\:bg-sky-600:hover{background-color:#0284c7}.p-6{padding:1.5rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.text-white{color:#fff}.text-gray-800{color:#1f293d}.shadow-md{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06)}.transition{transition-property:background-color,border-color,color,fill,stroke,opacity,box-shadow,transform,filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.mx-auto{margin-left:auto;margin-right:auto}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus\:ring-offset-2:focus{--tw-ring-offset-width:2px}.focus\:ring-red-500:focus{--tw-ring-color:#ef4444}.dashboard-card{transition:transform .2s ease-in-out,box-shadow .2s ease-in-out}.dashboard-card:hover{transform:translateY(-5px);box-shadow:0 10px 15px -3px rgba(0,0,0,.1)}@media (min-width:640px){.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}}@media (min-width:1024px){.lg\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}}
-            .whitespace-nowrap { white-space: nowrap; }
-        .inline-flex { display: inline-flex; }
-        .min-h-16 { min-height: 4rem; }
-            .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Print Optimization */
+        @media print {
+            body { background: white !important; color: black !important; font-size: 12pt; }
+            .no-print { display: none !important; }
+            .print-break-inside { page-break-inside: avoid; }
+            .shadow-xl, .shadow-md, .shadow-sm { box-shadow: none !important; border: 1px solid #ddd !important; }
+            .bg-white { background-color: transparent !important; }
+            .bg-green-100, .bg-red-100, .bg-blue-100, .bg-yellow-100, .bg-emerald-50, .bg-sky-50, .bg-amber-50, .bg-red-50, .bg-gray-50, .bg-blue-50 { background-color: transparent !important; border: 1px solid #000 !important; }
+            .text-indigo-700, .text-blue-700, .text-green-700, .text-red-700, .text-yellow-700, .text-amber-700, .text-emerald-700, .text-sky-700 { color: black !important; }
+            .text-indigo-600, .text-blue-600, .text-green-600, .text-red-600, .text-yellow-600, .text-amber-600, .text-emerald-600, .text-sky-600 { color: black !important; }
+            .text-sky-500, .text-amber-500, .text-emerald-500, .text-red-500, .text-blue-500 { color: black !important; }
+            .border-indigo-200, .border-amber-200, .border-emerald-200, .border-sky-100, .border-red-100, .border-t-4 { border-color: black !important; }
+            .text-5xl { font-size: 24pt !important; }
+            h1, h2, h3, th, td { color: black !important; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+            th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+            th { border-bottom: 2px solid #000; }
+        }
     </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
-<script>
-    // Session Gatekeeper
-    const loginExpiry = localStorage.getItem('loginExpiry');
-    if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
-        localStorage.removeItem('loginExpiry');
-        window.location.href = 'index.html';
-    }
-</script>
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 antialiased">
+    
+    <script>
+        const loginExpiry = localStorage.getItem('loginExpiry');
+        if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
+            localStorage.removeItem('loginExpiry');
+            window.location.href = 'index.html';
+        }
+    </script>
 
-    <header class="bg-white shadow-md">
+    <!-- Header Navigation (Hidden on Print) -->
+    <header class="bg-indigo-700 shadow-md sticky top-0 z-20 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center min-h-16 py-2">
-                <h1 class="text-xl font-bold text-gray-900 tracking-tight">Reports</h1>
-                <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition">Logout</button>
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-4">
+                    <button onclick="window.location.href='dashboard2.html'" class="text-indigo-100 font-bold hover:text-white flex items-center transition">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        Back
+                    </button>
+                    <h1 class="text-xl font-bold text-white tracking-tight">Reports Dashboard</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="window.print()" class="bg-white text-indigo-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-100 focus:outline-none transition shadow-sm flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Print B&W
+                    </button>
+                </div>
             </div>
         </div>
     </header>
-    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            
-            <a href="#" class="dashboard-card no-underline bg-lime-500 hover:bg-lime-600 p-6 rounded-xl text-center flex items-center justify-center min-h-[160px]">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight">STAGE 1</h2>
-            </a>
 
-            <a href="#" class="dashboard-card no-underline bg-fuchsia-500 hover:bg-fuchsia-600 p-6 rounded-xl text-center flex items-center justify-center min-h-[160px]">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight">STAGE 2</h2>
-            </a>
-
-            <a href="#" class="dashboard-card no-underline bg-amber-500 hover:bg-amber-600 p-6 rounded-xl text-center flex items-center justify-center min-h-[160px]">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight">STOCK (Chiller)</h2>
-            </a>
-
-            <a href="#" class="dashboard-card no-underline bg-sky-500 hover:bg-sky-600 p-6 rounded-xl text-center flex items-center justify-center min-h-[160px]">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight">STOCK (Freezer)</h2>
-            </a>
-            
+    <main class="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-10">
+        
+        <!-- Document Title for Print -->
+        <div class="hidden print:block text-center mt-4 mb-8 border-b-2 border-black pb-4">
+            <h1 class="text-3xl font-extrabold uppercase tracking-widest text-black">Operations & Yield Dashboard</h1>
+            <p class="text-lg mt-2 text-black font-semibold" id="print-date">Generated on: </p>
+            <p class="text-sm font-bold mt-1 text-black">STRICTLY FOR MANAGEMENT REVIEW (WEIGHT & VOLUME ONLY)</p>
         </div>
+
+        <!-- CATEGORY 1: PRODUCTION & YIELD -->
+        <section class="space-y-6 print-break-inside">
+            <div class="flex items-center gap-3 mb-2 border-b-2 border-indigo-200 pb-2">
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 no-print">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-extrabold text-indigo-900 tracking-tight uppercase">Category 1: Production & Yield</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Daily Yield & Shrinkage Report -->
+                <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 print-break-inside flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-1">Daily Yield & Shrinkage Report (Today)</h3>
+                        <p class="text-sm text-gray-500 mb-4">Live Received vs Documented Processed Stock</p>
+                        
+                        <div class="flex items-end justify-between mb-2">
+                            <span class="text-gray-600 font-semibold">Total Stock In (All Processed):</span>
+                            <span class="text-xl font-bold font-mono" id="val-processed">0.00 kg</span>
+                        </div>
+                        <div class="flex items-end justify-between mb-4 border-b pb-4 border-dashed border-gray-200">
+                            <span class="text-gray-600 font-semibold">Total Dispatched (Today):</span>
+                            <span class="text-xl font-bold font-mono" id="val-dispatched">0.00 kg</span>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4 flex justify-between items-center border border-blue-100">
+                        <span class="font-bold text-blue-800">Net Movement delta:</span>
+                        <span class="text-2xl font-extrabold text-blue-700" id="val-movement">0.00%</span>
+                    </div>
+                </div>
+
+                <!-- Ayam Lama Alert -->
+                <div class="bg-white rounded-xl shadow-md p-6 border border-red-100 print-break-inside flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-red-600 text-white font-bold px-3 py-1 text-xs uppercase tracking-widest rounded-bl-lg no-print">Priority</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-red-700 mb-1">Ayam Lama (Aging Stock) Alert</h3>
+                        <p class="text-sm text-red-500 mb-4 font-semibold uppercase tracking-wide">Morning Action Required: FIFO Enforcement</p>
+                        <p class="text-[17px] text-gray-700">Total un-dispatched processed stock older than today remaining in chillers:</p>
+                        <div class="mt-4 flex items-baseline gap-2">
+                            <span class="text-5xl font-extrabold text-red-600 tracking-tighter" id="val-ayamlama">0.00</span>
+                            <span class="text-xl font-bold text-red-500">kg</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500 italic">Flagged strictly by processed_date < today.</div>
+                </div>
+            </div>
+
+            <!-- Physical Balance Snapshot -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 print-break-inside">
+                <div class="bg-gray-50 p-4 border-b border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800">End-of-Day Physical Balance Snapshot</h3>
+                    <p class="text-sm text-gray-500">Approximation: Total Cumulative Stock In minus Total Cumulative Dispatched KG</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-600 text-sm uppercase tracking-wider">
+                                <th class="p-3 font-semibold border-b border-gray-200">Category</th>
+                                <th class="p-3 font-semibold border-b border-gray-200 text-right">Estimated Physical Balance (KG)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl-balance" class="divide-y divide-gray-100 text-[17px] text-gray-800">
+                            <tr><td colspan="2" class="p-6 text-center text-gray-400">Loading metrics...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORY 2: DISPATCH & VOLUME -->
+        <section class="space-y-6 print-break-inside">
+            <div class="flex items-center gap-3 mb-2 border-b-2 border-amber-200 pb-2 mt-10">
+                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 no-print">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-extrabold text-amber-900 tracking-tight uppercase">Category 2: Dispatch & Volume</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Daily D/O Dispatch -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 print-break-inside">
+                    <div class="bg-amber-50 p-4 border-b border-amber-100 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-amber-900">Today's D/O Dispatch Subtotal</h3>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded shadow-sm no-print" id="dispatch-date">Today</span>
+                    </div>
+                    <ul id="list-do" class="divide-y divide-gray-100 p-2">
+                        <li class="p-4 text-center text-gray-400">Loading...</li>
+                    </ul>
+                    <div class="bg-gray-50 border-t p-4 flex justify-between items-center">
+                        <span class="font-bold text-gray-600 uppercase">Subtotal Today:</span>
+                        <span class="text-xl font-extrabold text-amber-600" id="val-do-total">0.00 kg</span>
+                    </div>
+                </div>
+
+                <!-- Volume Trends -->
+                <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 print-break-inside">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Global Volume Trends (All-Time)</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-semibold text-gray-600">Whole Broilers Movement</span>
+                                <span class="font-bold font-mono text-gray-800" id="trend-broiler">0 kg</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 no-print">
+                                <div class="bg-amber-500 h-2 rounded-full" id="bar-broiler" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-semibold text-gray-600">Specific Parts Movement</span>
+                                <span class="font-bold font-mono text-gray-800" id="trend-parts">0 kg</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 no-print">
+                                <div class="bg-sky-500 h-2 rounded-full" id="bar-parts" style="width: 0%"></div>
+                            </div>
+                        </div>
+                         <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-semibold text-gray-600">Slices Movement</span>
+                                <span class="font-bold font-mono text-gray-800" id="trend-slices">0 kg</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 no-print">
+                                <div class="bg-emerald-500 h-2 rounded-full" id="bar-slices" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORY 3: MARKETING & INTELLIGENCE -->
+        <section class="space-y-6 print-break-inside">
+            <div class="flex items-center gap-3 mb-2 border-b-2 border-emerald-200 pb-2 mt-10">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 no-print">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-extrabold text-emerald-900 tracking-tight uppercase">Category 3: Market Intelligence</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- VIP List -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-emerald-100 print-break-inside lg:col-span-1 border-t-4 border-t-emerald-500">
+                    <div class="bg-emerald-50 p-4 border-b border-emerald-100">
+                        <h3 class="text-lg font-bold text-emerald-900">B2B Volume Tiering (VIP)</h3>
+                        <p class="text-xs text-emerald-700">Top customers ranked by total kg (All-Time)</p>
+                    </div>
+                    <ul id="list-vip" class="divide-y divide-gray-100 max-h-80 overflow-y-auto">
+                        <li class="p-4 text-center text-gray-400 text-sm">Processing rankings...</li>
+                    </ul>
+                </div>
+
+                <!-- Parts Forecasting -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-sky-100 print-break-inside lg:col-span-1 border-t-4 border-t-sky-500">
+                    <div class="bg-sky-50 p-4 border-b border-sky-100">
+                        <h3 class="text-lg font-bold text-sky-900">Specific Part Demand</h3>
+                        <p class="text-xs text-sky-700">Fastest moving parts in kg (All-Time)</p>
+                    </div>
+                    <ul id="list-parts-demand" class="divide-y divide-gray-100 max-h-80 overflow-y-auto">
+                        <li class="p-4 text-center text-gray-400 text-sm">Analyzing sales...</li>
+                    </ul>
+                </div>
+
+                <!-- Drop Off Call List -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-red-100 print-break-inside lg:col-span-1 border-t-4 border-t-red-500">
+                    <div class="bg-red-50 p-4 border-b border-red-100 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-red-900">The "Drop-Off" List</h3>
+                            <p class="text-xs text-red-700">Zero orders in last 14 days</p>
+                        </div>
+                        <svg class="w-6 h-6 text-red-500 animate-pulse no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <ul id="list-dropoff" class="divide-y divide-gray-100 max-h-80 overflow-y-auto">
+                        <li class="p-4 text-center text-gray-400 text-sm">Scanning customers...</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-400 text-sm border-t border-gray-200 pt-6 no-print mb-8">
+            Multi-Function Business System &bull; <span class="font-bold">Ayam Lama Enforcement Active</span>
+        </footer>
     </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <script>
-        document.getElementById('logout-btn').addEventListener('click', () => {
-		localStorage.removeItem('loginExpiry'); // Clear the session
-            window.location.href = 'index.html';
-        });
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.appspot.com",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Utilities
+        const now = new Date();
+        now.setHours(0,0,0,0);
+        const twoWeeksAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
+        
+        document.getElementById('print-date').innerText += new Date().toLocaleString();
+        document.getElementById('dispatch-date').innerText = new Date().toLocaleDateString();
+
+        async function generateDashboard() {
+            try {
+                // Fetch All Core Data Simultaneously
+                const [stockSnap, ordersSnap, customersSnap] = await Promise.all([
+                    db.collection('stock_entries').get(),
+                    db.collection('orders').get(),
+                    db.collection('customers').get() 
+                ]);
+
+                // --- 1. PROCESS STOCK ENTRIES ---
+                let totalStockAllTime = 0;
+                let todayStockIn = 0;
+                let unDispatchedOlderThanTodayStock = 0; 
+                
+                let balanceMap = {
+                    'Whole Broiler (H/P, Kopek)': 0,
+                    'Slices': 0,
+                    'Parts': 0,
+                    'Waste': 0,
+                    'Others': 0
+                };
+
+                stockSnap.docs.forEach(doc => {
+                    const data = doc.data();
+                    const weight = parseFloat(data.netWeight) || 0;
+                    if(weight <= 0) return;
+
+                    let d = data.timestamp ? data.timestamp.toDate() : new Date();
+                    d.setHours(0,0,0,0);
+
+                    totalStockAllTime += weight;
+                    if (d.getTime() === now.getTime()) {
+                        todayStockIn += weight;
+                    } else if (d.getTime() < now.getTime()) {
+                        unDispatchedOlderThanTodayStock += weight; // accumulate all past stock
+                    }
+
+                    // Categorize for physical balance
+                    let cat = 'Others';
+                    if (data.category === 'Broiler' || (data.categoryDetails && (data.categoryDetails.type === 'H/P' || data.categoryDetails.type === 'Kopek'))) {
+                        cat = 'Whole Broiler (H/P, Kopek)';
+                    } else if (data.category === 'Slices' || (data.categoryDetails && data.categoryDetails.type === 'Slices')) {
+                        cat = 'Slices';
+                    } else if (data.category === 'Parts') {
+                        cat = 'Parts';
+                    } else if (data.category === 'Waste') {
+                        cat = 'Waste';
+                    }
+
+                    balanceMap[cat] += weight;
+                });
+
+                // --- 2. PROCESS ORDERS ---
+                let todayDispatched = 0;
+                let ayamLamaDispatchedPast = 0; // Past dispatches marked as Ayam Lama
+                let ayamLamaDispatchedToday = 0; // Today dispatches marked as Ayam Lama
+
+                let doSummary = {
+                    'Wholesale Broilers': 0,
+                    'Broiler Slices': 0,
+                    'Specific Cut Parts': 0
+                };
+                
+                let trendVolumes = { broiler: 0, parts: 0, slices: 0 };
+                let partsDemandMap = {};
+                let customerVolumes = {};
+                let customerLastOrder = {};
+
+                // Initialize tracked customers
+                customersSnap.docs.forEach(doc => {
+                    customerVolumes[doc.data().displayName] = 0;
+                    customerLastOrder[doc.data().displayName] = 0; // 0 timestamp = never
+                });
+
+                ordersSnap.docs.forEach(doc => {
+                    const o = doc.data();
+                    const isCompleted = o.status === 'completed';
+                    const custName = o.customerName || 'Unknown';
+                    
+                    let orderDate = o.timestamp ? o.timestamp.toDate() : new Date();
+                    orderDate.setHours(0,0,0,0);
+                    
+                    // Track drop off (last order date)
+                    if (orderDate.getTime() > (customerLastOrder[custName] || 0)) {
+                        customerLastOrder[custName] = orderDate.getTime();
+                    }
+
+                    // Iterate broilers
+                    if (o.broilers && Array.isArray(o.broilers)) {
+                        o.broilers.forEach(b => {
+                            if (b.history && Array.isArray(b.history)) {
+                                b.history.forEach(h => {
+                                    if (h.qty > 0) { // Positive qty means added to dispatch
+                                        let hWeight = parseFloat(h.net) || parseFloat(h.gross) || 0;
+                                        
+                                        // VIP Tiering
+                                        if(!customerVolumes[custName]) customerVolumes[custName] = 0;
+                                        if(hWeight > 0) customerVolumes[custName] += hWeight;
+
+                                        // Trend Volumes
+                                        let itemType = (b.description || '').toLowerCase();
+                                        if (itemType.includes('slice')) trendVolumes.slices += hWeight;
+                                        else trendVolumes.broiler += hWeight;
+
+                                        // Balance deduction
+                                        if (itemType.includes('slice')) balanceMap['Slices'] -= hWeight;
+                                        else balanceMap['Whole Broiler (H/P, Kopek)'] -= hWeight;
+
+                                        // Today vs Past logic
+                                        let hDate = orderDate; 
+                                        if (hDate.getTime() === now.getTime()) {
+                                            todayDispatched += hWeight;
+                                            
+                                            // DO Summary categorization
+                                            if (itemType.includes('slice')) doSummary['Broiler Slices'] += hWeight;
+                                            else doSummary['Wholesale Broilers'] += hWeight;
+                                            
+                                            if (h.ayamLama) ayamLamaDispatchedToday += hWeight;
+                                        } 
+                                        
+                                        // Deduct from the "Old Stock" pool if it was dispatched earlier AND was ayamLama
+                                        // OR if the dispatch itself happened BEFORE today
+                                        if (hDate.getTime() < now.getTime()) {
+                                            ayamLamaDispatchedPast += hWeight; // Past dispatches reduce the old stock amount
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    // Iterate Parts
+                    if (o.parts && Array.isArray(o.parts)) {
+                         o.parts.forEach(p => {
+                            let pWeight = parseFloat(p.totalWeight) || (parseFloat(p.dispatchedQty)*0); // parts logic
+                            if (pWeight > 0) {
+                                // VIP Tiering
+                                if(!customerVolumes[custName]) customerVolumes[custName] = 0;
+                                customerVolumes[custName] += pWeight;
+
+                                trendVolumes.parts += pWeight;
+                                balanceMap['Parts'] -= pWeight;
+
+                                if (orderDate.getTime() === now.getTime()) {
+                                    todayDispatched += pWeight;
+                                    doSummary['Specific Cut Parts'] += pWeight;
+                                } else if (orderDate.getTime() < now.getTime()) {
+                                    ayamLamaDispatchedPast += pWeight; 
+                                }
+
+                                let partNameStr = p.name || 'Unknown Part';
+                                if (!partsDemandMap[partNameStr]) partsDemandMap[partNameStr] = 0;
+                                partsDemandMap[partNameStr] += pWeight;
+                            }
+                         });
+                    }
+                });
+
+
+                // --- 3. DOM INJECTION ---
+                
+                // CATEGORY 1: YIELD & SHRINKAGE
+                document.getElementById('val-processed').innerHTML = `${todayStockIn.toFixed(2)} <span class="text-xs">kg</span>`;
+                document.getElementById('val-dispatched').innerHTML = `${todayDispatched.toFixed(2)} <span class="text-xs">kg</span>`;
+                
+                // Net delta movement (This is a simplified shrinkage ratio for the day)
+                let mPct = todayStockIn > 0 ? ((todayDispatched / todayStockIn) * 100).toFixed(1) : 0;
+                document.getElementById('val-movement').innerText = `${mPct}%`;
+                if (todayDispatched > todayStockIn && todayStockIn > 0) {
+                     document.getElementById('val-movement').classList.replace('text-blue-700', 'text-green-600');
+                     document.getElementById('val-movement').innerHTML += ' <span class="text-xs font-bold text-gray-500 block text-right mt-1 no-print">Yield +</span>';
+                }
+
+                // CATEGORY 1: AYAM LAMA ALERT
+                // Logic: All stock added BEFORE today - ALL completely dispatched stock BEFORE today = Remaining old stock
+                // Then subtract what we dispatched TODAY natively marked as ayam lama.
+                // NOTE: This represents all physical kg still in the chiller from prior days.
+                let remainingAyamLama = unDispatchedOlderThanTodayStock - ayamLamaDispatchedPast - ayamLamaDispatchedToday;
+                if (remainingAyamLama < 0) remainingAyamLama = 0; // Failsafe
+                document.getElementById('val-ayamlama').innerText = remainingAyamLama.toFixed(2);
+
+                // CATEGORY 1: PHYSICAL BALANCE TABLE
+                let tblBalanceHtml = '';
+                for (let category in balanceMap) {
+                    let weightClass = balanceMap[category] < 0 ? 'text-red-500 font-bold' : 'font-semibold';
+                    tblBalanceHtml += `
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="p-3 border-b border-gray-100 font-medium">${category}</td>
+                            <td class="p-3 border-b border-gray-100 text-right ${weightClass} font-mono">${balanceMap[category].toFixed(2)} kg</td>
+                        </tr>
+                    `;
+                }
+                document.getElementById('tbl-balance').innerHTML = tblBalanceHtml;
+
+                // CATEGORY 2: DAILY DISPATCH SUMMARY
+                let totalDoToday = 0;
+                let listDoHtml = '';
+                for (let type in doSummary) {
+                    if (doSummary[type] > 0) {
+                        totalDoToday += doSummary[type];
+                        listDoHtml += `
+                            <li class="p-3 flex justify-between items-center bg-white border border-amber-50 rounded mb-2">
+                                <span class="font-medium text-gray-700">${type}</span>
+                                <span class="font-bold font-mono text-amber-700">${doSummary[type].toFixed(2)} kg</span>
+                            </li>
+                        `;
+                    }
+                }
+                if (listDoHtml === '') listDoHtml = '<li class="p-4 text-center text-gray-400 italic">No dispatch data recorded for today yet.</li>';
+                document.getElementById('list-do').innerHTML = listDoHtml;
+                document.getElementById('val-do-total').innerText = `${totalDoToday.toFixed(2)} kg`;
+
+                // CATEGORY 2: VOLUME TRENDS BARS
+                let globalTotalVolume = trendVolumes.broiler + trendVolumes.parts + trendVolumes.slices;
+                if (globalTotalVolume > 0) {
+                    document.getElementById('trend-broiler').innerText = `${trendVolumes.broiler.toFixed(0)} kg`;
+                    document.getElementById('bar-broiler').style.width = `${(trendVolumes.broiler/globalTotalVolume)*100}%`;
+                    
+                    document.getElementById('trend-parts').innerText = `${trendVolumes.parts.toFixed(0)} kg`;
+                    document.getElementById('bar-parts').style.width = `${(trendVolumes.parts/globalTotalVolume)*100}%`;
+                    
+                    document.getElementById('trend-slices').innerText = `${trendVolumes.slices.toFixed(0)} kg`;
+                    document.getElementById('bar-slices').style.width = `${(trendVolumes.slices/globalTotalVolume)*100}%`;
+                }
+
+                // CATEGORY 3: VIP TIERING
+                let sortedVips = Object.keys(customerVolumes).map(k => ({ name: k, vol: customerVolumes[k] })).sort((a,b) => b.vol - a.vol).filter(i => i.vol > 0);
+                let vipHtml = '';
+                sortedVips.slice(0, 10).forEach((vip, idx) => {
+                    let badgeColor = idx === 0 ? 'bg-yellow-400 text-yellow-900 shadow-md' : (idx === 1 ? 'bg-gray-300 text-gray-800' : (idx === 2 ? 'bg-amber-600 text-white' : 'bg-emerald-100 text-emerald-800'));
+                    vipHtml += `
+                        <li class="p-3 flex justify-between items-center hover:bg-emerald-50 transition border border-transparent border-b-gray-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 rounded-full flex justify-center items-center font-bold text-xs ${badgeColor}">${idx+1}</div>
+                                <span class="font-bold text-gray-800">${vip.name}</span>
+                            </div>
+                            <span class="font-mono font-bold text-emerald-700">${vip.vol.toFixed(1)} kg</span>
+                        </li>
+                    `;
+                });
+                document.getElementById('list-vip').innerHTML = vipHtml || '<li class="p-4 text-center text-gray-400">No data available</li>';
+
+                // CATEGORY 3: SPECIFIC PART DEMAND
+                let sortedParts = Object.keys(partsDemandMap).map(k => ({ name: k, vol: partsDemandMap[k] })).sort((a,b) => b.vol - a.vol).filter(i => i.vol > 0);
+                let partsHtml = '';
+                sortedParts.slice(0, 10).forEach((p, idx) => {
+                    partsHtml += `
+                        <li class="p-3 flex justify-between items-center hover:bg-sky-50 transition border border-transparent border-b-gray-100">
+                            <span class="font-semibold text-gray-700"><span class="text-sky-500 mr-2 font-bold">#${idx+1}</span> ${p.name}</span>
+                            <span class="font-mono font-bold text-sky-700">${p.vol.toFixed(1)} kg</span>
+                        </li>
+                    `;
+                });
+                document.getElementById('list-parts-demand').innerHTML = partsHtml || '<li class="p-4 text-center text-gray-400">No parts data recorded.</li>';
+
+                // CATEGORY 3: DROP OFF CALL LIST (Zero orders in 14 days)
+                let dropoffHtml = '';
+                let dropoffCount = 0;
+                for (let cName in customerLastOrder) {
+                    // Exclude empty test customers
+                    if (!cName || cName.trim() === '' || cName.toLowerCase() === 'unknown') continue;
+                    
+                    let lastTime = customerLastOrder[cName];
+                    if (lastTime < twoWeeksAgo.getTime()) {
+                        dropoffCount++;
+                        let daysAgo = "Never";
+                        if (lastTime > 0) {
+                            daysAgo = Math.floor((now.getTime() - lastTime) / (1000 * 3600 * 24)) + " days ago";
+                        }
+                        dropoffHtml += `
+                            <li class="p-3 flex justify-between items-center hover:bg-red-50 transition border border-transparent border-b-gray-100 hover:border-red-100">
+                                <span class="font-bold text-gray-800 block">${cName}</span>
+                                <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded border border-red-200 no-print">${daysAgo}</span>
+                                <span class="hidden print:inline text-red-700 font-bold">${daysAgo}</span>
+                            </li>
+                        `;
+                    }
+                }
+                document.getElementById('list-dropoff').innerHTML = dropoffHtml || '<li class="p-4 text-center text-green-600 font-bold">Excellent! No missing customers in last 14 days.</li>';
+
+            } catch (error) {
+                console.error("Dashboard Generation Error", error);
+                alert("Failed to load operations dashboard. Check console.");
+            }
+        }
+
+        // Boot
+        generateDashboard();
+
     </script>
 </body>
 </html>
