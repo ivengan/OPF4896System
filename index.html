@@ -266,7 +266,7 @@
                 // DEFAULT ADMIN BYPASS check for testing
                 if (currentPhone === DEFAULT_ADMIN.phone) {
                     currentDocId = 'fixed-admin'; 
-                    openModal('modal-login-choice');
+                    proceedWithLoginFlow();
                     return;
                 }
 
@@ -285,7 +285,7 @@
                         handleUnregistered();
                     } else {
                         currentDocId = doc.id;
-                        openModal('modal-login-choice');
+                        proceedWithLoginFlow();
                     }
                 }
             } catch (error) {
@@ -296,6 +296,16 @@
                 btn.disabled = false;
             }
         });
+
+        function proceedWithLoginFlow() {
+            if (localStorage.getItem('bioEnabled') === 'true' && window.PasswordCredential) {
+                executeBiometricLogin();
+            } else {
+                document.getElementById('login-password-input').value = ''; 
+                openModal('modal-enter-password');
+                setTimeout(() => document.getElementById('login-password-input').focus(), 100);
+            }
+        }
 
         function handleUnregistered() {
             if (isLocal) {
@@ -313,13 +323,16 @@
         }
 
         // --- 5. LOGIN METHOD HANDLERS ---
-        document.getElementById('btn-use-biometric').addEventListener('click', async () => {
+        async function executeBiometricLogin() {
             if (!window.PasswordCredential) return alert("Biometrics not supported on this device/browser.");
             
             try {
                 const cred = await navigator.credentials.get({ password: true, mediation: 'required' });
                 if (cred) {
-                    if (cred.id !== currentPhone) return alert("Phone number mismatch. Please enter your phone number first.");
+                    if (cred.id !== currentPhone) {
+                        alert("Phone number mismatch. Please enter your phone number first.");
+                        return proceedWithPasswordFallback();
+                    }
                     
                     let dbPassword;
                     if (currentDocId === 'fixed-admin') {
@@ -335,19 +348,30 @@
                         performLogin();
                     } else {
                         alert("Saved biometric credentials valid, but password changed. Please login via password.");
+                        proceedWithPasswordFallback();
                     }
+                } else {
+                    // User cancelled the OS prompt
+                    proceedWithPasswordFallback();
                 }
             } catch (e) {
                 console.error("Bio Error", e);
                 alert("Biometric validation failed. Please use your password.");
+                proceedWithPasswordFallback();
             }
-        });
+        }
 
-        document.getElementById('btn-use-password').addEventListener('click', () => {
-            closeModal('modal-login-choice');
+        function proceedWithPasswordFallback() {
             document.getElementById('login-password-input').value = ''; 
             openModal('modal-enter-password');
             setTimeout(() => document.getElementById('login-password-input').focus(), 100);
+        }
+
+        document.getElementById('btn-use-biometric').addEventListener('click', executeBiometricLogin);
+
+        document.getElementById('btn-use-password').addEventListener('click', () => {
+            closeModal('modal-login-choice');
+            proceedWithPasswordFallback();
         });
 
         document.getElementById('btn-submit-password').addEventListener('click', async () => {
