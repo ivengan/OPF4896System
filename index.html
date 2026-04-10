@@ -303,7 +303,7 @@
             if (!window.PasswordCredential) return alert("Biometrics not supported on this device/browser.");
             
             try {
-                const cred = await navigator.credentials.get({ password: true });
+                const cred = await navigator.credentials.get({ password: true, mediation: 'required' });
                 if (cred) {
                     if (cred.id !== currentPhone) return alert("Phone number mismatch. Please enter your phone number first.");
                     
