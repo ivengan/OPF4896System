@@ -138,14 +138,15 @@
             sortedPartNames.forEach((partName, index) => {
                 const price = partsMap[partName];
                 const partDiv = document.createElement('div');
-                partDiv.className = `flex items-center justify-between p-3 rounded-lg ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`;
+                partDiv.className = `flex items-center justify-between p-3 rounded-lg mb-2 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border border-gray-100 shadow-sm`;
                 partDiv.innerHTML = `
-                    <label class="text-lg font-semibold text-gray-700">${partName}</label>
-                    <div class="flex items-center gap-2">
-                        <span class="text-lg font-semibold text-gray-500">RM</span>
-                        <input type="number" step="0.10" value="${price.toFixed(2)}" data-part-name="${partName}" class="part-price-input w-32 border border-gray-300 rounded-lg p-2 text-center text-lg focus:ring-2 focus:ring-blue-500">
-                        <button data-part-name-save="${partName}" class="save-part-btn bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg flex items-center gap-2 font-semibold">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <div class="flex-1 min-w-0 pr-2">
+                        <label class="block text-[14px] font-bold text-gray-800 leading-tight break-words uppercase tracking-wide">${partName}</label>
+                    </div>
+                    <div class="flex items-center justify-end gap-2 shrink-0">
+                        <span class="text-[13px] font-bold text-gray-400 select-none">RM</span>
+                        <input type="number" step="0.10" value="${price.toFixed(2)}" data-part-name="${partName}" class="part-price-input w-20 sm:w-24 border border-gray-300 rounded-lg py-1.5 px-1 text-center text-[15px] font-mono font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                        <button data-part-name-save="${partName}" class="save-part-btn bg-green-500 hover:bg-green-600 text-white font-bold text-[12px] px-3 py-2 rounded-lg shadow transition active:scale-95 whitespace-nowrap">
                             CONFIRM
                         </button>
                     </div>
