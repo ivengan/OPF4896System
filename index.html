@@ -204,6 +204,7 @@
         // --- 2. STATE & HELPERS ---
         let currentPhone = '';
         let currentDocId = null;
+        let currentPasswordForBio = ''; // For prompted bio enablement
         const DEFAULT_ADMIN = { phone: '0176405645', pass: 'admin123' };
         
         const notification = document.getElementById('main-notification');
@@ -299,19 +300,22 @@
 
         // --- 5. LOGIN METHOD HANDLERS ---
         document.getElementById('btn-use-biometric').addEventListener('click', async () => {
-             // Bypass for default admin if docId is fixed-admin
-            if (currentDocId === 'fixed-admin') return alert("Biometric login not available for Master Account. Please use password.");
-
             if (!window.PasswordCredential) return alert("Biometrics not supported on this device/browser.");
             
             try {
                 const cred = await navigator.credentials.get({ password: true });
                 if (cred) {
-                    if (cred.id !== currentPhone) return alert("Phone number mismatch.");
+                    if (cred.id !== currentPhone) return alert("Phone number mismatch. Please enter your phone number first.");
                     
-                    const doc = await db.collection('staff').doc(currentDocId).get();
-                    const data = doc.data();
-                    const dbPassword = data.password || data.Password || null;
+                    let dbPassword;
+                    if (currentDocId === 'fixed-admin') {
+                        dbPassword = DEFAULT_ADMIN.pass;
+                    } else {
+                        const doc = await db.collection('staff').doc(currentDocId).get();
+                        if (!doc.exists) return alert("Account not found.");
+                        const data = doc.data();
+                        dbPassword = data.password || data.Password || null;
+                    }
 
                     if (dbPassword === cred.password) {
                         performLogin();
@@ -350,10 +354,19 @@
                             phoneNumber: currentPhone,
                             password: pwd,
                             role: 'admin',
-                            isAdminCreated: true
+                            isAdminCreated: true,
+                            registeredAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
                     }
-                    performLogin();
+                    
+                    // Check if biometric should be enabled
+                    if (window.PasswordCredential) {
+                        currentPasswordForBio = pwd; // Temporary store for bio prompt
+                        closeModal('modal-enter-password');
+                        openModal('modal-enable-bio');
+                    } else {
+                        performLogin();
+                    }
                     return;
                 }
 
@@ -365,7 +378,14 @@
                     const dbPassword = data.password || data.Password || null;
 
                     if (dbPassword === pwd) {
-                        performLogin();
+                        // Check if biometric should be enabled for regular staff too if not already
+                        if (window.PasswordCredential) {
+                            currentPasswordForBio = pwd;
+                            closeModal('modal-enter-password');
+                            openModal('modal-enable-bio');
+                        } else {
+                            performLogin();
+                        }
                     } else {
                         alert("Incorrect Password");
                     }
@@ -397,25 +417,27 @@
         document.getElementById('btn-bio-yes').onclick = async () => { await finalizeRegistration(true); };
 
         async function finalizeRegistration(enableBio) {
-            const pass = document.getElementById('reg-password').value.trim();
+            const pass = currentPasswordForBio || document.getElementById('reg-password').value.trim();
             const bNo = document.getElementById('btn-bio-no');
             const bYes = document.getElementById('btn-bio-yes');
             bNo.disabled = true; bYes.disabled = true;
 
             try {
-                const check = await db.collection('staff').where('phoneNumber', '==', currentPhone).get();
-                if (check.empty) {
-                    await db.collection('staff').add({
-                        phoneNumber: currentPhone,
-                        password: pass,
-                        isAdminCreated: false,
-                        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                } else {
-                    await db.collection('staff').doc(check.docs[0].id).update({
-                        password: pass,
-                        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                if (currentPhone !== DEFAULT_ADMIN.phone) {
+                    const check = await db.collection('staff').where('phoneNumber', '==', currentPhone).get();
+                    if (check.empty) {
+                        await db.collection('staff').add({
+                            phoneNumber: currentPhone,
+                            password: pass,
+                            isAdminCreated: false,
+                            registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    } else {
+                        await db.collection('staff').doc(check.docs[0].id).update({
+                            password: pass,
+                            registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
                 }
                 
                 if (enableBio && window.PasswordCredential) {
