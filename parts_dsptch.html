@@ -47,9 +47,8 @@
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">PARTS DISPATCH (FREEZE)</h1>
                  </div>
-                 <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2">
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-800 transition shadow-md">DEL ALL</button>
-                     <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition">Logout</button>
                  </div>
              </div>
              <div class="flex justify-end pb-2">
@@ -900,9 +899,6 @@
         
         document.getElementById('cancel-verify-btn').addEventListener('click', () => { verifyModal.classList.add('hidden'); isDeletingAll = false; });
         
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('loginExpiry'); window.location.href = 'index.html';
-        });
         document.addEventListener('DOMContentLoaded', initialize);
 
     </script>

@@ -38,7 +38,6 @@
                  </div>
                  <div class="flex items-center gap-2">
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-800 focus:outline-none transition shadow-md">DEL ALL</button>
-                     <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none transition">Logout</button>
                  </div>
              </div>
          </div>
@@ -408,11 +407,6 @@
                     alert("Failed to delete records.");
                 }
             }
-        });
-
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('loginExpiry');
-            window.location.href = 'index.html';
         });
 
         document.addEventListener('DOMContentLoaded', () => {
