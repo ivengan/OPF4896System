@@ -49,9 +49,6 @@
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">Freezer Stock</h1>
                  </div>
-                 <div class="flex items-center gap-2">
-                     <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none transition shadow-sm">Logout</button>
-                 </div>
              </div>
          </div>
     </header>
@@ -261,11 +258,6 @@
         db.collection('orders').where('productType', '==', 'parts').onSnapshot(snap => {
             rawOrderData = snap.docs.map(d => d.data());
             processInventory();
-        });
-
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('loginExpiry');
-            window.location.href = 'index.html';
         });
     </script>
 </body>

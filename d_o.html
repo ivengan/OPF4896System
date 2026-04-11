@@ -69,7 +69,6 @@
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">DELIVERY ORDERS</h1>
                  </div>
-                 <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition shadow-sm">Logout</button>
              </div>
          </div>
     </header>
@@ -550,11 +549,6 @@
                 btn.textContent = "Depart & Process";
                 pendingPrintTrip = null;
             }
-        });
-
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('loginExpiry');
-            window.location.href = 'index.html';
         });
 
         document.addEventListener('DOMContentLoaded', initialize);
