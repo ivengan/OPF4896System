@@ -371,6 +371,7 @@
         const sortSelect = document.getElementById('sort-select');
         const dispatchModal = document.getElementById('dispatch-modal');
         const editModal = document.getElementById('edit-modal');
+        const verifyModal = document.getElementById('verify-modal');
         const notificationArea = document.getElementById('notification-area');
         
         function showNotification(message, type) {
@@ -832,16 +833,30 @@
         }
 
         function initiateDelete(item) {
-            if (!confirm("⚠️ Delete this order item?")) return;
+            itemToDelete = item;
+            isDeletingAll = false;
+            document.getElementById('verify-phone').value = '';
+            document.getElementById('verify-password').value = '';
+            verifyModal.classList.remove('hidden');
+        }
+
+        async function performDelete(item) {
             try {
                 const orderRef = db.collection('orders').doc(item.orderId);
-                orderRef.get().then(doc => {
-                    const parts = doc.data().parts.filter((_, i) => i !== item.partIndex);
-                    if (parts.length === 0 && (!doc.data().broilers || doc.data().broilers.length === 0)) orderRef.delete(); 
-                    else orderRef.update({ parts: parts });
-                });
+                const doc = await orderRef.get();
+                if (!doc.exists) return;
+                const data = doc.data();
+                const updatedParts = data.parts.filter((_, i) => i !== item.partIndex);
+                if (updatedParts.length === 0 && (!data.broilers || data.broilers.length === 0)) {
+                    await orderRef.delete();
+                } else {
+                    await orderRef.update({ parts: updatedParts });
+                }
                 showNotification("Item deleted.", "success");
-            } catch (e) { alert("Delete failed."); }
+            } catch (e) { 
+                console.error(e);
+                showNotification("Delete failed.", "error"); 
+            }
         }
 
         document.getElementById('modal-submit-btn').addEventListener('click', async () => {
@@ -1004,12 +1019,20 @@
                     .where('productType', '==', 'parts')
                     .get();
 
-                if (snapshot.empty) { showNotification("No orders to delete.", "error"); return; }
+                if (snapshot.empty) { 
+                    showNotification("No orders to delete.", "error"); 
+                    return; 
+                }
 
                 const batch = db.batch();
-                snapshot.docs.forEach(doc => { batch.delete(doc.ref); });
+                let count = 0;
+                snapshot.docs.forEach(doc => { 
+                    batch.delete(doc.ref); 
+                    count++;
+                });
+                
                 await batch.commit();
-                showNotification("All pending parts orders have been deleted.", "success");
+                showNotification(`${count} orders deleted.`, "success");
             } catch (e) {
                 console.error(e);
                 showNotification("Error performing batch delete.", "error");
