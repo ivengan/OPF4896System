@@ -133,14 +133,14 @@
         .w-max { width: max-content; }
         .hidden { display: none; }
         .opacity-50 { opacity: 0.5; pointer-events: none; }
-        .customer-card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1rem; overflow: hidden; border: 1px solid #e5e7eb; }
-        .customer-header { padding: 1rem; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
-        .part-row { padding: 0.75rem 1rem; border-bottom: 1px solid #f3f4f6; display: flex; flex-direction: column; transition: background-color 0.15s; }
+        .customer-card { background: white; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 0.5rem; overflow: hidden; border: 1px solid #e5e7eb; }
+        .customer-header { padding: 0.5rem 0.75rem; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .part-row { padding: 0.5rem 0.75rem; border-bottom: 1px solid #f3f4f6; display: flex; flex-direction: column; transition: background-color 0.15s; }
         .part-row:last-child { border-bottom: none; }
         .part-row:hover { background-color: #f8fafc; }
         .part-main { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .part-actions { display: flex; gap: 0.5rem; justify-content: flex-end; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #f3f4f6; }
-        .expand-btn { width: 100%; text-align: center; padding: 0.75rem; background-color: #f9fafb; color: #4b5563; font-size: 0.875rem; font-weight: 500; cursor: pointer; border-top: 1px solid #e5e7eb; transition: background 0.2s; }
+        .part-actions { display: flex; gap: 0.375rem; justify-content: flex-end; width: 100%; margin-top: 0.375rem; padding-top: 0.375rem; border-top: 1px solid #f3f4f6; }
+        .expand-btn { width: 100%; text-align: center; padding: 0.4rem; background-color: #f9fafb; color: #4b5563; font-size: 0.75rem; font-weight: 500; cursor: pointer; border-top: 1px solid #e5e7eb; transition: background 0.2s; }
         .expand-btn:hover { background-color: #f3f4f6; color: #111827; }
         .part-row.hidden-row { display: none; }
         .bg-yellow-500 { background-color: #eab308; }
@@ -153,9 +153,10 @@
             .whitespace-nowrap { white-space: nowrap; }
         .inline-flex { display: inline-flex; }
         .min-h-16 { min-height: 4rem; }
+        .min-h-12 { min-height: 3rem; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
+<body class="bg-gray-100 font-sans text-gray-800 text-[15px] leading-relaxed">
 
     <script>
         if (!localStorage.getItem('loginExpiry') || Date.now() >= parseInt(localStorage.getItem('loginExpiry'))) {
@@ -164,18 +165,18 @@
     </script>
 
     <header class="bg-white shadow-md sticky top-0 z-10">
-         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="flex justify-between items-center min-h-16 py-2">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="flex justify-between items-center min-h-12 py-1">
                  <div class="flex items-center gap-4">
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">PARTS DISPATCH (LEMBIK)</h1>
                  </div>
-                  <div class="flex items-center gap-2">
-                     <button id="del-all-btn" class="bg-red-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-800 transition shadow-md">DEL ALL</button>
+                   <div class="flex items-center gap-2">
+                     <button id="del-all-btn" class="bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-sm hover:bg-red-800 transition shadow-md">DEL ALL</button>
                  </div>
              </div>
-             <div class="flex justify-end pb-2">
-                 <select id="sort-select" class="border border-gray-300 rounded-lg p-2 text-[17px] focus:ring-2 focus:ring-pink-500">
+              <div class="flex justify-end pb-1">
+                 <select id="sort-select" class="border border-gray-300 rounded-lg p-1 text-sm focus:ring-2 focus:ring-pink-500">
                      <option value="driver">Sort by: Driver (Default)</option>
                      <option value="dispatched">Sort by: Already Dispatched</option>
                      <option value="yet">Sort by: Yet Dispatched</option>
@@ -184,9 +185,9 @@
          </div>
     </header>
 
-    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div id="notification-area" class="mb-4 fixed top-20 right-4 z-50"></div>
-        <div id="dispatch-list" class="space-y-6">
+        <div id="dispatch-list" class="space-y-3">
             <p class="p-4 text-center text-gray-500">Loading Lembik dispatch data...</p>
         </div>
     </main>
@@ -531,9 +532,9 @@
             
             let headerHtml = `<div class="customer-header border-b-4 border-pink-500 customer-name-target" style="-webkit-touch-callout: none; -webkit-user-select: none; user-select: none;">
                 <div>
-                    <div class="font-bold text-gray-800 text-lg">${custName}</div>
-                    ${custInfo.customerDesc ? `<div class="text-[17px] text-gray-500">${custInfo.customerDesc}</div>` : ''}
-                    ${custInfo.customerRemark ? `<div class="text-base text-blue-600 italic mt-1">Note: ${custInfo.customerRemark}</div>` : ''}
+                    <div class="font-bold text-gray-800 text-base">${custName}</div>
+                    ${custInfo.customerDesc ? `<div class="text-sm text-gray-500">${custInfo.customerDesc}</div>` : ''}
+                    ${custInfo.customerRemark ? `<div class="text-xs text-blue-600 italic mt-1">Note: ${custInfo.customerRemark}</div>` : ''}
                 </div>
             </div>`;
             card.innerHTML = headerHtml;
@@ -604,8 +605,8 @@
                         ${item.itemRemark ? `<span class="text-base text-gray-500 italic block mt-1">(${item.itemRemark})</span>` : ''}
                     </div>
                     <div class="text-right flex-shrink-0 ml-2">
-                        <span class="text-xl font-bold ${isCompleted ? 'text-green-700' : 'text-gray-800'}">${parseFloat(item.dispatchedQty).toFixed(1)}</span>
-                        <span class="text-gray-400 text-[17px] font-medium">/${item.targetWeightKg} KG</span>
+                        <span class="text-base font-bold ${isCompleted ? 'text-green-700' : 'text-gray-800'}">${parseFloat(item.dispatchedQty).toFixed(1)}</span>
+                        <span class="text-gray-400 text-xs font-medium">/${item.targetWeightKg} KG</span>
                         ${kgSubText}
                     </div>
                 </div>

@@ -115,6 +115,7 @@
         .grid { display: grid; }
         .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .hidden { display: none; }
+        .hidden-details { display: none; }
         .opacity-50 { opacity: 0.5; pointer-events: none; }
         
         .bg-yellow-500 { background-color: #eab308; }
@@ -142,9 +143,10 @@
             .whitespace-nowrap { white-space: nowrap; }
         .inline-flex { display: inline-flex; }
         .min-h-16 { min-height: 4rem; }
+        .min-h-12 { min-height: 3rem; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
+<body class="bg-gray-100 font-sans text-gray-800 text-[15px] leading-relaxed">
 
     <script> 
         const loginExpiry = localStorage.getItem('loginExpiry');
@@ -155,18 +157,18 @@
     </script>
 
     <header class="bg-white shadow-md sticky top-0 z-20">
-         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="flex justify-between items-center min-h-16 py-2">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="flex justify-between items-center min-h-12 py-1">
                  <div class="flex items-center gap-4">
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">BROILER DISPATCH</h1>
                  </div>
                  <div class="flex items-center gap-2">
-                     <button id="del-all-btn" class="bg-red-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition shadow-md">DEL ALL</button>
+                     <button id="del-all-btn" class="bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition shadow-md">DEL ALL</button>
                  </div>
              </div>
-             <div class="flex justify-end pb-2">
-                 <select id="sort-select" class="border border-gray-300 rounded-lg p-2 text-[17px] focus:ring-2 focus:ring-blue-500">
+             <div class="flex justify-end pb-1">
+                 <select id="sort-select" class="border border-gray-300 rounded-lg p-1 text-sm focus:ring-2 focus:ring-blue-500">
                      <option value="driver">Sort by: Driver (Default)</option>
                      <option value="dispatched">Sort by: Already Dispatched</option>
                      <option value="yet">Sort by: Yet Dispatched</option>
@@ -175,9 +177,9 @@
          </div>
     </header>
 
-    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div id="notification-area" class="mb-4 fixed top-20 right-4 z-50"></div>
-        <div id="dispatch-list" class="space-y-6">
+        <div id="dispatch-list" class="space-y-3">
             <p class="p-4 text-center text-gray-500">Loading dispatch data...</p>
         </div>
     </main>
@@ -625,20 +627,24 @@
             card.className = `rounded-lg border shadow-sm transition hover:shadow-md ${statusColor} overflow-hidden`;
             
             const content = document.createElement('div');
-            content.className = 'p-4 cursor-pointer';
+            content.className = 'p-3 cursor-pointer';
             
             // WRAP CUSTOMER NAME IN TARGET
             let custHtml = `<div class="customer-name-target" style="-webkit-touch-callout: none; -webkit-user-select: none; user-select: none;">`;
-            custHtml += `<div class="font-bold text-gray-800">${item.customerName}`;
-            if (item.customerDesc) custHtml += ` <span class="font-normal text-gray-600">(${item.customerDesc})</span>`;
-            if (item.isInvoiced) custHtml += ` <span class="text-base bg-gray-600 text-white px-2 py-0.5 rounded ml-2">INVOICED</span>`;
-            if (item.customerRemark) custHtml += `<br><span class="text-[17px] text-blue-600 italic">Rm: ${item.customerRemark}</span>`;
+            custHtml += `<div class="font-bold text-gray-800 text-base">${item.customerName}`;
+            if (item.customerDesc) custHtml += ` <span class="font-normal text-gray-600 text-sm">(${item.customerDesc})</span>`;
+            if (item.isInvoiced) custHtml += ` <span class="text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded ml-2">INVOICED</span>`;
+            if (item.customerRemark) custHtml += `<br><span class="text-xs text-blue-600 italic">Rm: ${item.customerRemark}</span>`;
             custHtml += `</div></div>`;
 
             // WRAP ITEM NAME IN TARGET
-            let itemHtml = `<div class="mt-2 flex justify-between items-center">`;
-            itemHtml += `<div class="item-name-target w-full" style="-webkit-touch-callout: none; -webkit-user-select: none; user-select: none;"><span class="font-semibold text-gray-700">${item.itemName}</span>`;
-            if (item.itemRemark) itemHtml += ` <span class="text-[17px] text-gray-500 italic block">(${item.itemRemark})</span>`;
+            let itemHtml = `<div class="mt-1 flex justify-between items-center">`;
+            itemHtml += `<div class="item-name-target w-full" style="-webkit-touch-callout: none; -webkit-user-select: none; user-select: none;">
+                            <div class="flex items-center gap-1">
+                                <span class="font-semibold text-gray-700">${item.itemName}</span>
+                                <svg class="arrow-icon w-4 h-4 text-blue-500" onclick="event.stopPropagation(); toggleDetails(this)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            </div>`;
+            if (item.itemRemark) itemHtml += ` <span class="text-xs text-gray-500 italic block">(${item.itemRemark})</span>`;
             itemHtml += `</div>`;
             
             let historyHtml = '';
@@ -663,16 +669,17 @@
                 }
                 historyHtml += `</div>`;
             }
-            itemHtml += `</div>`; 
+            itemHtml += `<div class="hidden-details mt-2">`;
             itemHtml += historyHtml; 
 
             itemHtml += `<div class="flex justify-end mt-1"><div class="text-right">
-                            <span class="text-xl font-bold ${isCompleted || isInvoiced ? 'text-green-700' : 'text-gray-800'}">${item.dispatchedQty}</span>
-                            <span class="text-gray-500">/${item.orderedQty}</span>
-                         </div></div>`;
+                            <span class="text-lg font-bold ${isCompleted || isInvoiced ? 'text-green-700' : 'text-gray-800'}">${item.dispatchedQty}</span>
+                            <span class="text-gray-500 text-sm">/${item.orderedQty}</span>
+                         </div></div>
+                         </div>`;
 
-            itemHtml += `<div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-                            <div class="bg-blue-600 h-1.5 rounded-full" style="width: ${Math.min(100, (item.dispatchedQty / item.orderedQty) * 100) || 0}%"></div>
+            itemHtml += `<div class="w-full bg-gray-200 rounded-full h-1 mt-1">
+                            <div class="bg-blue-600 h-1 rounded-full" style="width: ${Math.min(100, (item.dispatchedQty / item.orderedQty) * 100) || 0}%"></div>
                          </div>`;
 
             content.innerHTML = custHtml + itemHtml;
@@ -736,10 +743,10 @@
             }
             
             const footer = document.createElement('div');
-            footer.className = 'flex justify-between items-center p-3 bg-gray-50 border-t border-gray-200';
+            footer.className = 'flex justify-between items-center p-2 bg-gray-50 border-t border-gray-200';
             
             const delBtn = document.createElement('button');
-            delBtn.className = 'px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg text-base font-bold shadow-sm hover:bg-red-50 hover:border-red-300 transition disabled:opacity-50 disabled:cursor-not-allowed';
+            delBtn.className = 'px-2 py-1 bg-white text-red-600 border border-red-200 rounded-lg text-xs font-bold shadow-sm hover:bg-red-50 hover:border-red-300 transition disabled:opacity-50 disabled:cursor-not-allowed';
             delBtn.textContent = 'DEL';
             if (isInvoiced) delBtn.disabled = true;
             delBtn.addEventListener('click', (e) => {
@@ -748,7 +755,7 @@
             });
 
             const submitBtn = document.createElement('button');
-            submitBtn.className = 'px-4 py-2 bg-green-500 text-white rounded-lg text-base font-bold shadow-sm hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400';
+            submitBtn.className = 'px-3 py-1 bg-green-500 text-white rounded-lg text-xs font-bold shadow-sm hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400';
             submitBtn.textContent = isInvoiced ? 'Invoiced' : 'Submit';
             if (isInvoiced) submitBtn.disabled = true;
             submitBtn.addEventListener('click', (e) => {
@@ -760,7 +767,7 @@
             
             if (item.dispatchedQty > 0 && !isInvoiced) {
                 const editBtn = document.createElement('button');
-                editBtn.className = 'px-3 py-2 bg-white text-yellow-600 border border-yellow-200 rounded-lg text-base font-bold shadow-sm hover:bg-yellow-50 hover:border-yellow-300 transition';
+                editBtn.className = 'px-2 py-1 bg-white text-yellow-600 border border-yellow-200 rounded-lg text-xs font-bold shadow-sm hover:bg-yellow-50 hover:border-yellow-300 transition';
                 editBtn.textContent = 'EDIT';
                 editBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -776,9 +783,18 @@
         }
 
         window.toggleHistory = function(icon) {
-            icon.classList.toggle('arrow-rotated');
+            icon.classList.toggle('rotate-180');
             const hiddenDiv = icon.parentElement.nextElementSibling;
             if(hiddenDiv) hiddenDiv.style.display = hiddenDiv.style.display === 'block' ? 'none' : 'block';
+        };
+
+        window.toggleDetails = function(icon) {
+            icon.classList.toggle('rotate-180');
+            const parent = icon.closest('.item-name-target').parentElement;
+            const detailsDiv = parent.nextElementSibling; // The hidden-details div
+            if(detailsDiv) {
+                detailsDiv.style.display = (detailsDiv.style.display === 'block') ? 'none' : 'block';
+            }
         };
 
         // --- Modals & Actions ---
