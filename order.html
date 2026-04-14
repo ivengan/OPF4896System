@@ -314,7 +314,13 @@
                 }
                 const data = await response.json();
                 const models = data.models || [];
-                const preferred = ['models/gemini-1.5-flash', 'models/gemini-pro', 'models/gemini-1.0-pro'];
+                const preferred = [
+                    'models/gemini-3.0-flash', 
+                    'models/gemini-2.5-flash', 
+                    'models/gemini-2.0-flash', 
+                    'models/gemini-1.5-flash', 
+                    'models/gemini-pro'
+                ];
                 
                 for (let pref of preferred) {
                     if (models.some(m => m.name === pref)) {
