@@ -98,7 +98,7 @@
         .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
         .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
         .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-        .text-\[17px\] { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-\[17px\] { font-size: 0.875rem; line-height: 0.875rem; }
         .text-base { font-size: 1rem; line-height: 1.5rem; }
         .font-bold { font-weight: 700; }
         .font-semibold { font-weight: 600; }
@@ -171,11 +171,12 @@
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">PARTS DISPATCH (LEMBIK)</h1>
                  </div>
-                   <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2">
+                     <input type="date" id="date-filter" class="border border-gray-300 rounded-lg p-1.5 text-sm font-bold shadow-sm focus:ring-2 focus:ring-pink-500">
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-sm hover:bg-red-800 transition shadow-md">DEL ALL</button>
                  </div>
              </div>
-              <div class="flex justify-end pb-1">
+              <div class="flex justify-end pb-1 gap-2">
                  <select id="sort-select" class="border border-gray-300 rounded-lg p-1 text-sm focus:ring-2 focus:ring-pink-500">
                      <option value="driver">Sort by: Driver (Default)</option>
                      <option value="dispatched">Sort by: Already Dispatched</option>
@@ -222,6 +223,7 @@
         </div>
     </div>
 
+    <!-- Edit/Verification Modals -->
     <div id="edit-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
@@ -239,91 +241,7 @@
                     <p class="text-base text-gray-500 mt-2">Current Dispatched: <span id="current-disp-val" class="font-bold">0</span> KG</p>
                 </div>
             </div>
-            <div class="pt-6">
-                <button id="edit-submit-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-sm">Update & Deduct</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="edit-customer-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Edit Customer Order</h2>
-                <button id="edit-cust-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
-            </div>
-            
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[17px] font-medium text-gray-700">Re-assign Driver (Lorry)</label>
-                    <select id="edit-cust-driver" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500">
-                        <option value="JUQ 5168">JUQ 5168</option>
-                        <option value="JWP 9168">JWP 9168</option>
-                        <option value="JXK 3168">JXK 3168</option>
-                        <option value="JJJ 9528">JJJ 9528</option>
-                        <option value="Unassigned">Unassigned</option>
-                        <option value="None">None</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[17px] font-medium text-gray-700">Edit Remark</label>
-                    <input type="text" id="edit-cust-remark" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500" placeholder="Customer remark...">
-                </div>
-            </div>
-
-            <div class="pt-6 mt-2">
-                <button id="edit-cust-save-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-sm">Save Changes</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="edit-item-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Edit Item Remark</h2>
-                <button id="edit-item-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
-            </div>
-            
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[17px] font-medium text-gray-700">Edit Remark for <span id="edit-item-name-display" class="font-bold text-blue-600"></span></label>
-                    <input type="text" id="edit-item-remark" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500" placeholder="Item remark...">
-                </div>
-            </div>
-
-            <div class="pt-6 mt-2">
-                <button id="edit-item-save-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-sm">Save Changes</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="assign-choice-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center space-y-4">
-            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Assign Item?</h2>
-            <p class="text-gray-600">Are you assigning this deducted item to another customer?</p>
-            
-            <div class="flex gap-4 pt-2">
-                <button id="assign-no-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-xl transition">NO</button>
-                <button id="assign-yes-btn" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition">YES</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="customer-select-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Select Customer</h2>
-                <button id="cust-select-close" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
-            </div>
-            
-            <div>
-                <label class="block text-[17px] font-medium text-gray-700 mb-1">Assign To:</label>
-                <input list="customer-list-dl" id="assign-customer-input" class="w-full border border-gray-300 rounded-lg p-3" placeholder="Type to search...">
-                <datalist id="customer-list-dl"></datalist>
-            </div>
-
-            <div class="pt-2">
-                <button id="confirm-assign-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition">Confirm Assignment</button>
-            </div>
+            <div class="pt-6"><button id="edit-submit-btn" class="w-full bg-blue-500 text-white font-bold py-3 rounded-xl">Update & Deduct</button></div>
         </div>
     </div>
 
@@ -331,13 +249,11 @@
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4 text-center">
             <h2 class="text-xl font-bold text-gray-900 tracking-tight">Staff Verification</h2>
             <p class="text-gray-500 text-[17px] mb-4">Enter phone number and password to authorize deletion.</p>
-            
             <div>
                 <input type="tel" id="verify-phone" placeholder="Phone Number" class="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-blue-500 outline-none">
                 <input type="password" id="verify-password" placeholder="Password" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-blue-500 outline-none">
                 <button id="confirm-delete-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition shadow-md">Verify & Delete</button>
             </div>
-
             <button id="cancel-verify-btn" class="mt-2 text-gray-500 underline text-[17px] hover:text-gray-700">Cancel</button>
         </div>
     </div>
@@ -356,50 +272,59 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // Globals
         let allOrders = []; 
         let customerMap = {}; 
         let currentModalTarget = null;
         let itemToDelete = null; 
         let isDeletingAll = false;
-        let currentEditCustomerOrder = null; 
-        let currentEditItemOrder = null; 
-        
-        let deductedItem = null;
-        let deductedAmount = 0;
+        let activeUnsubscribe = null;
 
         const dispatchListDiv = document.getElementById('dispatch-list');
         const sortSelect = document.getElementById('sort-select');
+        const dateFilter = document.getElementById('date-filter');
+        const notificationArea = document.getElementById('notification-area');
         const dispatchModal = document.getElementById('dispatch-modal');
         const editModal = document.getElementById('edit-modal');
-        const notificationArea = document.getElementById('notification-area');
+        const verifyModal = document.getElementById('verify-modal');
         
         function showNotification(message, type) {
-             notificationArea.innerHTML = `<div class="px-4 py-2 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">${message}</div>`;
+            notificationArea.innerHTML = `<div class="px-4 py-2 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">${message}</div>`;
             setTimeout(() => { notificationArea.innerHTML = ''; }, 3000);
         }
 
         async function initialize() {
             try {
+                const today = new Date().toISOString().split('T')[0];
+                if (dateFilter) dateFilter.value = today;
+
                 const customersSnapshot = await db.collection('customers').get();
                 customersSnapshot.docs.forEach(doc => {
                     const d = doc.data();
-                    customerMap[d.displayName] = { 
-                        lorry: d.lorry || 'Unassigned',
-                        description: d.description || '',
-                        defaultStock: d.defaultStock || 'Freeze' // Core routing property
-                    };
+                    customerMap[d.displayName] = { lorry: d.lorry || 'Unassigned', description: d.description || '', defaultStock: d.defaultStock || 'Freeze' };
                 });
 
-                db.collection('orders')
-                  .where('productType', '==', 'parts')
-                  .where('status', '==', 'pending')
-                  .onSnapshot(snapshot => {
-                      processOrders(snapshot.docs);
-                  });
-
+                setupOrderListener(today);
+                if (dateFilter) dateFilter.addEventListener('change', (e) => setupOrderListener(e.target.value));
             } catch (error) {
+                console.error(error);
                 dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error loading data.</p>`;
             }
+        }
+
+        function setupOrderListener(selectedDate) {
+            if (activeUnsubscribe) activeUnsubscribe();
+            dispatchListDiv.innerHTML = `<p class="p-4 text-center text-gray-500">Syncing orders for ${selectedDate}...</p>`;
+            activeUnsubscribe = db.collection('orders')
+                .where('productType', '==', 'parts')
+                .where('status', '==', 'pending')
+                .where('deliveryDate', '==', selectedDate)
+                .onSnapshot(snapshot => {
+                    processOrders(snapshot.docs);
+                }, err => {
+                    console.error(err);
+                    dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error: ${err.message}. Check indexes.</p>`;
+                });
         }
 
         function processOrders(docs) {
@@ -408,34 +333,21 @@
                 const data = doc.data();
                 const custName = data.customerName;
                 const custInfo = customerMap[custName] || { lorry: 'Unassigned', description: '', defaultStock: 'Freeze' };
-                
                 const activeLorry = data.assignedLorry || custInfo.lorry;
 
                 if (data.parts && Array.isArray(data.parts)) {
                     data.parts.forEach((item, index) => {
-                        
-                        // --- CORE ROUTING LOGIC ---
-                        let defaultStock = custInfo.defaultStock || 'Freeze';
-                        let specificStock = item.stockType || ''; // Could be empty, 'Lembik', or 'Freeze'
-                        let finalRouting = specificStock ? specificStock : defaultStock;
-                        
-                        // IF NOT LEMBIK, DO NOT SHOW IN THIS HTML
+                        let finalRouting = item.stockType || custInfo.defaultStock || 'Freeze';
                         if (finalRouting !== 'Lembik') return;
 
-                        // BAG KG PARSING LOGIC
                         let isBag = /bag/i.test(item.unit) || /bag/i.test(item.name) || /bag/i.test(item.remark);
                         let targetWeightKg = parseFloat(item.qty) || 0;
                         let weightPerBag = 1; 
-
                         if (isBag) {
-                            const combinedString = `${item.name} ${item.unit} ${item.remark || ''}`.toLowerCase();
-                            const weightMatch = combinedString.match(/(\d+(?:\.\d+)?)\s*kg/i);
-                            if (weightMatch) {
-                                weightPerBag = parseFloat(weightMatch[1]);
-                            } else if (combinedString.includes('whole leg') || combinedString.includes('w/leg')) {
-                                weightPerBag = 1;
-                            }
-                            targetWeightKg = targetWeightKg * weightPerBag;
+                            const combined = `${item.name} ${item.unit} ${item.remark || ''}`.toLowerCase();
+                            const m = combined.match(/(\d+(?:\.\d+)?)\s*kg/i);
+                            if (m) weightPerBag = parseFloat(m[1]);
+                            targetWeightKg *= weightPerBag;
                         }
 
                         allOrders.push({
@@ -453,7 +365,6 @@
                             weightPerBag: weightPerBag,
                             targetWeightKg: targetWeightKg,
                             dispatchedQty: parseFloat(item.dispatchedQty) || 0,
-                            totalWeight: parseFloat(item.totalWeight) || 0,
                             isInvoiced: item.isInvoiced || false, 
                             history: item.history || []
                         });
@@ -466,21 +377,15 @@
         function renderDispatchList() {
             const mode = sortSelect.value;
             dispatchListDiv.innerHTML = '';
-
             if (allOrders.length === 0) {
                 dispatchListDiv.innerHTML = '<p class="text-center text-gray-500">No Lembik parts pending.</p>';
                 return;
             }
 
             let sortedItems = [...allOrders];
-
-            if (mode === 'driver') {
-                sortedItems = sortedItems.filter(i => !i.isInvoiced);
-            } else if (mode === 'dispatched') {
-                sortedItems = sortedItems.filter(i => i.dispatchedQty > 0);
-            } else {
-                sortedItems = sortedItems.filter(i => i.dispatchedQty === 0 && !i.isInvoiced);
-            }
+            if (mode === 'driver') sortedItems = sortedItems.filter(i => !i.isInvoiced);
+            else if (mode === 'dispatched') sortedItems = sortedItems.filter(i => i.dispatchedQty > 0);
+            else sortedItems = sortedItems.filter(i => i.dispatchedQty === 0 && !i.isInvoiced);
 
             const groupedByLorry = {};
             sortedItems.forEach(item => {
@@ -489,540 +394,97 @@
                 groupedByLorry[item.lorry][item.customerName].push(item);
             });
 
-            const lorries = Object.keys(groupedByLorry).sort();
-
-            lorries.forEach(lorry => {
-                const lorrySection = document.createElement('div');
-                lorrySection.className = 'mb-4';
-
+            Object.keys(groupedByLorry).sort().forEach(lorry => {
+                const section = document.createElement('div');
+                section.className = 'mb-4';
                 if(mode === 'driver') {
                     const header = document.createElement('div');
                     header.className = 'flex justify-between items-center text-lg font-bold text-gray-900 bg-gray-200 p-3 rounded-lg sticky top-0 shadow-sm z-10 cursor-pointer select-none';
-                    header.innerHTML = `<span>${lorry}</span><svg class="text-gray-600 transition-transform duration-200" style="width: 1.5rem; height: 1.5rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
-
+                    header.innerHTML = `<span>${lorry}</span><svg class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
                     const listGroup = document.createElement('div');
                     listGroup.className = 'space-y-3 mt-2 hidden'; 
-
-                    const customers = Object.keys(groupedByLorry[lorry]).sort();
-                    customers.forEach(custName => {
-                        listGroup.appendChild(buildCustomerCard(custName, groupedByLorry[lorry][custName]));
-                    });
-
-                    header.addEventListener('click', () => {
-                        listGroup.classList.toggle('hidden');
-                        header.querySelector('svg').classList.toggle('rotate-180'); 
-                    });
-
-                    lorrySection.appendChild(header);
-                    lorrySection.appendChild(listGroup);
-                    dispatchListDiv.appendChild(lorrySection);
+                    Object.keys(groupedByLorry[lorry]).sort().forEach(custName => listGroup.appendChild(buildCustomerCard(custName, groupedByLorry[lorry][custName])));
+                    header.onclick = () => { listGroup.classList.toggle('hidden'); header.querySelector('svg').classList.toggle('rotate-180'); };
+                    section.appendChild(header); section.appendChild(listGroup);
+                    dispatchListDiv.appendChild(section);
                 } else {
-                    const customers = Object.keys(groupedByLorry[lorry]).sort();
-                    customers.forEach(custName => {
-                        dispatchListDiv.appendChild(buildCustomerCard(custName, groupedByLorry[lorry][custName]));
-                    });
+                    Object.keys(groupedByLorry[lorry]).sort().forEach(custName => dispatchListDiv.appendChild(buildCustomerCard(custName, groupedByLorry[lorry][custName])));
                 }
             });
         }
 
         function buildCustomerCard(custName, items) {
-            const custInfo = items[0]; 
             const card = document.createElement('div');
             card.className = 'customer-card';
-            
-            let headerHtml = `<div class="customer-header border-b-4 border-pink-500 customer-name-target" style="-webkit-touch-callout: none; -webkit-user-select: none; user-select: none;">
-                <div>
-                    <div class="font-bold text-gray-800 text-base">${custName}</div>
-                    ${custInfo.customerDesc ? `<div class="text-sm text-gray-500">${custInfo.customerDesc}</div>` : ''}
-                    ${custInfo.customerRemark ? `<div class="text-xs text-blue-600 italic mt-1">Note: ${custInfo.customerRemark}</div>` : ''}
-                </div>
-            </div>`;
-            card.innerHTML = headerHtml;
-
-            // --- LONG PRESS LOGIC (CUSTOMER) ---
-            let custPressTimer;
-            const custTarget = card.querySelector('.customer-name-target');
-            
-            const handleCustStart = (e) => {
-                custTarget.dataset.longPressCust = 'false';
-                custPressTimer = window.setTimeout(() => {
-                    custTarget.dataset.longPressCust = 'true';
-                    openEditCustomerModal(items);
-                }, 3000); 
-            };
-            const handleCustEnd = () => { clearTimeout(custPressTimer); };
-
-            custTarget.addEventListener('mousedown', handleCustStart);
-            custTarget.addEventListener('touchstart', handleCustStart, {passive: true});
-            custTarget.addEventListener('mouseup', handleCustEnd);
-            custTarget.addEventListener('mouseleave', handleCustEnd);
-            custTarget.addEventListener('touchend', handleCustEnd);
-            custTarget.addEventListener('touchmove', handleCustEnd);
-            custTarget.addEventListener('touchcancel', handleCustEnd);
-
-
-            const listContainer = document.createElement('div');
-            items.forEach((item, idx) => {
-                const row = createPartRow(item);
-                if (idx >= 3) row.classList.add('hidden-row');
-                listContainer.appendChild(row);
-            });
-            card.appendChild(listContainer);
-
-            if (items.length > 3) {
-                const expandBtn = document.createElement('div');
-                expandBtn.className = 'expand-btn';
-                expandBtn.textContent = `Show ${items.length - 3} more items...`;
-                expandBtn.onclick = function() {
-                    listContainer.querySelectorAll('.part-row').forEach((r, i) => {
-                        if (i >= 3) r.style.display = r.style.display === 'flex' ? 'none' : 'flex';
-                    });
-                    this.textContent = this.textContent.includes('Show') ? 'Show Less' : `Show ${items.length - 3} more items...`;
-                };
-                card.appendChild(expandBtn);
-            }
+            card.innerHTML = `<div class="customer-header border-b-4 border-pink-500"><div class="font-bold text-gray-800 text-base">${custName}</div></div>`;
+            const list = document.createElement('div');
+            items.forEach(item => list.appendChild(createPartRow(item)));
+            card.appendChild(list);
             return card;
         }
 
         function createPartRow(item) {
             const row = document.createElement('div');
             row.className = 'part-row';
-            
             const isCompleted = item.dispatchedQty >= item.targetWeightKg;
-            const isInvoiced = item.isInvoiced;
             const percent = item.targetWeightKg > 0 ? Math.min(100, (item.dispatchedQty / item.targetWeightKg) * 100) : 0;
-            
-            let barColor = isCompleted ? 'bg-green-500' : (isInvoiced ? 'bg-gray-500' : 'bg-pink-600');
-
-            let orderDisplayLabel = item.isBag ? `${item.orderedQty} Bags` : `${item.orderedQty} ${item.itemUnit}`;
-            let kgSubText = item.isBag ? `<span class="text-base text-pink-600 block text-right mt-1 font-semibold">Target: ${item.orderedQty} x ${item.weightPerBag}KG = ${item.targetWeightKg} KG</span>` : '';
-
             row.innerHTML = `
-                <div class="part-main cursor-pointer pb-2 item-name-target" style="-webkit-touch-callout: none; -webkit-user-select: none; user-select: none;">
+                <div class="part-main pb-2 cursor-pointer">
                     <div class="w-full">
                         <span class="font-semibold text-gray-700">${item.itemName}</span> 
-                        <span class="text-base bg-pink-100 text-pink-800 px-2 py-0.5 rounded font-bold">${orderDisplayLabel}</span>
-                        ${item.itemRemark ? `<span class="text-base text-gray-500 italic block mt-1">(${item.itemRemark})</span>` : ''}
+                        <span class="text-base bg-pink-100 text-pink-800 px-2 py-0.5 rounded font-bold">${item.orderedQty} ${item.itemUnit}</span>
                     </div>
-                    <div class="text-right flex-shrink-0 ml-2">
+                    <div class="text-right">
                         <span class="text-base font-bold ${isCompleted ? 'text-green-700' : 'text-gray-800'}">${parseFloat(item.dispatchedQty).toFixed(1)}</span>
-                        <span class="text-gray-400 text-xs font-medium">/${item.targetWeightKg} KG</span>
-                        ${kgSubText}
+                        <span class="text-gray-400 text-xs">/${item.targetWeightKg} KG</span>
                     </div>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1">
-                    <div class="${barColor} h-1.5 rounded-full" style="width: ${percent}%"></div>
-                </div>
-                
-                ${!isInvoiced ? `
-                <div class="mt-2 pt-2 border-t border-gray-100">
-                    <label class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-gray-50 transition w-max">
-                        <input type="checkbox" class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 move-freeze-chk">
-                        <span class="text-base font-extrabold text-blue-600">Keluar Ais (Move to Freeze Board) ➔</span>
-                    </label>
-                </div>
-                ` : ''}
-
-                <div class="part-actions flex justify-between items-center w-full">
-                    <button class="px-3 py-1.5 bg-white text-red-600 border border-red-200 rounded-lg text-base font-bold shadow-sm hover:bg-red-50 hover:border-red-300 transition" onclick="event.stopPropagation(); initiateDelete(this.itemRef)">DEL</button>
-                    <div class="flex gap-2">
-                        ${item.dispatchedQty > 0 && !isInvoiced ? `<button class="px-3 py-1.5 bg-white text-yellow-600 border border-yellow-200 rounded-lg text-base font-bold shadow-sm hover:bg-yellow-50 hover:border-yellow-300 transition" onclick="event.stopPropagation(); openEditModal(this.itemRef)">EDIT</button>` : ''}
-                        ${!isInvoiced ? `<button class="px-4 py-1.5 bg-green-500 text-white rounded-lg text-base font-bold shadow-sm hover:bg-green-600 transition" onclick="event.stopPropagation(); handleInvoice(this.itemRef)">Submit</button>` : `<span class="text-base text-gray-500 font-bold border px-2 py-1 rounded bg-gray-100">Invoiced</span>`}
-                    </div>
+                <!-- Movement to Freeze Option -->
+                <div class="mt-2 text-xs font-bold text-blue-600">Move to Freeze Board ➔</div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1"><div class="${isCompleted ? 'bg-green-500' : 'bg-pink-600'} h-1.5 rounded-full" style="width: ${percent}%"></div></div>
+                <div class="part-actions flex justify-between">
+                    <button class="px-3 py-1 bg-white text-red-600 border rounded font-bold" onclick="initiateDelete(${JSON.stringify(item)})">DEL</button>
+                    ${!item.isInvoiced ? `<button class="px-4 py-1 bg-green-500 text-white rounded font-bold" onclick="handleInvoice(${JSON.stringify(item)})">Submit</button>` : '<span class="text-xs text-gray-500">Invoiced</span>'}
                 </div>
             `;
-
-            row.querySelectorAll('button').forEach(btn => btn.itemRef = item);
-            
-            // --- LONG PRESS LOGIC (ITEM) ---
-            let itemPressTimer;
-            const itemTarget = row.querySelector('.item-name-target');
-            
-            const handleItemStart = (e) => {
-                row.dataset.longPressItem = 'false';
-                itemPressTimer = window.setTimeout(() => {
-                    row.dataset.longPressItem = 'true';
-                    openEditItemModal(item);
-                }, 3000); 
-            };
-            const handleItemEnd = () => { clearTimeout(itemPressTimer); };
-
-            itemTarget.addEventListener('mousedown', handleItemStart);
-            itemTarget.addEventListener('touchstart', handleItemStart, {passive: true});
-            itemTarget.addEventListener('mouseup', handleItemEnd);
-            itemTarget.addEventListener('mouseleave', handleItemEnd);
-            itemTarget.addEventListener('touchend', handleItemEnd);
-            itemTarget.addEventListener('touchmove', handleItemEnd);
-            itemTarget.addEventListener('touchcancel', handleItemEnd);
-
-            if (!isInvoiced) {
-                row.querySelector('.part-main').addEventListener('click', (e) => {
-                    if (row.dataset.longPressItem === 'true') {
-                        row.dataset.longPressItem = 'false'; 
-                        return; 
-                    }
-                    openDispatchModal(item);
-                });
-            }
-
-            // MOVEMENT LOGIC
-            const moveChk = row.querySelector('.move-freeze-chk');
-            if(moveChk && !isInvoiced) {
-                moveChk.addEventListener('change', async (e) => {
-                    if(e.target.checked) {
-                        if(!confirm("Move this order to Parts Dispatch (Freeze / Ais)?")) { e.target.checked = false; return; }
-                        try {
-                            const orderRef = db.collection('orders').doc(item.orderId);
-                            const docSnap = await orderRef.get();
-                            const parts = docSnap.data().parts;
-                            parts[item.partIndex].stockType = 'Freeze';
-                            await orderRef.update({parts: parts});
-                            showNotification("Moved to Freeze Board.", "success");
-                        } catch(err) { alert("Error moving order."); e.target.checked = false; }
-                    }
-                });
-            }
-
+            row.querySelector('.part-main').onclick = () => openDispatchModal(item);
             return row;
         }
 
-        // --- Modals & Handlers ---
-
-        // 1. Edit Customer Modal
-        function openEditCustomerModal(items) {
-            currentEditCustomerOrder = items;
-            const firstItem = items[0];
-            
-            const dropdown = document.getElementById('edit-cust-driver');
-            dropdown.value = firstItem.lorry;
-            if (dropdown.selectedIndex === -1) dropdown.value = "Unassigned"; 
-
-            document.getElementById('edit-cust-remark').value = firstItem.customerRemark || '';
-            document.getElementById('edit-customer-modal').classList.remove('hidden');
-        }
-
-        document.getElementById('edit-cust-close-x').addEventListener('click', () => {
-            document.getElementById('edit-customer-modal').classList.add('hidden');
-        });
-
-        document.getElementById('edit-cust-save-btn').addEventListener('click', async () => {
-            if (!currentEditCustomerOrder || currentEditCustomerOrder.length === 0) return;
-            
-            const newLorry = document.getElementById('edit-cust-driver').value;
-            const newRemark = document.getElementById('edit-cust-remark').value.trim();
-            const btn = document.getElementById('edit-cust-save-btn');
-            
-            btn.disabled = true;
-            btn.textContent = "Saving...";
-
+        function openDispatchModal(item) { currentModalTarget = item; dispatchModal.classList.remove('hidden'); }
+        document.getElementById('modal-submit-btn').onclick = async () => {
+            const qty = parseFloat(document.getElementById('modal-dispatch-amount').value) || 0;
+            if (qty <= 0) return;
+            const btn = document.getElementById('modal-submit-btn');
+            btn.disabled = true; btn.textContent = 'Saving...';
             try {
-                const batch = db.batch();
-                const uniqueIds = [...new Set(currentEditCustomerOrder.map(i => i.orderId))];
-                uniqueIds.forEach(id => {
-                    batch.update(db.collection('orders').doc(id), {
-                        assignedLorry: newLorry,
-                        customerRemark: newRemark
-                    });
-                });
-                await batch.commit();
-                
-                showNotification("Customer order updated.", "success");
-                document.getElementById('edit-customer-modal').classList.add('hidden');
-            } catch (e) {
-                console.error(e);
-                alert("Failed to update customer details.");
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "Save Changes";
-            }
-        });
-
-        // 2. Edit Specific Item Modal
-        function openEditItemModal(item) {
-            currentEditItemOrder = item;
-            document.getElementById('edit-item-name-display').textContent = item.itemName;
-            document.getElementById('edit-item-remark').value = item.itemRemark || '';
-            document.getElementById('edit-item-modal').classList.remove('hidden');
-        }
-
-        document.getElementById('edit-item-close-x').addEventListener('click', () => {
-            document.getElementById('edit-item-modal').classList.add('hidden');
-        });
-
-        document.getElementById('edit-item-save-btn').addEventListener('click', async () => {
-            if (!currentEditItemOrder) return;
-            
-            const newRemark = document.getElementById('edit-item-remark').value.trim();
-            const btn = document.getElementById('edit-item-save-btn');
-            
-            btn.disabled = true;
-            btn.textContent = "Saving...";
-
-            try {
-                const orderRef = db.collection('orders').doc(currentEditItemOrder.orderId);
-                const docSnap = await orderRef.get();
-                if(docSnap.exists) {
-                    const data = docSnap.data();
-                    const parts = data.parts;
-                    parts[currentEditItemOrder.partIndex].remark = newRemark;
-                    
-                    await orderRef.update({ parts: parts });
-                    showNotification("Item remark updated.", "success");
-                    document.getElementById('edit-item-modal').classList.add('hidden');
-                }
-            } catch (e) {
-                console.error(e);
-                alert("Failed to update item remark.");
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "Save Changes";
-            }
-        });
-
-        function openDispatchModal(item) {
-            currentModalTarget = item;
-            document.getElementById('modal-dispatch-amount').value = ''; 
-            document.getElementById('modal-keluar-lembik').checked = true; // Auto check in Lembik
-            dispatchModal.classList.remove('hidden');
-            setTimeout(() => document.getElementById('modal-dispatch-amount').focus(), 100);
-        }
-
-        function openEditModal(item) {
-            currentModalTarget = item;
-            document.getElementById('edit-deduct-amount').value = '';
-            document.getElementById('current-disp-val').textContent = parseFloat(item.dispatchedQty).toFixed(1);
-            editModal.classList.remove('hidden');
-        }
-
-        document.getElementById('modal-close-x').addEventListener('click', () => dispatchModal.classList.add('hidden'));
-        document.getElementById('edit-close-x').addEventListener('click', () => editModal.classList.add('hidden'));
-
-        document.getElementById('edit-submit-btn').addEventListener('click', async () => {
-            const deduct = parseFloat(document.getElementById('edit-deduct-amount').value);
-            if(!deduct || deduct <= 0 || deduct > currentModalTarget.dispatchedQty) return alert("Invalid deduction amount.");
-            
-            const orderRef = db.collection('orders').doc(currentModalTarget.orderId);
-            const doc = await orderRef.get();
-            const parts = doc.data().parts;
-            const part = parts[currentModalTarget.partIndex];
-            
-            part.dispatchedQty = parseFloat(part.dispatchedQty) - deduct;
-            part.totalWeight = parseFloat(part.totalWeight) - deduct; 
-            if(!part.history) part.history = [];
-            part.history.push({ qty: -deduct, net: -deduct, type: 'deduction', timestamp: new Date().toISOString() });
-
-            await orderRef.update({ parts: parts });
-            showNotification(`Deducted ${deduct} KG.`, 'success');
-            editModal.classList.add('hidden');
-        });
+                const ref = db.collection('orders').doc(currentModalTarget.orderId);
+                const doc = await ref.get();
+                const parts = doc.data().parts;
+                parts[currentModalTarget.partIndex].dispatchedQty = (parseFloat(parts[currentModalTarget.partIndex].dispatchedQty) || 0) + qty;
+                await ref.update({ parts });
+                showNotification("Updated!", "success");
+                dispatchModal.classList.add('hidden');
+            } catch(e) { console.error(e); } finally { btn.disabled = false; btn.textContent = 'Add & Update'; }
+        };
 
         async function handleInvoice(item) {
-            if (item.dispatchedQty < item.targetWeightKg) {
-                if (!confirm(`Warning: Only ${item.dispatchedQty}/${item.targetWeightKg} KG dispatched. Complete order?`)) return;
-            } else {
-                if (!confirm(`Confirm dispatch complete for ${item.customerName}?`)) return;
-            }
+            if(!confirm("Confirm dispatch complete?")) return;
             try {
-                const orderRef = db.collection('orders').doc(item.orderId);
-                const doc = await orderRef.get();
+                const ref = db.collection('orders').doc(item.orderId);
+                const doc = await ref.get();
                 const parts = doc.data().parts;
                 parts[item.partIndex].isInvoiced = true;
-                await orderRef.update({ parts: parts });
-                showNotification('Completed.', 'success');
-            } catch (e) { alert("Error."); }
+                await ref.update({ parts });
+                showNotification("Completed!", "success");
+            } catch(e) { console.error(e); }
         }
 
-        function initiateDelete(item) {
-            if (!confirm("⚠️ Delete this order item?")) return;
-            try {
-                const orderRef = db.collection('orders').doc(item.orderId);
-                orderRef.get().then(doc => {
-                    const parts = doc.data().parts.filter((_, i) => i !== item.partIndex);
-                    if (parts.length === 0 && (!doc.data().broilers || doc.data().broilers.length === 0)) orderRef.delete(); 
-                    else orderRef.update({ parts: parts });
-                });
-                showNotification("Item deleted.", "success");
-            } catch (e) { alert("Delete failed."); }
-        }
-
-        document.getElementById('modal-submit-btn').addEventListener('click', async () => {
-            if (!currentModalTarget) return;
-            const btn = document.getElementById('modal-submit-btn');
-            const qty = parseFloat(document.getElementById('modal-dispatch-amount').value) || 0;
-            const isKeluarLembik = document.getElementById('modal-keluar-lembik').checked;
-
-            if (qty <= 0) return alert("Invalid amount");
-
-            btn.disabled = true; btn.textContent = 'Saving...';
-
-            let finalIsLama = false;
-            
-            let basePartName = currentModalTarget.itemName.replace(/(\d+(?:\.\d+)?)\s*kg/i, '').replace(/x\s*\d*\s*bags?/i, '').replace(/\(no pack\)/i, '').replace(/\(\s*\)/g, '').trim();
-
-            try {
-                if (isKeluarLembik) {
-                    let noPackStock = 0;
-                    const stockSnap = await db.collection('stock_entries').where('category', '==', 'Parts').get();
-                    stockSnap.forEach(doc => {
-                        let data = doc.data();
-                        let dbPartName = (data.categoryDetails?.partName || data.category || '').trim();
-                        let pack = data.categoryDetails?.packSize || '';
-                        let isNoPack = !pack || pack === 'No pack = 0KG' || pack === 'KG';
-                        if (isNoPack && dbPartName.toLowerCase() === basePartName.toLowerCase()) {
-                            noPackStock += parseFloat(data.netWeight) || 0;
-                        }
-                    });
-
-                    const ordersSnap = await db.collection('orders').where('productType', '==', 'parts').get();
-                    ordersSnap.forEach(doc => {
-                        let data = doc.data();
-                        if (data.parts) {
-                            data.parts.forEach(p => {
-                                let rawName = p.name || '';
-                                let pPackMatch = rawName.match(/(\d+(?:\.\d+)?)\s*kg/i);
-                                let isPNoPack = !pPackMatch;
-                                let pBaseName = rawName.replace(/(\d+(?:\.\d+)?)\s*kg/i, '').replace(/x\s*\d*\s*bags?/i, '').replace(/\(no pack\)/i, '').replace(/\(\s*\)/g, '').trim();
-
-                                if (isPNoPack && pBaseName.toLowerCase() === basePartName.toLowerCase() && p.history) {
-                                    p.history.forEach(h => {
-                                        if (!h.ayamLama) noPackStock -= parseFloat(h.net) || 0;
-                                    });
-                                }
-                            });
-                        }
-                    });
-
-                    if (noPackStock >= qty) {
-                        finalIsLama = true;
-                    } else {
-                        showNotification(`Insufficient NO PACK stock (${noPackStock.toFixed(2)} KG). Auto-changed to OUT (new).`, 'error');
-                        finalIsLama = false; 
-                    }
-                }
-
-                const orderRef = db.collection('orders').doc(currentModalTarget.orderId);
-                const docSnap = await orderRef.get();
-                const parts = docSnap.data().parts;
-                const itemData = parts[currentModalTarget.partIndex];
-                
-                const existingQty = parseFloat(itemData.dispatchedQty) || 0;
-                const newTotalQty = existingQty + qty;
-
-                let safeTargetKg = parseFloat(itemData.qty) || 0;
-                let safeIsBag = /bag/i.test(itemData.unit) || /bag/i.test(itemData.name) || /bag/i.test(itemData.remark);
-                if (safeIsBag) {
-                    let wPerBag = 1;
-                    const m = (itemData.name + ' ' + itemData.unit + ' ' + (itemData.remark || '')).toLowerCase().match(/(\d+(?:\.\d+)?)\s*kg/i);
-                    if (m) wPerBag = parseFloat(m[1]);
-                    safeTargetKg = safeTargetKg * wPerBag;
-                }
-
-                if (newTotalQty > safeTargetKg) {
-                    if (!confirm(`Warning: Total dispatched (${newTotalQty} KG) exceeds target quantity (${safeTargetKg} KG).\n\nProceed with over-dispatch?`)) {
-                        btn.disabled = false; btn.textContent = 'Add & Update'; return;
-                    }
-                }
-
-                itemData.dispatchedQty = newTotalQty;
-                itemData.totalWeight = newTotalQty; 
-                itemData.lastDispatch = { grossWeight: newTotalQty, timestamp: new Date().toISOString(), ayamLama: finalIsLama };
-                
-                if(!itemData.history) itemData.history = [];
-                itemData.history.push({ qty: qty, net: qty, ayamLama: finalIsLama, timestamp: new Date().toISOString() });
-
-                await orderRef.update({ parts: parts });
-
-                if (finalIsLama) {
-                    await db.collection('stock_entries').add({
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        grossWeight: 0, tareWeight: 0, netWeight: -qty, 
-                        category: 'Parts', categoryDetails: { partName: basePartName, packSize: 'No pack = 0KG' },
-                        container: 'None', containerDetails: {},
-                        remark: `Keluar Lembik Deduction (Order ID: ${currentModalTarget.orderId})`
-                    });
-                }
-
-                showNotification(`Added ${qty} KG.`, 'success');
-                dispatchModal.classList.add('hidden');
-            } catch (e) { alert("Failed to update."); } 
-            finally { btn.disabled = false; btn.textContent = 'Add & Update'; }
-        });
-
-        sortSelect.addEventListener('change', renderDispatchList);
-        
-        // --- Delete all verification
-        document.getElementById('del-all-btn').addEventListener('click', () => {
-            if (!confirm("⚠️ DANGER: This will delete ALL pending PARTS orders.\n\nThis action cannot be undone. Proceed?")) return;
-            isDeletingAll = true; 
-            document.getElementById('verify-phone').value = '';
-            document.getElementById('verify-password').value = '';
-            verifyModal.classList.remove('hidden');
-        });
-
-        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
-            const phone = document.getElementById('verify-phone').value.trim();
-            const pass = document.getElementById('verify-password').value.trim();
-            const btn = document.getElementById('confirm-delete-btn');
-            
-            if (!phone || !pass) return alert("Enter phone number and password.");
-
-            btn.disabled = true;
-            btn.textContent = "Verifying...";
-            
-            try {
-                const staffQuery = await db.collection('staff').where('phoneNumber', '==', phone).limit(1).get();
-                if (staffQuery.empty) {
-                    alert("Unauthorized or user not found.");
-                    btn.disabled = false;
-                    btn.textContent = "Verify & Delete";
-                    return;
-                }
-                
-                const data = staffQuery.docs[0].data();
-                const dbPassword = data.password !== undefined ? String(data.password).trim() : 
-                                   data.Password !== undefined ? String(data.Password).trim() : null;
-                
-                if (dbPassword === pass) {
-                    if (isDeletingAll) { await performBatchDelete(); } 
-                    else { await performDelete(itemToDelete); }
-                    verifyModal.classList.add('hidden');
-                } else {
-                    alert("Incorrect Password.");
-                }
-            } catch (e) {
-                console.error(e);
-                alert("Verification failed.");
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "Verify & Delete";
-            }
-        });
-        
-        async function performBatchDelete() {
-            try {
-                const snapshot = await db.collection('orders')
-                    .where('status', '==', 'pending')
-                    .where('productType', '==', 'parts')
-                    .get();
-
-                if (snapshot.empty) { showNotification("No orders to delete.", "error"); return; }
-
-                const batch = db.batch();
-                snapshot.docs.forEach(doc => { batch.delete(doc.ref); });
-                await batch.commit();
-                showNotification("All pending parts orders have been deleted.", "success");
-            } catch (e) {
-                console.error(e);
-                showNotification("Error performing batch delete.", "error");
-            } finally {
-                isDeletingAll = false; 
-            }
-        }
-        
-        document.getElementById('cancel-verify-btn').addEventListener('click', () => { verifyModal.classList.add('hidden'); isDeletingAll = false; });
-        
+        function initiateDelete(item) { itemToDelete = item; isDeletingAll = false; verifyModal.classList.remove('hidden'); }
+        document.getElementById('del-all-btn').onclick = () => { isDeletingAll = true; verifyModal.classList.remove('hidden'); };
+        document.getElementById('modal-close-x').onclick = () => dispatchModal.classList.add('hidden');
+        sortSelect.onchange = renderDispatchList;
         document.addEventListener('DOMContentLoaded', initialize);
-
     </script>
 </body>
 </html>

@@ -364,18 +364,30 @@
             const libraryStr = aiLibrary.join(', '); // Add Library to prompt
 
             const prompt = `
-                You are a smart order parser.
+                You are a smart multi-order parser for a poultry business.
                 Customers: [${customerListStr}]
                 Inventory: [${inventoryListStr}]
-                KNOWN ALIASES / CORRECTIONS: [${libraryStr}] (Use these to map wrong words to correct inventory names)
-                Input: "${text}"
-                Return ONLY JSON:
+                KNOWN ALIASES: [${libraryStr}]
+                
+                Current Date: ${new Date().toISOString().split('T')[0]} (Reference this if they say "tomorrow" or "today")
+
+                Tasks:
+                1. Identify the delivery date if mentioned (return as YYYY-MM-DD). If no date is mentioned, use today.
+                2. Identify ALL customers mentioned in the text.
+                3. For each customer, extract their specific order items.
+                
+                Return ONLY JSON as an object containing an array:
                 {
-                  "customerName": "Exact match from Customers if possible, else raw name",
-                  "customerRemark": "Delivery notes",
-                  "broiler": { "whole_qty": number, "whole_remark": "", "slices_qty": number, "slices_remark": "" },
-                  "parts": [ { "name": "Best match from Inventory (apply Alias mappings first)", "qty": number, "unit": "KG/Pack/PCS", "remark": "" } ],
-                  "generalRemark": "Other notes"
+                  "deliveryDate": "YYYY-MM-DD",
+                  "orders": [
+                    {
+                      "customerName": "Exact match from Customers if possible",
+                      "customerRemark": "Delivery notes",
+                      "broiler": { "whole_qty": number, "whole_remark": "", "slices_qty": number, "slices_remark": "" },
+                      "parts": [ { "name": "Best match from Inventory", "qty": number, "unit": "KG/Pack/PCS", "remark": "" } ],
+                      "generalRemark": "Other notes"
+                    }
+                  ]
                 }
             `;
 
@@ -387,7 +399,10 @@
 
             if (!response.ok) throw new Error(`API Error: ${response.status}`);
             const data = await response.json();
-            return JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim());
+            let jsonText = data.candidates[0].content.parts[0].text;
+            // Clean markdown
+            jsonText = jsonText.replace(/```json|```/gi, '').trim();
+            return JSON.parse(jsonText);
         }
 
         // --- DOM Elements & Event Listeners ---
@@ -414,36 +429,97 @@
 
             try {
                 const result = await processAIOrder(text);
+                const deliveryDate = result.deliveryDate || new Date().toISOString().split('T')[0];
                 
-                if (result.customerName) {
-                    document.getElementById('customer-search').value = result.customerName;
-                    document.getElementById('customer-search').dispatchEvent(new Event('input'));
-                }
-                if (result.customerRemark) document.getElementById('customer-remark').value = result.customerRemark;
-                if (result.generalRemark) document.getElementById('order-general-remark').value = result.generalRemark;
-
-                if (result.broiler) {
-                    if(result.broiler.whole_qty) document.getElementById('broiler-main-qty').value = result.broiler.whole_qty;
-                    if(result.broiler.whole_remark) document.getElementById('broiler-main-remark').value = result.broiler.whole_remark;
-                    if(result.broiler.slices_qty) document.getElementById('broiler-slices-qty').value = result.broiler.slices_qty;
-                    if(result.broiler.slices_remark) document.getElementById('broiler-slices-remark').value = result.broiler.slices_remark;
+                if (!result.orders || result.orders.length === 0) {
+                    throw new Error("No orders could be identified.");
                 }
 
-                if (result.parts && Array.isArray(result.parts)) {
-                    result.parts.forEach(p => {
-                        currentPartsOrder.push({
-                            name: p.name,
-                            qty: p.qty,
-                            unit: p.unit || 'KG',
-                            remark: p.remark || ''
+                pendingOrders = [];
+                
+                result.orders.forEach(order => {
+                    const custName = order.customerName;
+                    const custData = allCustomers.find(c => c.searchName === custName || c.displayName === custName);
+                    const finalCustName = custData ? custData.displayName : custName;
+
+                    // Handle Broilers
+                    if (order.broiler && (order.broiler.whole_qty > 0 || order.broiler.slices_qty > 0)) {
+                        let broilerItems = [];
+                        if (order.broiler.whole_qty > 0) broilerItems.push({ description: 'Broiler', qty: order.broiler.whole_qty, remark: order.broiler.whole_remark });
+                        if (order.broiler.slices_qty > 0) broilerItems.push({ description: 'Slices', qty: order.broiler.slices_qty, remark: order.broiler.slices_remark });
+                        
+                        pendingOrders.push({
+                            customerName: finalCustName,
+                            customerRemark: order.customerRemark || "",
+                            deliveryDate: deliveryDate,
+                            productType: 'broiler',
+                            status: 'pending',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            broilers: broilerItems,
+                            processedText: `${finalCustName}: ` + broilerItems.map(b => `${b.qty} ${b.description}`).join(', ')
                         });
-                    });
+                    }
+
+                    // Handle Parts
+                    if (order.parts && order.parts.length > 0) {
+                        pendingOrders.push({
+                            customerName: finalCustName,
+                            customerRemark: order.customerRemark || "",
+                            deliveryDate: deliveryDate,
+                            productType: 'parts',
+                            status: 'pending',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            parts: order.parts,
+                            processedText: `${finalCustName} Parts Order`
+                        });
+                    }
+                });
+
+                if (pendingOrders.length === 0) throw new Error("Parsed data was empty.");
+
+                // If only 1 customer was found, populate the form as usual
+                if (result.orders.length === 1) {
+                    const single = result.orders[0];
+                    document.getElementById('customer-search').value = single.customerName;
+                    document.getElementById('customer-search').dispatchEvent(new Event('input'));
+                    document.getElementById('customer-remark').value = single.customerRemark || "";
+                    document.getElementById('order-general-remark').value = single.generalRemark || "";
+                    
+                    if (single.broiler) {
+                        document.getElementById('broiler-main-qty').value = single.broiler.whole_qty || "";
+                        document.getElementById('broiler-main-remark').value = single.broiler.whole_remark || "";
+                        document.getElementById('broiler-slices-qty').value = single.broiler.slices_qty || "";
+                        document.getElementById('broiler-slices-remark').value = single.broiler.slices_remark || "";
+                    }
+                    
+                    currentPartsOrder = [];
+                    if (single.parts) {
+                        single.parts.forEach(p => currentPartsOrder.push({ ...p, qty: parseFloat(p.qty) || 0 }));
+                    }
                     renderPartsList();
                 }
+
+                // Show confirmation modal (skipping manual submit for multiple orders as requested)
+                const listHtml = pendingOrders.map(o => `
+                    <div class="border-b pb-2">
+                        <div class="flex justify-between items-center text-xs text-blue-600 font-bold uppercase mb-1">
+                            <span>${o.productType}</span>
+                            <span>📅 ${o.deliveryDate}</span>
+                        </div>
+                        <strong>${o.customerName}</strong>: ${o.processedText}
+                    </div>
+                `).join('');
+                
+                document.getElementById('confirm-customer-text').textContent = result.orders.length > 1 ? "MULTIPLE ORDERS DETECTED" : pendingOrders[0].customerName;
+                document.getElementById('confirm-product-list').innerHTML = listHtml;
+                
                 aiModal.classList.add('hidden');
-                showNotification('AI parsed successfully!', 'success');
+                confirmationModal.classList.remove('hidden');
+                showNotification(`AI identified ${result.orders.length} customers for ${deliveryDate}.`, 'success');
+
             } catch (e) {
-                alert(`AI Failed: ${e.message}`);
+                console.error(e);
+                alert(`AI Parsing failed: ${e.message}`);
             } finally {
                 aiLoading.classList.add('hidden');
                 processAiBtn.disabled = false;
