@@ -148,7 +148,7 @@
                     <h1 class="text-xl font-bold text-gray-900 tracking-tight">Submit Staff Order</h1>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button id="ai-scan-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded-lg shadow-md transition flex items-center gap-2">
+                    <button id="ai-scan-btn" disabled class="bg-gray-400 text-white font-semibold py-2 px-3 rounded-lg shadow-md transition flex items-center gap-2 cursor-not-allowed">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                         <span class="hidden sm:inline">Smart Order (AI)</span>
                     </button>
@@ -441,9 +441,10 @@
         const aiLoading = document.getElementById('ai-loading');
 
         aiScanBtn.addEventListener('click', () => {
-            document.getElementById('ai-input-text').value = ''; // NEW: Clear input field every time
-            aiModal.classList.remove('hidden');
-            if(!availableModel) checkAPIStatus(); 
+            // Function disabled by hand as requested
+            // document.getElementById('ai-input-text').value = ''; // NEW: Clear input field every time
+            // aiModal.classList.remove('hidden');
+            // if(!availableModel) checkAPIStatus(); 
         });
 
         document.getElementById('close-ai-modal').addEventListener('click', () => aiModal.classList.add('hidden'));

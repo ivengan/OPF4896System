@@ -712,7 +712,7 @@
                 custPressTimer = window.setTimeout(() => {
                     content.dataset.longPressCust = 'true';
                     openEditCustomerModal(item);
-                }, 3000); 
+                }, 600); 
             };
             const handleCustEnd = () => { clearTimeout(custPressTimer); };
 
@@ -733,7 +733,7 @@
                 itemPressTimer = window.setTimeout(() => {
                     content.dataset.longPressItem = 'true';
                     openEditItemModal(item);
-                }, 3000); 
+                }, 600); 
             };
             const handleItemEnd = () => { clearTimeout(itemPressTimer); };
 
