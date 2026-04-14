@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal - Submit Order</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden { display: none !important; }
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
+        @keyframes popIn { 
+            0% { transform: scale(0.9); opacity: 0; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+        .animate-pop { animation: popIn 0.2s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen">
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl relative z-0">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Client Portal</h1>
+                <p class="text-gray-500 mt-2">B2B Order Entry System</p>
+            </div>
+
+            <div id="login-notification" class="hidden mb-4 p-3 rounded-lg text-center font-bold text-sm"></div>
+
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Username</label>
+                    <input type="text" id="login-name" placeholder="Enter universal username" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold" autocomplete="username">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Password</label>
+                    <input type="password" id="login-password" placeholder="Password" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" autocomplete="current-password">
+                </div>
+                
+                <button type="submit" id="btn-login" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 active:scale-95 transition shadow-lg">
+                    SECURE LOGIN
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ORDER SCREEN -->
+    <div id="order-screen" class="hidden min-h-screen pb-20">
+        <header class="bg-white shadow-md sticky top-0 z-10 safe-top">
+            <div class="max-w-3xl mx-auto px-4">
+                <div class="flex justify-between items-center py-4">
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Submit Order</h1>
+                    <button id="btn-logout" class="text-red-500 font-bold hover:text-red-700 text-sm bg-red-50 px-3 py-1 rounded-lg">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-3xl mx-auto py-6 px-4">
+            <div id="order-notification" class="hidden mb-4"></div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 shadow-sm relative z-20">
+                <label class="block text-sm text-blue-600 font-bold uppercase tracking-wider mb-2">Your Company Name</label>
+                <input type="text" id="actual-company-name" required autocomplete="off" placeholder="Type at least 4 letters to search..." class="w-full border border-gray-300 rounded-lg p-3 text-lg font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                <div id="company-search-results" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-2xl overflow-y-auto max-h-60 rounded-b-xl border-t-0"></div>
+            </div>
+
+            <form id="order-form" class="space-y-6">
+                
+                <!-- Date Selection -->
+                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
+                    <h3 class="font-bold text-gray-800 text-lg mb-3 flex items-center gap-2">Delivery Date</h3>
+                    <input type="date" id="order-date" required class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none text-lg font-bold text-gray-700">
+                </div>
+
+                <!-- Broiler Section -->
+                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4 pb-2 border-b">Broiler & Slices</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Whole Chicken (Qty)</label>
+                            <input type="number" id="broiler-qty" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg font-bold" min="0" placeholder="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Broiler Remark</label>
+                            <input type="text" id="broiler-remark" class="w-full border border-gray-300 rounded-lg p-3 text-sm" placeholder="e.g. Size 1.8">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Slices / Potong (Qty)</label>
+                            <input type="number" id="slices-qty" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg font-bold" min="0" placeholder="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Slices Remark</label>
+                            <input type="text" id="slices-remark" class="w-full border border-gray-300 rounded-lg p-3 text-sm" placeholder="e.g. Potong 8">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parts Section -->
+                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4 pb-2 border-b">Chicken Parts</h3>
+                    
+                    <div id="parts-list" class="space-y-3 mb-4">
+                        <p class="text-gray-400 italic text-sm text-center py-2" id="empty-parts-msg">No parts added yet.</p>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="grid grid-cols-12 gap-2 mb-2">
+                            <div class="col-span-12 sm:col-span-6">
+                                <label class="block text-xs font-bold text-gray-500 mb-1">PART NAME</label>
+                                <input type="text" id="part-name" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="e.g. Dada, Peha">
+                            </div>
+                            <div class="col-span-6 sm:col-span-3">
+                                <label class="block text-xs font-bold text-gray-500 mb-1">QTY</label>
+                                <input type="number" id="part-qty" class="w-full border border-gray-300 rounded p-2 text-sm" step="0.5" placeholder="0">
+                            </div>
+                            <div class="col-span-6 sm:col-span-3">
+                                <label class="block text-xs font-bold text-gray-500 mb-1">UNIT</label>
+                                <select id="part-unit" class="w-full border border-gray-300 rounded p-2 text-sm bg-white">
+                                    <option value="KG">KG</option>
+                                    <option value="BAG">BAG</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="part-remark" class="flex-1 border border-gray-300 rounded p-2 text-sm" placeholder="Remark (Optional)">
+                            <button type="button" id="btn-add-part" class="bg-indigo-600 text-white font-bold px-4 rounded hover:bg-indigo-700 transition">Add Part</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
+                     <h3 class="font-bold text-gray-800 text-lg mb-2">General Order Remark</h3>
+                    <textarea id="general-remark" rows="2" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Any special instructions for the whole order..."></textarea>
+                </div>
+
+                <button type="submit" id="btn-submit-order" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition shadow-lg text-lg flex justify-center items-center gap-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Send Order to Admin
+                </button>
+            </form>
+        </main>
+    </div>
+
+    <!-- Modals Removed since password is universal -->
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.firebasestorage.app",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // State
+        let currentParts = [];
+        let allCustomersList = [];
+
+        // Elements
+        const loginScreen = document.getElementById('login-screen');
+        const orderScreen = document.getElementById('order-screen');
+        
+        // --- Date Setup ---
+        const today = new Date();
+        today.setDate(today.getDate() + 1); // Default to tomorrow
+        const tomorrowStr = today.toISOString().split('T')[0];
+        document.getElementById('order-date').value = tomorrowStr;
+        document.getElementById('order-date').min = tomorrowStr; // Can't order for past
+
+        // --- Notifications ---
+        function showNotify(id, msg, type) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.className = `mb-4 p-3 rounded-lg text-center font-bold text-sm ${type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} animate-pop`;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 4000);
+        }
+
+        // --- Session check ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const hasAccess = localStorage.getItem('universal_client_access');
+            if (hasAccess === 'true') {
+                showOrderScreen();
+                loadCustomersList();
+            }
+        });
+
+        async function loadCustomersList() {
+            try {
+                const snapshot = await db.collection('customers').get();
+                allCustomersList = snapshot.docs.map(doc => doc.data().displayName);
+            } catch(e) { console.error("Error loading customers", e); }
+        }
+
+        // --- Secure Search Logic ---
+        const companyInput = document.getElementById('actual-company-name');
+        const searchResults = document.getElementById('company-search-results');
+        
+        companyInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase().trim();
+            searchResults.innerHTML = '';
+            
+            if (val.length >= 4) {
+                const matches = allCustomersList.filter(c => c && c.toLowerCase().includes(val));
+                if (matches.length > 0) {
+                    matches.forEach(m => {
+                        const div = document.createElement('div');
+                        div.className = "p-4 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 font-bold text-gray-800 transition text-lg";
+                        div.textContent = m;
+                        div.onclick = () => {
+                            companyInput.value = m;
+                            searchResults.classList.add('hidden');
+                        };
+                        searchResults.appendChild(div);
+                    });
+                    searchResults.classList.remove('hidden');
+                } else {
+                    searchResults.innerHTML = '<div class="p-4 text-gray-500 italic">No matches found.</div>';
+                    searchResults.classList.remove('hidden');
+                }
+            } else {
+                searchResults.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!companyInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.add('hidden');
+            }
+        });
+
+        function showOrderScreen() {
+            loginScreen.classList.add('hidden');
+            orderScreen.classList.remove('hidden');
+        }
+
+        // --- Login Logic ---
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('login-name').value.trim();
+            const pwd = document.getElementById('login-password').value.trim();
+            
+            if (name === 'cust123' && pwd === 'cust123') {
+                localStorage.setItem('universal_client_access', 'true');
+                showOrderScreen();
+                loadCustomersList();
+            } else {
+                showNotify('login-notification', 'Incorrect universal credentials.', 'error');
+            }
+        });
+
+        // --- Logout ---
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            localStorage.removeItem('universal_client_access');
+            window.location.reload();
+        });
+
+        // --- Parts Management ---
+        function renderParts() {
+            const list = document.getElementById('parts-list');
+            const empty = document.getElementById('empty-parts-msg');
+            
+            if (currentParts.length === 0) {
+                list.innerHTML = '';
+                list.appendChild(empty);
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            let html = '';
+            currentParts.forEach((p, i) => {
+                html += `
+                    <div class="flex justify-between items-center bg-white border rounded p-2 text-sm shadow-sm">
+                        <div>
+                            <span class="font-bold text-gray-800">${p.name}</span> 
+                            <span class="text-blue-600 font-semibold mx-1">(${p.qty} ${p.unit})</span>
+                            ${p.remark ? `<br><span class="text-gray-500 italic text-xs">${p.remark}</span>` : ''}
+                        </div>
+                        <button type="button" onclick="removePart(${i})" class="text-red-500 font-bold hover:bg-red-50 px-2 py-1 rounded">&times;</button>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        document.getElementById('btn-add-part').addEventListener('click', () => {
+            const name = document.getElementById('part-name').value.trim();
+            const qty = parseFloat(document.getElementById('part-qty').value);
+            const unit = document.getElementById('part-unit').value;
+            const remark = document.getElementById('part-remark').value.trim();
+
+            if(!name || isNaN(qty) || qty <= 0) return alert("Valid Part Name and Quantity required.");
+
+            currentParts.push({ name, qty, unit, remark });
+            renderParts();
+
+            document.getElementById('part-name').value = '';
+            document.getElementById('part-qty').value = '';
+            document.getElementById('part-remark').value = '';
+        });
+
+        window.removePart = (index) => {
+            currentParts.splice(index, 1);
+            renderParts();
+        };
+
+        // --- Submit Order ---
+        document.getElementById('order-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const actualCustomerName = document.getElementById('actual-company-name').value.trim();
+            if(!actualCustomerName) return alert("Company Name is required.");
+            
+            const selectedDate = document.getElementById('order-date').value;
+            if(!selectedDate) return alert("Delivery Date required.");
+
+            const wholeQty = parseInt(document.getElementById('broiler-qty').value) || 0;
+            const wholeRemark = document.getElementById('broiler-remark').value.trim();
+            const slicesQty = parseInt(document.getElementById('slices-qty').value) || 0;
+            const slicesRemark = document.getElementById('slices-remark').value.trim();
+            const generalRemark = document.getElementById('general-remark').value.trim();
+
+            let pendingOrders = [];
+            let broilerItems = [];
+            
+            if (wholeQty > 0) broilerItems.push({ description: 'Broiler', qty: wholeQty, remark: wholeRemark });
+            if (slicesQty > 0) broilerItems.push({ description: 'Slices', qty: slicesQty, remark: slicesRemark });
+
+            // Create Broiler Doc if needed
+            if(broilerItems.length > 0) {
+                pendingOrders.push({
+                    customerName: actualCustomerName, 
+                    customerRemark: generalRemark,
+                    productType: 'broiler', 
+                    status: 'unapproved', 
+                    source: 'b2b_portal', // To differentiate
+                    deliveryDate: selectedDate,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    broilers: broilerItems, 
+                    processedText: broilerItems.map(b => `${b.qty} ${b.description}`).join(', ')
+                });
+            }
+
+            // Create Parts Doc if needed
+            if(currentParts.length > 0) {
+                pendingOrders.push({
+                    customerName: actualCustomerName, 
+                    customerRemark: generalRemark,
+                    productType: 'parts', 
+                    status: 'unapproved', 
+                    source: 'b2b_portal',
+                    deliveryDate: selectedDate,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    parts: currentParts, 
+                    processedText: `${actualCustomerName} Parts Order`
+                });
+            }
+
+            if(pendingOrders.length === 0) return alert("Order is empty. Please add items.");
+
+            const btn = document.getElementById('btn-submit-order');
+            btn.disabled = true; btn.textContent = "Sending...";
+
+            try {
+                await Promise.all(pendingOrders.map(o => db.collection('orders').add(o)));
+                showNotify('order-notification', 'Your order requires admin approval. Submitted successfully!', 'success');
+                
+                // Clear form
+                document.getElementById('order-form').reset();
+                currentParts = [];
+                renderParts();
+                document.getElementById('order-date').value = tomorrowStr;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch(error) {
+                console.error(error);
+                showNotify('order-notification', 'Error saving order.', 'error');
+            } finally {
+                btn.disabled = false; 
+                btn.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Send Order to Admin`;
+            }
+        });
+    </script>
+</body>
+</html>
