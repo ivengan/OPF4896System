@@ -457,8 +457,30 @@
         function buildCustomerCard(custName, items) {
             const card = document.createElement('div');
             card.className = 'customer-card';
-            const first = items[0];
-            card.innerHTML = `<div class="customer-header border-b-4 border-blue-500"><div class="font-bold text-gray-800 text-base">${custName}</div></div>`;
+            
+            const header = document.createElement('div');
+            header.className = 'customer-header border-b-4 border-blue-500 customer-name-target select-none';
+            header.style.cssText = '-webkit-touch-callout: none;';
+            header.innerHTML = `<div class="font-bold text-gray-800 text-base">${custName}</div>`;
+            
+            // Long Press Logic
+            let pressTimer;
+            const handleStart = () => {
+                pressTimer = window.setTimeout(() => {
+                    openEditCustomerModal(items[0]);
+                }, 600);
+            };
+            const handleEnd = () => clearTimeout(pressTimer);
+            
+            header.addEventListener('mousedown', handleStart);
+            header.addEventListener('touchstart', handleStart, {passive: true});
+            header.addEventListener('mouseup', handleEnd);
+            header.addEventListener('mouseleave', handleEnd);
+            header.addEventListener('touchend', handleEnd);
+            header.addEventListener('touchmove', handleEnd);
+            header.addEventListener('touchcancel', handleEnd);
+            
+            card.appendChild(header);
             const list = document.createElement('div');
             items.forEach(item => list.appendChild(createPartRow(item)));
             card.appendChild(list);
@@ -490,6 +512,88 @@
             row.querySelector('.part-main').onclick = () => openDispatchModal(item);
             return row;
         }
+
+        // --- Modals & Actions ---
+        
+        // 1. Edit Customer (Driver/Remark)
+        function openEditCustomerModal(item) {
+            currentEditCustomerOrder = item;
+            const dropdown = document.getElementById('edit-cust-driver');
+            
+            // Try to find the order doc to get latest assignedLorry
+            db.collection('orders').doc(item.orderId).get().then(doc => {
+                if(doc.exists) {
+                    const data = doc.data();
+                    dropdown.value = data.assignedLorry || customerMap[data.customerName]?.lorry || "Unassigned";
+                    document.getElementById('edit-cust-remark').value = data.customerRemark || "";
+                }
+            });
+
+            document.getElementById('edit-customer-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('edit-cust-close-x').addEventListener('click', () => {
+            document.getElementById('edit-customer-modal').classList.add('hidden');
+        });
+
+        document.getElementById('edit-cust-save-btn').addEventListener('click', async () => {
+            if (!currentEditCustomerOrder) return;
+            const newLorry = document.getElementById('edit-cust-driver').value;
+            const newRemark = document.getElementById('edit-cust-remark').value.trim();
+            const btn = document.getElementById('edit-cust-save-btn');
+            
+            btn.disabled = true; btn.textContent = "Saving...";
+            try {
+                await db.collection('orders').doc(currentEditCustomerOrder.orderId).update({
+                    assignedLorry: newLorry,
+                    customerRemark: newRemark
+                });
+                showNotification("Order updated.", "success");
+                document.getElementById('edit-customer-modal').classList.add('hidden');
+            } catch (e) {
+                console.error(e);
+                alert("Failed to update order.");
+            } finally {
+                btn.disabled = false; btn.textContent = "Save Changes";
+            }
+        });
+
+        // 2. Edit Specific Item (Remark) - Not strictly needed for Parts but kept for consistency
+        function openEditItemModal(item) {
+            currentEditItemOrder = item;
+            document.getElementById('edit-item-name-display').textContent = item.itemName;
+            document.getElementById('edit-item-remark').value = item.itemRemark || '';
+            document.getElementById('edit-item-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('edit-item-close-x').addEventListener('click', () => {
+            document.getElementById('edit-item-modal').classList.add('hidden');
+        });
+
+        document.getElementById('edit-item-save-btn').addEventListener('click', async () => {
+            if (!currentEditItemOrder) return;
+            const newRemark = document.getElementById('edit-item-remark').value.trim();
+            const btn = document.getElementById('edit-item-save-btn');
+            
+            btn.disabled = true; btn.textContent = "Saving...";
+            try {
+                const orderRef = db.collection('orders').doc(currentEditItemOrder.orderId);
+                const docSnap = await orderRef.get();
+                if(docSnap.exists) {
+                    const data = docSnap.data();
+                    const parts = data.parts;
+                    parts[currentEditItemOrder.partIndex].remark = newRemark;
+                    await orderRef.update({ parts: parts });
+                    showNotification("Item remark updated.", "success");
+                    document.getElementById('edit-item-modal').classList.add('hidden');
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Failed to update remark.");
+            } finally {
+                btn.disabled = false; btn.textContent = "Save Changes";
+            }
+        });
 
         // Logic for modals, verification, and updates remains as before but implemented correctly
         function openDispatchModal(item) { currentModalTarget = item; dispatchModal.classList.remove('hidden'); }
