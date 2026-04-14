@@ -164,7 +164,6 @@
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">BROILER DISPATCH</h1>
                  </div>
                   <div class="flex items-center gap-2">
-                     <input type="date" id="date-filter" class="border border-gray-300 rounded-lg p-1.5 text-sm font-bold shadow-sm focus:ring-2 focus:ring-blue-500">
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition shadow-md">DEL ALL</button>
                  </div>
              </div>
@@ -479,8 +478,6 @@
             try {
                 // Set default date to today for filter
                 const today = new Date().toISOString().split('T')[0];
-                const dateFilter = document.getElementById('date-filter');
-                dateFilter.value = today;
 
                 const settingsDoc = await db.collection('config').doc('pricing').get();
                 if (settingsDoc.exists) pricingSettings = { ...pricingSettings, ...settingsDoc.data() };
@@ -499,11 +496,6 @@
 
                 // Initial listener setup
                 setupOrderListener(today);
-
-                // Date filter change listener
-                dateFilter.addEventListener('change', (e) => {
-                    setupOrderListener(e.target.value);
-                });
 
             } catch (error) {
                 console.error("Init Error:", error);

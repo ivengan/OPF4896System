@@ -170,7 +170,6 @@
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">PARTS DISPATCH (FREEZE)</h1>
                  </div>
                   <div class="flex items-center gap-2">
-                     <input type="date" id="date-filter" class="border border-gray-300 rounded-lg p-1.5 text-sm font-bold shadow-sm focus:ring-2 focus:ring-blue-500">
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-sm hover:bg-red-800 transition shadow-md">DEL ALL</button>
                  </div>
              </div>
@@ -327,7 +326,6 @@
 
         const dispatchListDiv = document.getElementById('dispatch-list');
         const sortSelect = document.getElementById('sort-select');
-        const dateFilter = document.getElementById('date-filter');
         const notificationArea = document.getElementById('notification-area');
         const dispatchModal = document.getElementById('dispatch-modal');
         const editModal = document.getElementById('edit-modal');
@@ -341,7 +339,6 @@
         async function initialize() {
             try {
                 const today = new Date().toISOString().split('T')[0];
-                if (dateFilter) dateFilter.value = today;
 
                 const customersSnapshot = await db.collection('customers').get();
                 customersSnapshot.docs.forEach(doc => {
@@ -350,7 +347,6 @@
                 });
 
                 setupOrderListener(today);
-                if (dateFilter) dateFilter.addEventListener('change', (e) => setupOrderListener(e.target.value));
             } catch (error) {
                 console.error(error);
                 dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error loading data.</p>`;
