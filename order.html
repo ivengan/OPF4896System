@@ -373,8 +373,8 @@
 
                 Tasks:
                 1. Identify the delivery date if mentioned (return as YYYY-MM-DD). If no date is mentioned, use today.
-                2. Identify ALL customers mentioned in the text.
-                3. For each customer, extract their specific order items.
+                2. Identify ALL distinct customers mentioned in the text. CRITICAL: Pay very close attention to "Area" or "Branch" numbers (e.g., "Tangkak 1", "Tangkak 2"). Do NOT merge them into one customer. Treat them as completely separate orders.
+                3. For each distinct customer/branch, extract their specific order items.
                 
                 Return ONLY JSON as an object containing an array:
                 {
