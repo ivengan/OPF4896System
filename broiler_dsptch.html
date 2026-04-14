@@ -163,11 +163,12 @@
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">BROILER DISPATCH</h1>
                  </div>
-                 <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2">
+                     <input type="date" id="date-filter" class="border border-gray-300 rounded-lg p-1.5 text-sm font-bold shadow-sm focus:ring-2 focus:ring-blue-500">
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition shadow-md">DEL ALL</button>
                  </div>
              </div>
-             <div class="flex justify-end pb-1">
+             <div class="flex justify-end pb-1 gap-2">
                  <select id="sort-select" class="border border-gray-300 rounded-lg p-1 text-sm focus:ring-2 focus:ring-blue-500">
                      <option value="driver">Sort by: Driver (Default)</option>
                      <option value="dispatched">Sort by: Already Dispatched</option>
@@ -471,9 +472,16 @@
             setTimeout(() => { notificationArea.innerHTML = ''; }, 3000);
         }
 
+        let activeUnsubscribe = null;
+
         // --- Initial Load ---
         async function initialize() {
             try {
+                // Set default date to today for filter
+                const today = new Date().toISOString().split('T')[0];
+                const dateFilter = document.getElementById('date-filter');
+                dateFilter.value = today;
+
                 const settingsDoc = await db.collection('config').doc('pricing').get();
                 if (settingsDoc.exists) pricingSettings = { ...pricingSettings, ...settingsDoc.data() };
 
@@ -489,17 +497,36 @@
                     dl.innerHTML += `<option value="${d.displayName}"></option>`;
                 });
 
-                db.collection('orders')
-                  .where('productType', '==', 'broiler')
-                  .where('status', '==', 'pending')
-                  .onSnapshot(snapshot => {
-                      processOrders(snapshot.docs);
-                  });
+                // Initial listener setup
+                setupOrderListener(today);
+
+                // Date filter change listener
+                dateFilter.addEventListener('change', (e) => {
+                    setupOrderListener(e.target.value);
+                });
 
             } catch (error) {
                 console.error("Init Error:", error);
                 dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error loading data.</p>`;
             }
+        }
+
+        function setupOrderListener(selectedDate) {
+            if (activeUnsubscribe) activeUnsubscribe();
+            
+            // We show a loading indicator
+            dispatchListDiv.innerHTML = `<p class="p-4 text-center text-gray-500">Syncing orders for ${selectedDate}...</p>`;
+
+            activeUnsubscribe = db.collection('orders')
+                .where('productType', '==', 'broiler')
+                .where('status', '==', 'pending')
+                .where('deliveryDate', '==', selectedDate)
+                .onSnapshot(snapshot => {
+                    processOrders(snapshot.docs);
+                }, err => {
+                    console.error("Snapshot Error:", err);
+                    dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error: ${err.message}. Please check Firestore indexes.</p>`;
+                });
         }
 
         function processOrders(docs) {
