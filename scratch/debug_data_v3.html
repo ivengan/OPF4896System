@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firestore Debugger v3</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <h1>Firestore Data Check v3</h1>
+    <div id="output">Loading...</div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.appspot.com",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function check() {
+            let html = "";
+            try {
+                const completedOrders = await db.collection('orders').where('status', '==', 'completed').get();
+                html += `<h2>Completed Orders</h2>`;
+                html += `<p>Total Completed Orders: ${completedOrders.size}</p>`;
+
+                const anyOrders = await db.collection('orders').limit(10).get();
+                 html += `<h2>Sample Orders (Limit 10)</h2><ul>`;
+                anyOrders.forEach(doc => {
+                    html += `<li>ID: ${doc.id}, Status: ${doc.data().status}, Cust: ${doc.data().customerName}</li>`;
+                });
+                html += "</ul>";
+                
+                const allCollections = ['orders', 'customers', 'delivery_orders', 'config', 'staff', 'metadata'];
+                html += `<h2>Collection Counts</h2><ul>`;
+                for(let c of allCollections) {
+                    const snap = await db.collection(c).get();
+                    html += `<li>'${c}': ${snap.size}</li>`;
+                }
+                html += "</ul>";
+
+            } catch (e) {
+                html += `<p style="color:red">Error: ${e.message}</p>`;
+            }
+            document.getElementById('output').innerHTML = html;
+        }
+        check();
+    </script>
+</body>
+</html>
