@@ -150,6 +150,10 @@
             .whitespace-nowrap { white-space: nowrap; }
         .inline-flex { display: inline-flex; }
         .min-h-16 { min-height: 4rem; }
+    
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        .spinner-svg { width: 1.25rem; height: 1.25rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
@@ -527,11 +531,13 @@
         });
 
         document.getElementById('confirm-print-btn').addEventListener('click', async (e) => {
+            const btn = e.target;
+            if (btn.disabled) return;
             if (!pendingPrintTrip) return;
 
-            const btn = e.target;
             btn.disabled = true;
-            btn.textContent = "Processing D/O...";
+            document.getElementById('cancel-print-btn').disabled = true;
+            btn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Processing D/O...</span>`;
 
             try {
                 // 1. Generate unique D/O No.
@@ -646,6 +652,7 @@
                 showNotification("Failed to process D/O. Check connection.", "error");
             } finally {
                 btn.disabled = false;
+                document.getElementById('cancel-print-btn').disabled = false;
                 btn.textContent = "Depart & Process";
                 pendingPrintTrip = null;
             }

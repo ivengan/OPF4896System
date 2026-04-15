@@ -288,6 +288,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
 
         // --- GEMINI API SETUP ---
         // We load the key from localStorage to avoid exposing it in public GitHub repositories.

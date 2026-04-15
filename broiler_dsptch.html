@@ -144,6 +144,10 @@
         .inline-flex { display: inline-flex; }
         .min-h-16 { min-height: 4rem; }
         .min-h-12 { min-height: 3rem; }
+    
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        .spinner-svg { width: 1.25rem; height: 1.25rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 text-[15px] leading-relaxed">
@@ -437,6 +441,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
 
         // Globals
         let allOrders = []; 
@@ -835,14 +840,13 @@
         });
 
         document.getElementById('edit-cust-save-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('edit-cust-save-btn');
+            if(btn.disabled) return;
             if (!currentEditCustomerOrder) return;
-            
             const newLorry = document.getElementById('edit-cust-driver').value;
             const newRemark = document.getElementById('edit-cust-remark').value.trim();
-            const btn = document.getElementById('edit-cust-save-btn');
-            
             btn.disabled = true;
-            btn.textContent = "Saving...";
+            btn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Saving...</span>`;
 
             try {
                 await db.collection('orders').doc(currentEditCustomerOrder.orderId).update({
@@ -873,13 +877,12 @@
         });
 
         document.getElementById('edit-item-save-btn').addEventListener('click', async () => {
-            if (!currentEditItemOrder) return;
-            
-            const newRemark = document.getElementById('edit-item-remark').value.trim();
             const btn = document.getElementById('edit-item-save-btn');
-            
+            if (btn.disabled) return;
+            if (!currentEditItemOrder) return;
+            const newRemark = document.getElementById('edit-item-remark').value.trim();
             btn.disabled = true;
-            btn.textContent = "Saving...";
+            btn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Saving...</span>`;
 
             try {
                 const orderRef = db.collection('orders').doc(currentEditItemOrder.orderId);

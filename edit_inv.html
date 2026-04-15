@@ -161,6 +161,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
 
         const itemNameInput = document.getElementById('item-name-input');
         // CHANGED variable name

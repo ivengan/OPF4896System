@@ -76,6 +76,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
 
         const aliasInput = document.getElementById('alias-input');
         const correctInput = document.getElementById('correct-input');

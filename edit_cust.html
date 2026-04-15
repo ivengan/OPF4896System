@@ -191,6 +191,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
 
         const listDiv = document.getElementById('customer-list');
         const sortSelect = document.getElementById('sort-select');
