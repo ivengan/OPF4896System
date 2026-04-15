@@ -145,8 +145,8 @@
                     <input type="text" id="cust-lorry" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500" placeholder="e.g. JWP 9168">
                 </div>
                 <div>
-                    <label class="block text-[17px] font-bold text-gray-700">Whatsapp/Phone no.</label>
-                    <input type="tel" id="cust-phone" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500" placeholder="e.g. 60123456789">
+                    <label class="block text-[17px] font-bold text-gray-700">Phone No. (For Client Portal Login)</label>
+                    <input type="tel" id="cust-phone" class="w-full border border-gray-300 rounded-lg p-3 mt-1 focus:ring-2 focus:ring-blue-500" placeholder="e.g. 0123456789">
                 </div>
                 <div>
                     <label class="block text-[17px] font-bold text-gray-700">Description / Area</label>
@@ -168,9 +168,12 @@
                 </div>
             </div>
 
-            <div class="flex gap-3 pt-4">
-                <button id="modal-del-btn" class="w-1/3 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition shadow-md" style="display: none;">Delete</button>
-                <button id="modal-save-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-md">Save</button>
+            <div class="flex flex-col gap-3 pt-4">
+                <button id="modal-save-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-md">Save Customer</button>
+                <div class="flex gap-3">
+                    <button id="modal-reset-pwd-btn" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 rounded-xl transition shadow-md" style="display: none;">Reset Portal Pwd</button>
+                    <button id="modal-del-btn" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition shadow-md" style="display: none;">Delete</button>
+                </div>
             </div>
         </div>
     </div>
@@ -295,6 +298,7 @@
                 document.getElementById('cust-desc').value = data.description || '';
                 document.querySelector(`input[name="defaultStock"][value="${data.defaultStock || 'Freeze'}"]`).checked = true;
                 document.getElementById('modal-del-btn').style.display = 'block';
+                document.getElementById('modal-reset-pwd-btn').style.display = 'block';
             } else {
                 document.getElementById('modal-title').textContent = 'Add Customer';
                 document.getElementById('cust-name').value = '';
@@ -303,6 +307,7 @@
                 document.getElementById('cust-desc').value = '';
                 document.querySelector(`input[name="defaultStock"][value="Freeze"]`).checked = true;
                 document.getElementById('modal-del-btn').style.display = 'none';
+                document.getElementById('modal-reset-pwd-btn').style.display = 'none';
             }
             
             modal.style.display = 'flex'; 
@@ -314,9 +319,17 @@
         document.getElementById('modal-save-btn').addEventListener('click', async () => {
             const name = document.getElementById('cust-name').value.trim();
             const lorry = document.getElementById('cust-lorry').value.trim();
-            const phone = document.getElementById('cust-phone').value.trim();
+            let phone = document.getElementById('cust-phone').value.trim();
             const desc = document.getElementById('cust-desc').value.trim();
             const stock = document.querySelector('input[name="defaultStock"]:checked').value;
+            
+            // Normalize phone for login compatibility
+            if (phone) {
+                let n = phone.replace(/\D/g, '');
+                if (n.startsWith('60')) n = n.substring(1);
+                if (!n.startsWith('0')) n = '0' + n;
+                phone = n;
+            }
 
             if(!name) return alert("Customer Name is required.");
             
@@ -345,6 +358,18 @@
                     showNotification("Customer Deleted");
                     closeModal(); 
                 } catch(e) { alert("Failed to delete"); }
+            }
+        });
+
+        document.getElementById('modal-reset-pwd-btn').addEventListener('click', async () => {
+            if(confirm("Are you sure you want to reset this customer's portal password? They will be prompted to create a new one on their next login.")) {
+                try {
+                    await db.collection('customers').doc(currentEditingId).update({
+                        portalPassword: firebase.firestore.FieldValue.delete()
+                    });
+                    showNotification("Client Password Reset");
+                    closeModal();
+                } catch(e) { alert("Failed to reset password. Note: Customer might not have a password yet."); }
             }
         });
 
