@@ -1,20 +1,20 @@
 // D:\OPF4896System\service-worker.js
 
-const CACHE_NAME = 'opf-system-v1';
+const CACHE_NAME = 'opf-system-v2';
 // List all files you want to work offline
 const ASSETS = [
   '.',
   'index.html',
-  'dashboard.html',
   'dashboard2.html',
+  'client.html',
+  'order_pending.html',
   'order.html',
   'broiler_dsptch.html',
   'parts_dsptch.html',
   'staff_management.html',
   'report.html',
   'setting.html',
-  'public/js/firebase-config.js',
-  'public/js/auth.js',
+  'pwa-install.js',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'https://cdn.tailwindcss.com', 

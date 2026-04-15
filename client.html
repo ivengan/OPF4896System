@@ -7,6 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="pwa-install.js" defer></script>
     <style>
         .hidden { display: none !important; }
         .modal-overlay { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
@@ -164,6 +165,25 @@
         </div>
     </div>
 
+    <!-- PWA Installation Guide -->
+    <div id="pwa-guide" class="hidden fixed bottom-6 left-6 right-6 z-[60] animate-pop">
+        <div class="bg-blue-600 text-white p-5 rounded-2xl shadow-2xl relative">
+            <button onclick="document.getElementById('pwa-guide').classList.add('hidden')" class="absolute top-2 right-3 text-white opacity-60 hover:opacity-100 text-xl font-bold">&times;</button>
+            <div class="flex items-center gap-4 mb-3">
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-inner">
+                    <img src="icons/icon-192.png" alt="App" class="w-10 h-10 rounded">
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg leading-tight">Install Ordering App</h4>
+                    <p class="text-xs text-blue-100 italic">Fast orders, no web link needed!</p>
+                </div>
+            </div>
+            <div id="pwa-instructions" class="text-sm font-semibold bg-blue-700 bg-opacity-40 p-3 rounded-xl border border-blue-400 border-opacity-30">
+                <!-- Dynamic text based on OS -->
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
@@ -221,7 +241,32 @@
                 loggedInCustomerName = storedName;
                 showOrderScreen();
             }
+            setupPWAInstructions();
         });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log("SW Registered"))
+                .catch(err => console.log("SW Failed", err));
+        }
+
+        function setupPWAInstructions() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            if (!isStandalone) {
+                const guide = document.getElementById('pwa-guide');
+                const text = document.getElementById('pwa-instructions');
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                const isAndroid = /Android/.test(navigator.userAgent);
+
+                if (isIOS) {
+                    text.innerHTML = 'Tap the <span class="bg-white text-blue-600 px-2 py-0.5 rounded mx-1">Share</span> icon (bottom center) and select <span class="bg-white text-blue-600 px-2 py-0.5 rounded mx-1">Add to Home Screen</span>.';
+                    guide.classList.remove('hidden');
+                } else if (isAndroid) {
+                    text.innerHTML = 'Tap the <span class="bg-white text-blue-600 px-2 py-0.5 rounded mx-1">Menu</span> (3 dots) and select <span class="bg-white text-blue-600 px-2 py-0.5 rounded mx-1">Add to Home screen / Install</span>.';
+                    guide.classList.remove('hidden');
+                }
+            }
+        }
 
         function showOrderScreen() {
             loginScreen.classList.add('hidden');
