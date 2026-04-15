@@ -156,6 +156,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
 
         // --- DOM References ---
         const customerTierListDiv = document.getElementById('customer-tier-list');

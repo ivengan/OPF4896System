@@ -78,6 +78,7 @@
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
 
         const form = document.getElementById('add-staff-form');
         const listContainer = document.getElementById('staff-list');
