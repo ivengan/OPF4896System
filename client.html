@@ -31,9 +31,9 @@
 
             <form id="login-form" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Username</label>
-                    <input type="text" id="login-name" placeholder="Enter universal username" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold" autocomplete="username">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                    <input type="tel" id="login-phone" placeholder="01xxxxxxxx" maxlength="12"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold" autocomplete="tel">
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Password</label>
@@ -42,7 +42,7 @@
                 </div>
                 
                 <button type="submit" id="btn-login" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 active:scale-95 transition shadow-lg">
-                    SECURE LOGIN
+                    CLIENT LOGIN
                 </button>
             </form>
         </div>
@@ -62,10 +62,9 @@
         <main class="max-w-3xl mx-auto py-6 px-4">
             <div id="order-notification" class="hidden mb-4"></div>
 
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 shadow-sm relative z-20">
-                <label class="block text-sm text-blue-600 font-bold uppercase tracking-wider mb-2">Your Company Name</label>
-                <input type="text" id="actual-company-name" required autocomplete="off" placeholder="Type at least 4 letters to search..." class="w-full border border-gray-300 rounded-lg p-3 text-lg font-bold text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition">
-                <div id="company-search-results" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-2xl overflow-y-auto max-h-60 rounded-b-xl border-t-0"></div>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 shadow-sm">
+                <p class="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">Authenticated As:</p>
+                <div id="display-company-name" class="text-2xl font-bold text-gray-900">Loading...</div>
             </div>
 
             <form id="order-form" class="space-y-6">
@@ -149,7 +148,21 @@
         </main>
     </div>
 
-    <!-- Modals Removed since password is universal -->
+    <!-- Set Password Modal (First Time) -->
+    <div id="modal-set-password" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-pop">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">First Time Login</h2>
+            <p class="text-gray-600 mb-6 text-sm">Welcome! Please set a password to use for future logins.</p>
+            
+            <input type="password" id="new-password" placeholder="Create a new password" 
+                class="w-full px-4 py-3 mb-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-left">
+            
+            <button id="btn-save-password" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition shadow-md">
+                Save & Continue
+            </button>
+            <button onclick="document.getElementById('modal-set-password').classList.add('hidden')" class="w-full mt-3 text-gray-500 font-semibold hover:text-gray-700">Cancel</button>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -167,11 +180,13 @@
 
         // State
         let currentParts = [];
-        let allCustomersList = [];
+        let loggedInCustomerName = null;
+        let loggedInCustomerId = null;
 
         // Elements
         const loginScreen = document.getElementById('login-screen');
         const orderScreen = document.getElementById('order-screen');
+        const setPasswordModal = document.getElementById('modal-set-password');
         
         // --- Date Setup ---
         const today = new Date();
@@ -189,82 +204,107 @@
             setTimeout(() => el.classList.add('hidden'), 4000);
         }
 
-        // --- Session check ---
-        window.addEventListener('DOMContentLoaded', () => {
-            const hasAccess = localStorage.getItem('universal_client_access');
-            if (hasAccess === 'true') {
-                showOrderScreen();
-                loadCustomersList();
-            }
-        });
-
-        async function loadCustomersList() {
-            try {
-                const snapshot = await db.collection('customers').get();
-                allCustomersList = snapshot.docs.map(doc => doc.data().displayName);
-            } catch(e) { console.error("Error loading customers", e); }
+        // --- Helper: Normalize Phone ---
+        function normalizePhone(nr) {
+            let n = nr.replace(/\D/g, '');
+            if (n.startsWith('60')) n = n.substring(1); // turn 601... to 01...
+            if (n.startsWith('0')) return n;
+            return '0' + n;
         }
 
-        // --- Secure Search Logic ---
-        const companyInput = document.getElementById('actual-company-name');
-        const searchResults = document.getElementById('company-search-results');
-        
-        companyInput.addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase().trim();
-            searchResults.innerHTML = '';
-            
-            if (val.length >= 4) {
-                const matches = allCustomersList.filter(c => c && c.toLowerCase().includes(val));
-                if (matches.length > 0) {
-                    matches.forEach(m => {
-                        const div = document.createElement('div');
-                        div.className = "p-4 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 font-bold text-gray-800 transition text-lg";
-                        div.textContent = m;
-                        div.onclick = () => {
-                            companyInput.value = m;
-                            searchResults.classList.add('hidden');
-                        };
-                        searchResults.appendChild(div);
-                    });
-                    searchResults.classList.remove('hidden');
-                } else {
-                    searchResults.innerHTML = '<div class="p-4 text-gray-500 italic">No matches found.</div>';
-                    searchResults.classList.remove('hidden');
-                }
-            } else {
-                searchResults.classList.add('hidden');
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!companyInput.contains(e.target) && !searchResults.contains(e.target)) {
-                searchResults.classList.add('hidden');
+        // --- Session check ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const storedId = localStorage.getItem('client_id');
+            const storedName = localStorage.getItem('client_name');
+            if (storedId && storedName) {
+                loggedInCustomerId = storedId;
+                loggedInCustomerName = storedName;
+                showOrderScreen();
             }
         });
 
         function showOrderScreen() {
             loginScreen.classList.add('hidden');
             orderScreen.classList.remove('hidden');
+            document.getElementById('display-company-name').textContent = loggedInCustomerName;
         }
 
         // --- Login Logic ---
-        document.getElementById('login-form').addEventListener('submit', (e) => {
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('login-name').value.trim();
-            const pwd = document.getElementById('login-password').value.trim();
+            const phoneInput = document.getElementById('login-phone').value.trim();
+            const pwdInput = document.getElementById('login-password').value.trim();
+            const btn = document.getElementById('btn-login');
+
+            if (!phoneInput || !pwdInput) return showNotify('login-notification', 'Enter phone and password.', 'error');
             
-            if (name === 'cust123' && pwd === 'cust123') {
-                localStorage.setItem('universal_client_access', 'true');
+            const normalized = normalizePhone(phoneInput);
+            btn.textContent = "Verifying...";
+            btn.disabled = true;
+
+            try {
+                // We check both "01..." and "601..." just in case
+                const snapshot = await db.collection('customers')
+                    .where('phone', 'in', [normalized, '6' + normalized])
+                    .limit(1).get();
+
+                if (snapshot.empty) throw new Error("Phone number not registered.");
+
+                const doc = snapshot.docs[0];
+                const data = doc.data();
+
+                if (!data.portalPassword) {
+                    // First time
+                    loggedInCustomerId = doc.id;
+                    loggedInCustomerName = data.displayName;
+                    document.getElementById('new-password').value = pwdInput;
+                    openModal('modal-set-password');
+                } else if (data.portalPassword === pwdInput) {
+                    // Success
+                    loggedInCustomerId = doc.id;
+                    loggedInCustomerName = data.displayName;
+                    localStorage.setItem('client_id', loggedInCustomerId);
+                    localStorage.setItem('client_name', loggedInCustomerName);
+                    showOrderScreen();
+                } else {
+                    throw new Error("Incorrect password.");
+                }
+            } catch(e) {
+                showNotify('login-notification', e.message, 'error');
+            } finally {
+                btn.textContent = "CLIENT LOGIN";
+                btn.disabled = false;
+            }
+        });
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // --- Set Password Logic ---
+        document.getElementById('btn-save-password').addEventListener('click', async () => {
+            const newPwd = document.getElementById('new-password').value.trim();
+            if (!newPwd) return alert("Password required.");
+            const btn = document.getElementById('btn-save-password');
+            btn.disabled = true; btn.textContent = "Saving...";
+            try {
+                await db.collection('customers').doc(loggedInCustomerId).update({
+                    portalPassword: newPwd
+                });
+                closeModal('modal-set-password');
+                localStorage.setItem('client_id', loggedInCustomerId);
+                localStorage.setItem('client_name', loggedInCustomerName);
                 showOrderScreen();
-                loadCustomersList();
-            } else {
-                showNotify('login-notification', 'Incorrect universal credentials.', 'error');
+            } catch(e) {
+                alert("Error setting password.");
+            } finally {
+                btn.disabled = false; btn.textContent = "Save & Continue";
             }
         });
 
         // --- Logout ---
         document.getElementById('btn-logout').addEventListener('click', () => {
-            localStorage.removeItem('universal_client_access');
+            localStorage.removeItem('client_id');
+            localStorage.removeItem('client_name');
             window.location.reload();
         });
 
@@ -322,9 +362,6 @@
         document.getElementById('order-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const actualCustomerName = document.getElementById('actual-company-name').value.trim();
-            if(!actualCustomerName) return alert("Company Name is required.");
-            
             const selectedDate = document.getElementById('order-date').value;
             if(!selectedDate) return alert("Delivery Date required.");
 
@@ -343,7 +380,7 @@
             // Create Broiler Doc if needed
             if(broilerItems.length > 0) {
                 pendingOrders.push({
-                    customerName: actualCustomerName, 
+                    customerName: loggedInCustomerName, 
                     customerRemark: generalRemark,
                     productType: 'broiler', 
                     status: 'unapproved', 
@@ -358,7 +395,7 @@
             // Create Parts Doc if needed
             if(currentParts.length > 0) {
                 pendingOrders.push({
-                    customerName: actualCustomerName, 
+                    customerName: loggedInCustomerName, 
                     customerRemark: generalRemark,
                     productType: 'parts', 
                     status: 'unapproved', 
@@ -366,7 +403,7 @@
                     deliveryDate: selectedDate,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     parts: currentParts, 
-                    processedText: `${actualCustomerName} Parts Order`
+                    processedText: `${loggedInCustomerName} Parts Order`
                 });
             }
 
