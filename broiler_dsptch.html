@@ -481,9 +481,6 @@
         // --- Initial Load ---
         async function initialize() {
             try {
-                // Set default date to today for filter
-                const today = new Date().toISOString().split('T')[0];
-
                 const settingsDoc = await db.collection('config').doc('pricing').get();
                 if (settingsDoc.exists) pricingSettings = { ...pricingSettings, ...settingsDoc.data() };
 
@@ -499,30 +496,28 @@
                     dl.innerHTML += `<option value="${d.displayName}"></option>`;
                 });
 
-                // Initial listener setup
-                setupOrderListener(today);
+                // Set up real-time listener for ALL pending broiler orders (no date filter)
+                setupOrderListener();
 
             } catch (error) {
                 console.error("Init Error:", error);
-                dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error loading data.</p>`;
+                dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error loading data: ${error.message}</p>`;
             }
         }
 
-        function setupOrderListener(selectedDate) {
+        function setupOrderListener() {
             if (activeUnsubscribe) activeUnsubscribe();
-            
-            // We show a loading indicator
-            dispatchListDiv.innerHTML = `<p class="p-4 text-center text-gray-500">Syncing orders for ${selectedDate}...</p>`;
+
+            dispatchListDiv.innerHTML = `<p class="p-4 text-center text-gray-500">Loading broiler orders...</p>`;
 
             activeUnsubscribe = db.collection('orders')
                 .where('productType', '==', 'broiler')
                 .where('status', '==', 'pending')
-                .where('deliveryDate', '==', selectedDate)
                 .onSnapshot(snapshot => {
                     processOrders(snapshot.docs);
                 }, err => {
                     console.error("Snapshot Error:", err);
-                    dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error: ${err.message}. Please check Firestore indexes.</p>`;
+                    dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error: ${err.message}</p>`;
                 });
         }
 
@@ -1286,7 +1281,8 @@
         });
 
         sortSelect.addEventListener('change', renderDispatchList);
-        document.addEventListener('DOMContentLoaded', initialize);
+        // Scripts run at bottom of body — DOM is already ready, call directly
+        initialize();
 
     </script>
 </body>
