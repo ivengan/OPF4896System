@@ -891,6 +891,30 @@
         });
 
         // 3. Dispatch Add Modal
+            btn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Saving...</span>`;
+
+            try {
+                const orderRef = db.collection('orders').doc(currentEditItemOrder.orderId);
+                const docSnap = await orderRef.get();
+                if(docSnap.exists) {
+                    const data = docSnap.data();
+                    const broilers = data.broilers;
+                    broilers[currentEditItemOrder.broilerIndex].remark = newRemark;
+                    
+                    await orderRef.update({ broilers: broilers });
+                    showNotification("Item remark updated.", "success");
+                    document.getElementById('edit-item-modal').classList.add('hidden');
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Failed to update item remark.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Save Changes";
+            }
+        });
+
+        // 3. Dispatch Add Modal
         function openDispatchModal(item) {
             currentModalTarget = item;
             document.getElementById('modal-qty').value = ''; 
@@ -899,6 +923,11 @@
             document.getElementById('modal-container-count').value = '1';
             document.getElementById('modal-r').checked = false;
             document.getElementById('modal-ayam-lama').checked = false;
+            
+            const nettCheckbox = document.getElementById('modal-nett-kg');
+            nettCheckbox.checked = false;
+            nettCheckbox.dispatchEvent(new Event('change'));
+            
             document.getElementById('modal-status-display').textContent = `(${item.dispatchedQty}/${item.orderedQty})`;
             dispatchModal.classList.remove('hidden');
         }
@@ -1141,18 +1170,21 @@
             const containerCount = parseInt(document.getElementById('modal-container-count').value) || 1;
             const hasR = document.getElementById('modal-r').checked;
             const isAyamLama = document.getElementById('modal-ayam-lama').checked;
+            const isNett = document.getElementById('modal-nett-kg').checked;
 
             if (qty <= 0) { alert("Invalid quantity"); return; }
 
             btn.disabled = true; btn.textContent = 'Saving...';
 
-            let tare = 0;
-            if (containerType === 'Crate') tare = pricingSettings.tare_crate * containerCount;
-            if (containerType === 'Basket') tare = pricingSettings.tare_basket * containerCount;
-            if (containerType === 'Barrel') tare = pricingSettings.tare_barrel * containerCount;
-            if (hasR) tare += pricingSettings.tare_r;
-            
-            const netWeight = Math.max(0, grossWeight - tare);
+            let netWeight = grossWeight;
+            if (!isNett) {
+                let tare = 0;
+                if (containerType === 'Crate') tare = pricingSettings.tare_crate * containerCount;
+                if (containerType === 'Basket') tare = pricingSettings.tare_basket * containerCount;
+                if (containerType === 'Barrel') tare = pricingSettings.tare_barrel * containerCount;
+                if (hasR) tare += pricingSettings.tare_r;
+                netWeight = Math.max(0, grossWeight - tare);
+            }
 
             try {
                 // --- AYAM LAMA VERIFICATION LOGIC ---
@@ -1231,6 +1263,25 @@
             } finally { 
                 btn.disabled = false; 
                 btn.textContent = 'Add & Update'; 
+            }
+        });
+
+        document.getElementById('modal-nett-kg').addEventListener('change', (e) => {
+            const isNett = e.target.checked;
+            const containerSelect = document.getElementById('modal-container');
+            const containerCountSelect = document.getElementById('modal-container-count');
+            const rCheckbox = document.getElementById('modal-r');
+            
+            containerSelect.disabled = isNett;
+            containerCountSelect.disabled = isNett;
+            rCheckbox.disabled = isNett;
+            
+            if (isNett) {
+                containerSelect.classList.add('bg-gray-200', 'opacity-50', 'cursor-not-allowed');
+                containerCountSelect.classList.add('bg-gray-200', 'opacity-50', 'cursor-not-allowed');
+            } else {
+                containerSelect.classList.remove('bg-gray-200', 'opacity-50', 'cursor-not-allowed');
+                containerCountSelect.classList.remove('bg-gray-200', 'opacity-50', 'cursor-not-allowed');
             }
         });
 
