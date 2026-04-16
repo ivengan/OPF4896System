@@ -160,6 +160,19 @@
                     <span class="text-17px-bold">KG</span>
                 </div>
             </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Nett Weight</span>
+                    <span class="setting-desc">Standard weight for Nett/Direct weigh</span>
+                </div>
+                <div class="input-suffix">
+                    <div class="input-group">
+                        <input type="number" step="1" id="tare-nett" placeholder="0" readonly>
+                    </div>
+                    <span class="text-17px-bold">KG</span>
+                </div>
+            </div>
         </div>
 
         <button id="save-settings-btn" class="save-btn">Save All Settings</button>
@@ -189,6 +202,7 @@
         const tareBasketInput = document.getElementById('tare-basket');
         const tareBarrelInput = document.getElementById('tare-barrel');
         const tareRInput = document.getElementById('tare-r');
+        const tareNettInput = document.getElementById('tare-nett');
         
         const saveBtn = document.getElementById('save-settings-btn');
         const notifArea = document.getElementById('notification-area');
@@ -229,12 +243,14 @@
                     tareBasketInput.value = data.tare_basket || 8.7;
                     tareBarrelInput.value = data.tare_barrel || 5.0;
                     tareRInput.value = data.tare_r || 4.7;
+                    tareNettInput.value = data.tare_nett !== undefined ? data.tare_nett : 0;
                 } else {
                     // Fallback to strict defaults if completely empty
                     tareCrateInput.value = 1.8;
                     tareBasketInput.value = 8.7;
                     tareBarrelInput.value = 5.0;
                     tareRInput.value = 4.7;
+                    tareNettInput.value = 0;
                 }
             } catch (e) {
                 console.error("Failed to load settings", e);
@@ -250,6 +266,7 @@
             const tareBasket = parseFloat(tareBasketInput.value) || 0;
             const tareBarrel = parseFloat(tareBarrelInput.value) || 0;
             const tareR = parseFloat(tareRInput.value) || 0;
+            const tareNett = parseFloat(tareNettInput.value) || 0;
 
             try {
                 // Handle Biometric Sync
@@ -279,7 +296,8 @@
                     tare_crate: tareCrate,
                     tare_basket: tareBasket,
                     tare_barrel: tareBarrel,
-                    tare_r: tareR
+                    tare_r: tareR,
+                    tare_nett: tareNett
                 }, { merge: true });
 
                 await batch.commit();

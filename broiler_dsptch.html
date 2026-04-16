@@ -215,6 +215,7 @@
                     <div>
                         <label class="block text-[17px] font-medium text-gray-700">Container Type</label>
                         <select id="modal-container" class="w-full border border-gray-300 rounded-lg p-3 mt-1">
+                            <option value="Nett">Nett</option>
                             <option value="Crate">Crate</option>
                             <option value="Basket">Basket</option>
                             <option value="Barrel">Barrel</option>
@@ -223,6 +224,7 @@
                     <div>
                         <label class="block text-[17px] font-medium text-gray-700">No. of Crates</label>
                         <select id="modal-container-count" class="w-full border border-gray-300 rounded-lg p-3 mt-1">
+                            <option value="0">0</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -293,6 +295,7 @@
                     <div>
                         <label class="block text-[17px] font-medium text-gray-700">Container Type</label>
                         <select id="edit-container" class="w-full border border-gray-300 rounded-lg p-3 mt-1">
+                            <option value="Nett">Nett</option>
                             <option value="Crate">Crate</option>
                             <option value="Basket">Basket</option>
                             <option value="Barrel">Barrel</option>
@@ -301,6 +304,7 @@
                     <div>
                         <label class="block text-[17px] font-medium text-gray-700">No. of Crates</label>
                         <select id="edit-container-count" class="w-full border border-gray-300 rounded-lg p-3 mt-1">
+                            <option value="0">0</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -929,9 +933,10 @@
             currentModalTarget = item;
             document.getElementById('modal-qty').value = ''; 
             document.getElementById('modal-weight').value = ''; 
-            document.getElementById('modal-container').value = 'Crate';
-            document.getElementById('modal-container-count').value = '1';
+            document.getElementById('modal-container').value = 'Nett';
+            document.getElementById('modal-container-count').value = '0';
             document.getElementById('modal-r').checked = false;
+            document.getElementById('modal-r').disabled = true;
             document.getElementById('modal-ayam-lama').checked = false;
             
             document.getElementById('modal-status-display').textContent = `(${item.dispatchedQty}/${item.orderedQty})`;
@@ -943,9 +948,10 @@
             currentModalTarget = item;
             document.getElementById('edit-deduct-qty').value = '';
             document.getElementById('edit-deduct-weight').value = ''; 
-            document.getElementById('edit-container').value = 'Crate';
-            document.getElementById('edit-container-count').value = '1';
+            document.getElementById('edit-container').value = 'Nett';
+            document.getElementById('edit-container-count').value = '0';
             document.getElementById('edit-r').checked = false;
+            document.getElementById('edit-r').disabled = true;
             editModal.classList.remove('hidden');
         }
 
@@ -960,10 +966,13 @@
             if(dQty > currentModalTarget.dispatchedQty) return alert("Cannot deduct more than dispatched quantity.");
 
             let tare = 0;
+            if (containerType === 'Nett') tare = (pricingSettings.tare_nett !== undefined ? pricingSettings.tare_nett : 0) * containerCount;
             if (containerType === 'Crate') tare = pricingSettings.tare_crate * containerCount;
             if (containerType === 'Basket') tare = pricingSettings.tare_basket * containerCount;
             if (containerType === 'Barrel') tare = pricingSettings.tare_barrel * containerCount;
-            if (hasR) tare += pricingSettings.tare_r;
+            
+            const rCheckbox = document.getElementById('edit-r');
+            if (!rCheckbox.disabled && hasR) tare += pricingSettings.tare_r;
             
             const netDeductWeight = Math.max(0, grossWeight - tare);
 
@@ -1183,10 +1192,13 @@
 
             let netWeight = grossWeight;
             let tare = 0;
+            if (containerType === 'Nett') tare = (pricingSettings.tare_nett !== undefined ? pricingSettings.tare_nett : 0) * containerCount;
             if (containerType === 'Crate') tare = pricingSettings.tare_crate * containerCount;
             if (containerType === 'Basket') tare = pricingSettings.tare_basket * containerCount;
             if (containerType === 'Barrel') tare = pricingSettings.tare_barrel * containerCount;
-            if (hasR) tare += pricingSettings.tare_r;
+            
+            const rCheckbox = document.getElementById('modal-r');
+            if (!rCheckbox.disabled && hasR) tare += pricingSettings.tare_r;
             netWeight = Math.max(0, grossWeight - tare);
 
             try {
@@ -1274,6 +1286,27 @@
         });
 
         sortSelect.addEventListener('change', renderDispatchList);
+
+        function updateTareUI(containerId, countId, rId) {
+            const container = document.getElementById(containerId);
+            const count = document.getElementById(countId);
+            const r = document.getElementById(rId);
+            
+            if (container.value === 'Nett' || count.value === '0') {
+                r.checked = false;
+                r.disabled = true;
+                r.parentElement.classList.add('opacity-50');
+            } else {
+                r.disabled = false;
+                r.parentElement.classList.remove('opacity-50');
+            }
+        }
+
+        document.getElementById('modal-container').addEventListener('change', () => updateTareUI('modal-container', 'modal-container-count', 'modal-r'));
+        document.getElementById('modal-container-count').addEventListener('change', () => updateTareUI('modal-container', 'modal-container-count', 'modal-r'));
+        document.getElementById('edit-container').addEventListener('change', () => updateTareUI('edit-container', 'edit-container-count', 'edit-r'));
+        document.getElementById('edit-container-count').addEventListener('change', () => updateTareUI('edit-container', 'edit-container-count', 'edit-r'));
+
         initialize();
 
     </script>
