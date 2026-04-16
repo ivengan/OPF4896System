@@ -172,11 +172,12 @@
 
     <header class="bg-white shadow-md sticky top-0 z-10">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="flex justify-between items-center min-h-12 py-1">
+             <div class="flex justify-between items-center min-h-12 py-1 relative">
                  <div class="flex items-center gap-4">
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                      <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">PARTS DISPATCH (LEMBIK)</h1>
                  </div>
+                 <div id="header-today-date" class="font-bold text-gray-800 text-lg sm:text-xl" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
                   <div class="flex items-center gap-2">
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-sm hover:bg-red-800 transition shadow-md">DEL ALL</button>
                  </div>
@@ -640,6 +641,18 @@
         document.getElementById('del-all-btn').onclick = () => { isDeletingAll = true; verifyModal.classList.remove('hidden'); };
         document.getElementById('modal-close-x').onclick = () => dispatchModal.classList.add('hidden');
         sortSelect.onchange = renderDispatchList;
+        function updateHeaderDate() {
+            const dateEl = document.getElementById('header-today-date');
+            if (dateEl) {
+                const now = new Date();
+                const d = String(now.getDate()).padStart(2, '0');
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const y = now.getFullYear();
+                dateEl.textContent = `${d}/${m}/${y}`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateHeaderDate);
+
         document.addEventListener('DOMContentLoaded', initialize);
     </script>
 </body>

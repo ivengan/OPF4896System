@@ -137,11 +137,12 @@
 
     <header class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center min-h-16 py-2">
+            <div class="flex justify-between items-center min-h-16 py-2 relative">
                 <div class="flex items-center gap-4">
                     <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                     <h1 class="text-xl font-bold text-gray-900 tracking-tight">Stock In</h1>
                 </div>
+                <div id="header-today-date" class="font-bold text-gray-800 text-lg sm:text-xl" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
             </div>
         </div>
     </header>
@@ -639,6 +640,18 @@
                 finalOkBtn.textContent = "OK";
             }
         });
+
+        function updateHeaderDate() {
+            const dateEl = document.getElementById('header-today-date');
+            if (dateEl) {
+                const now = new Date();
+                const d = String(now.getDate()).padStart(2, '0');
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const y = now.getFullYear();
+                dateEl.textContent = `${d}/${m}/${y}`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateHeaderDate);
 
         document.querySelectorAll('input[type="number"], input[type="text"], textarea').forEach(el => {
             el.addEventListener('focus', function() {
