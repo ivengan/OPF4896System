@@ -8,34 +8,10 @@
     <link rel="icon" href="icons/icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg-app: #f4f4f5;
-            --bg-card: #ffffff;
-            --text-main: #18181b;
-            --text-muted: #52525b;
-            --primary: #27272a;
-            --primary-hover: #3f3f46;
-            --danger: #991b1b;
-            --danger-muted: #fef2f2;
-            --border: #e4e4e7;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-        body { background-color: var(--bg-app) !important; color: var(--text-main) !important; font-family: 'Inter', sans-serif !important; }
-        .bg-white { background-color: var(--bg-card) !important; }
-        .bg-gray-100 { background-color: var(--bg-app) !important; }
-        .bg-blue-600, .bg-blue-700, .bg-indigo-600, .bg-green-500, .bg-blue-500, .bg-yellow-500 { background-color: var(--primary) !important; }
-        .hover\:bg-blue-700:hover, .hover\:bg-blue-800:hover, .hover\:bg-green-600:hover, .hover\:bg-yellow-600:hover { background-color: var(--primary-hover) !important; }
-        .text-blue-600, .text-blue-500, .text-indigo-600 { color: var(--primary) !important; }
-        .border-blue-600, .border-indigo-600 { border-color: var(--primary) !important; }
-        .bg-red-500, .bg-red-600 { background-color: var(--danger) !important; }
-        .text-red-500, .text-red-700 { color: var(--danger) !important; }
-        .bg-red-100 { background-color: var(--danger-muted) !important; }
-        .bg-blue-50, .bg-indigo-50, .bg-green-50, .bg-yellow-50 { background-color: var(--bg-app) !important; }
-        .shadow-md, .shadow-lg, .shadow-xl { box-shadow: var(--shadow) !important; }
-        .border { border-color: var(--border) !important; }
-        .order-card { transition: all 0.2s ease; border: 1px solid var(--border); border-radius: 0.75rem; background: var(--bg-card); }
         .hidden { display: none !important; }
-        .modal-overlay { background: rgba(9, 9, 11, 0.5); backdrop-filter: blur(4px); }
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
+        .order-card { transition: all 0.2s ease; }
+        .order-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen pb-20">
