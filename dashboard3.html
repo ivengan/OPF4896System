@@ -137,12 +137,13 @@
         }
     </script>
 
-    <div class="header">
+    <div class="header" style="position: relative;">
         <div class="title">System Menu</div>
+        <div id="header-today-date" class="font-bold text-gray-800" style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 1.1rem;"></div>
         <div class="header-actions">
             <!-- Navigate back to Admin Panel (dashboard2) by default, or could be Main Board (dashboard) -->
             <button class="nav-btn" onclick="window.location.href='dashboard2.html'">TO ADMIN PANEL</button>
-            <button id="logout-btn" class="logout-btn">Logout</button>
+            <button id="logout-btn" class="logout-btn" onclick="logout()">Logout</button>
         </div>
     </div>
 
@@ -171,6 +172,18 @@
     </div>
 
     <script>
+        function updateHeaderDate() {
+            const dateEl = document.getElementById('header-today-date');
+            if (dateEl) {
+                const now = new Date();
+                const d = String(now.getDate()).padStart(2, '0');
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const y = now.getFullYear();
+                dateEl.textContent = `${d}/${m}/${y}`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateHeaderDate);
+
         document.getElementById('logout-btn').addEventListener('click', () => {
             localStorage.removeItem('loginExpiry');
             localStorage.removeItem('user_phone');
