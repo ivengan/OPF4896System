@@ -9,12 +9,36 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="pwa-install.js" defer></script>
     <style>
-        .hidden { display: none !important; }
-        .modal-overlay { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
-        @keyframes popIn { 
-            0% { transform: scale(0.9); opacity: 0; } 
-            100% { transform: scale(1); opacity: 1; } 
+        :root {
+            --bg-app: #f4f4f5;
+            --bg-card: #ffffff;
+            --text-main: #18181b;
+            --text-muted: #52525b;
+            --primary: #27272a;
+            --primary-hover: #3f3f46;
+            --danger: #991b1b;
+            --danger-muted: #fef2f2;
+            --border: #e4e4e7;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
         }
+
+        body { background-color: var(--bg-app) !important; color: var(--text-main) !important; }
+        .bg-white { background-color: var(--bg-card) !important; }
+        .bg-gray-100 { background-color: var(--bg-app) !important; }
+        .bg-blue-600, .bg-blue-700, .bg-indigo-600, .bg-green-500, .bg-blue-500 { background-color: var(--primary) !important; }
+        .hover\:bg-blue-700:hover, .hover\:bg-blue-800:hover, .hover\:bg-green-600:hover { background-color: var(--primary-hover) !important; }
+        .text-blue-600, .text-blue-500 { color: var(--primary) !important; }
+        .border-blue-500, .border-blue-600 { border-color: var(--primary) !important; }
+        .focus\:ring-blue-500:focus { --tw-ring-color: var(--primary) !important; }
+        .bg-blue-50 { background-color: var(--bg-app) !important; }
+        
+        .bg-red-50 { background-color: var(--danger-muted) !important; }
+        .text-red-500, .text-red-600 { color: var(--danger) !important; }
+        .bg-red-500 { background-color: var(--danger) !important; }
+
+        .hidden { display: none !important; }
+        .modal-overlay { background: rgba(9, 9, 11, 0.5); backdrop-filter: blur(4px); }
+        @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .animate-pop { animation: popIn 0.2s ease-out forwards; }
     </style>
 </head>
