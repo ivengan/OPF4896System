@@ -81,7 +81,7 @@
         .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
         .text-2xl { font-size: 1.5rem; line-height: 2rem; }
         .text-\[17px\] { font-size: 0.875rem; line-height: 1.25rem; }
-        .text-base { font-size: 0.75rem; line-height: 1rem; }
+        .text-base { font-size: 1rem; line-height: 1.5rem; }
         .font-bold { font-weight: 700; }
         .font-extrabold { font-weight: 800; }
         .font-semibold { font-weight: 600; }
@@ -171,7 +171,8 @@
                      <button id="del-all-btn" class="bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition shadow-md">DEL ALL</button>
                  </div>
              </div>
-             <div class="flex justify-end pb-1 gap-2">
+              <div class="flex justify-between items-center pb-2 gap-2">
+                 <input type="date" id="date-filter" class="border border-gray-300 rounded-lg p-1 text-sm focus:ring-2 focus:ring-blue-500">
                  <select id="sort-select" class="border border-gray-300 rounded-lg p-1 text-sm focus:ring-2 focus:ring-blue-500">
                      <option value="driver">Sort by: Driver (Default)</option>
                      <option value="dispatched">Sort by: Already Dispatched</option>
@@ -519,12 +520,14 @@
                     });
                     dl.innerHTML = dlHtml;
                 } else {
-                    console.error("Critical: Could not load customer list.", customersResult.reason);
-                    // We proceed anyway, setupOrderListener will handle missing customer info
+                    console.warn("Could not load customer list.", customersResult.reason);
                 }
 
-                // Set up real-time listener for ALL pending broiler orders (no date filter)
-                setupOrderListener();
+                // Initialize date filter to today
+                const todayStr = new Date().toISOString().split('T')[0];
+                document.getElementById('date-filter').value = todayStr;
+
+                setupOrderListener(todayStr);
 
             } catch (error) {
                 console.error("Init Error:", error);
@@ -539,19 +542,20 @@
             }
         }
 
-        function setupOrderListener() {
+        function setupOrderListener(selectedDate) {
             if (activeUnsubscribe) activeUnsubscribe();
-
-            dispatchListDiv.innerHTML = `<p class="p-4 text-center text-gray-500">Loading broiler orders...</p>`;
+            dispatchListDiv.innerHTML = `<p class="p-4 text-center text-gray-500">Loading orders for ${selectedDate}...</p>`;
+            allOrders = [];
 
             activeUnsubscribe = db.collection('orders')
                 .where('productType', '==', 'broiler')
                 .where('status', '==', 'pending')
+                .where('deliveryDate', '==', selectedDate)
                 .onSnapshot(snapshot => {
                     processOrders(snapshot.docs);
                 }, err => {
                     console.error("Snapshot Error:", err);
-                    dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error: ${err.message}</p>`;
+                    dispatchListDiv.innerHTML = `<p class="text-center text-red-500">Error: ${err.message}. Check indexes.</p>`;
                 });
         }
 
@@ -622,7 +626,7 @@
                     lorrySection.className = 'mb-4';
 
                     const header = document.createElement('div');
-                    header.className = 'flex justify-between items-center text-lg font-bold text-gray-900 bg-gray-200 p-3 rounded-lg sticky top-0 shadow-sm z-10 cursor-pointer select-none';
+                    header.className = 'flex justify-between items-center text-lg font-bold text-gray-900 bg-gray-200 p-3 rounded-lg sticky top-[52px] shadow-sm z-10 cursor-pointer select-none';
                     
                     const title = document.createElement('span');
                     title.textContent = lorry;
@@ -930,10 +934,6 @@
             document.getElementById('modal-r').checked = false;
             document.getElementById('modal-ayam-lama').checked = false;
             
-            const nettCheckbox = document.getElementById('modal-nett-kg');
-            nettCheckbox.checked = false;
-            nettCheckbox.dispatchEvent(new Event('change'));
-            
             document.getElementById('modal-status-display').textContent = `(${item.dispatchedQty}/${item.orderedQty})`;
             dispatchModal.classList.remove('hidden');
         }
@@ -1176,21 +1176,18 @@
             const containerCount = parseInt(document.getElementById('modal-container-count').value) || 1;
             const hasR = document.getElementById('modal-r').checked;
             const isAyamLama = document.getElementById('modal-ayam-lama').checked;
-            const isNett = document.getElementById('modal-nett-kg').checked;
 
             if (qty <= 0) { alert("Invalid quantity"); return; }
 
             btn.disabled = true; btn.textContent = 'Saving...';
 
             let netWeight = grossWeight;
-            if (!isNett) {
-                let tare = 0;
-                if (containerType === 'Crate') tare = pricingSettings.tare_crate * containerCount;
-                if (containerType === 'Basket') tare = pricingSettings.tare_basket * containerCount;
-                if (containerType === 'Barrel') tare = pricingSettings.tare_barrel * containerCount;
-                if (hasR) tare += pricingSettings.tare_r;
-                netWeight = Math.max(0, grossWeight - tare);
-            }
+            let tare = 0;
+            if (containerType === 'Crate') tare = pricingSettings.tare_crate * containerCount;
+            if (containerType === 'Basket') tare = pricingSettings.tare_basket * containerCount;
+            if (containerType === 'Barrel') tare = pricingSettings.tare_barrel * containerCount;
+            if (hasR) tare += pricingSettings.tare_r;
+            netWeight = Math.max(0, grossWeight - tare);
 
             try {
                 // --- AYAM LAMA VERIFICATION LOGIC ---
@@ -1272,27 +1269,11 @@
             }
         });
 
-        document.getElementById('modal-nett-kg').addEventListener('change', (e) => {
-            const isNett = e.target.checked;
-            const containerSelect = document.getElementById('modal-container');
-            const containerCountSelect = document.getElementById('modal-container-count');
-            const rCheckbox = document.getElementById('modal-r');
-            
-            containerSelect.disabled = isNett;
-            containerCountSelect.disabled = isNett;
-            rCheckbox.disabled = isNett;
-            
-            if (isNett) {
-                containerSelect.classList.add('bg-gray-200', 'opacity-50', 'cursor-not-allowed');
-                containerCountSelect.classList.add('bg-gray-200', 'opacity-50', 'cursor-not-allowed');
-            } else {
-                containerSelect.classList.remove('bg-gray-200', 'opacity-50', 'cursor-not-allowed');
-                containerCountSelect.classList.remove('bg-gray-200', 'opacity-50', 'cursor-not-allowed');
-            }
+        document.getElementById('date-filter').addEventListener('change', (e) => {
+            setupOrderListener(e.target.value);
         });
 
         sortSelect.addEventListener('change', renderDispatchList);
-        // Scripts run at bottom of body — DOM is already ready, call directly
         initialize();
 
     </script>
