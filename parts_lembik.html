@@ -33,7 +33,9 @@
         .flex { display: flex; }
         .h-16 { height: 4rem; }
         .h-8 { height: 2rem; }
+        .h-4 { height: 1.1rem; }
         .w-8 { width: 2rem; }
+        .w-4 { width: 1.1rem; }
         .w-full { width: 100%; }
         .max-w-7xl { max-width: 80rem; }
         .max-w-md { max-width: 28rem; }
@@ -446,7 +448,7 @@
                 if(mode === 'driver') {
                     const header = document.createElement('div');
                     header.className = 'flex justify-between items-center text-lg font-bold text-gray-900 bg-gray-200 p-3 rounded-lg sticky top-0 shadow-sm z-10 cursor-pointer select-none';
-                    header.innerHTML = `<span>${lorry}</span><svg class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+                    header.innerHTML = `<span>${lorry}</span><svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
                     const listGroup = document.createElement('div');
                     listGroup.className = 'space-y-3 mt-2 hidden'; 
                     Object.keys(groupedByLorry[lorry]).sort().forEach(custName => listGroup.appendChild(buildCustomerCard(custName, groupedByLorry[lorry][custName])));
