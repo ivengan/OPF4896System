@@ -6,40 +6,12 @@
     <title>Staff Management - OPF4896System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg-app: #f4f4f5;
-            --bg-header: #ffffff;
-            --bg-card: #ffffff;
-            --text-main: #18181b;
-            --text-muted: #52525b;
-            --primary: #27272a;
-            --primary-hover: #3f3f46;
-            --danger: #991b1b;
-            --danger-muted: #fef2f2;
-            --border: #e4e4e7;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-
-        body { background-color: var(--bg-app) !important; color: var(--text-main) !important; font-family: 'Inter', sans-serif !important; }
-        .bg-white { background-color: var(--bg-card) !important; }
-        .bg-gray-100 { background-color: var(--bg-app) !important; }
-        
-        .bg-indigo-600, .bg-indigo-700, .bg-blue-600 { background-color: var(--primary) !important; }
-        .hover\:bg-indigo-700:hover, .hover\:bg-blue-700:hover { background-color: var(--primary-hover) !important; }
-        .text-blue-600, .text-indigo-700 { color: var(--primary) !important; }
-        .border-indigo-500, .border-blue-500 { border-color: var(--primary) !important; }
-        .focus\:ring-indigo-500:focus { --tw-ring-color: var(--primary) !important; }
-
-        .bg-red-100 { background-color: var(--danger-muted) !important; }
-        .text-red-700, .text-red-400 { color: var(--danger) !important; }
-        .hover\:text-red-600:hover { color: #7f1d1d !important; }
-
         .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         .animate-pop { animation: popIn 0.2s ease-out forwards; }
-        @keyframes popIn { 0% { transform: scale(0.98); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .hidden { display: none !important; }
-        
-        input { border-radius: 0.75rem !important; }
+        @keyframes popIn { 
+            0% { transform: scale(0.95); opacity: 0; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen font-sans text-gray-800 text-[17px]">

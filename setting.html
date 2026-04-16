@@ -7,58 +7,46 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
     <style>
-        :root {
-            --bg-app: #f4f4f5;
-            --bg-header: #ffffff;
-            --bg-card: #ffffff;
-            --text-main: #18181b;
-            --text-muted: #52525b;
-            --primary: #27272a;
-            --primary-hover: #3f3f46;
-            --danger: #991b1b;
-            --danger-muted: #fef2f2;
-            --border: #e4e4e7;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-
-        *, ::after, ::before { box-sizing: border-box; }
-        html { line-height: 1.5; -webkit-text-size-adjust: 100%; }
-        body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: var(--bg-app); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-        button, input { font-family: inherit; font-size: 100%; line-height: 1.15; margin: 0; }
-        button { cursor: pointer; text-transform: none; appearance: none; transition: all 0.2s ease; }
+        /*! modern-normalize v1.1.0 */*,::after,::before{box-sizing:border-box}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}button,input{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;appearance:button}button{cursor:pointer}
+        body { background-color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; }
         a { text-decoration: none; }
-
-        .header { background: var(--bg-header); padding: 0.75rem 1.25rem; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-        .title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.05em; }
+        .header { background: white; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .title { font-size: 1.25rem; font-weight: 800; color: #1f2937; }
+        .nav-btn { background: #3b82f6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: background 0.2s; }
+        .nav-btn:hover { background: #2563eb; }
+        .main-container { flex: 1; padding: 1.5rem; max-width: 36rem; margin: 0 auto; width: 100%; }
         
-        .main-container { flex: 1; padding: 1.5rem; max-width: 38rem; margin: 0 auto; width: 100%; }
+        .settings-card { background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .card-title { margin-top: 0; color: #111827; font-size: 1.25rem; margin-bottom: 1rem; border-bottom: 2px solid #f3f4f6; padding-bottom: 0.5rem; }
         
-        .settings-card { background: var(--bg-card); padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 1.5rem; }
-        .card-title { margin-top: 0; color: var(--text-main); font-size: 1.1rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-        
-        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
         .setting-row:last-child { border-bottom: none; }
         .setting-info { display: flex; flex-direction: column; flex: 1; padding-right: 1rem; }
-        .setting-title { font-weight: 700; color: var(--text-main); font-size: 1rem; }
-        .setting-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .setting-title { font-weight: 700; color: #1f2937; font-size: 1.125rem; }
+        .setting-desc { font-size: 0.875rem; color: #6b7281; margin-top: 0.25rem; }
         
-        /* Toggle Switch */
-        .switch { position: relative; display: inline-block; width: 48px; height: 26px; flex-shrink: 0; }
+        /* Toggle Switch CSS */
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #10b981; }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* Input Fields */
-        .input-group input { padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.5rem; text-align: center; font-weight: 700; color: var(--text-main); width: 100%; }
-        .input-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(39, 39, 42, 0.1); }
-        
-        .save-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 1rem; border-radius: 0.75rem; font-weight: 800; font-size: 1rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
-        .save-btn:hover { background: var(--primary-hover); }
-        .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* Input Fields CSS */
+        .input-group { display: flex; flex-direction: column; width: 100px; }
+        .input-group input { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; text-align: center; font-weight: 700; color: #1f2937; }
+        .input-group input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .input-suffix { display: flex; align-items: center; gap: 0.5rem; justify-content: flex-end; }
+        .text-17px-bold { font-size: 0.875rem; font-weight: 700; color: #4b5563; }
 
-        .whitespace-nowrap { white-space: nowrap; }
+        .save-btn { width: 100%; background: #10b981; color: white; border: none; padding: 1rem; border-radius: 0.75rem; font-weight: 700; font-size: 1.125rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: background 0.2s; margin-bottom: 2rem;}
+        .save-btn:hover { background: #059669; }
+        .save-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+            .whitespace-nowrap { white-space: nowrap; }
+        .inline-flex { display: inline-flex; }
+        .min-h-16 { min-height: 4rem; }
+            .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
     </style>
 </head>
 <body>

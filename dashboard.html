@@ -7,30 +7,26 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
     <style>
-        :root {
-            --bg-app: #f4f4f5;
-            --bg-header: #ffffff;
-            --bg-card: #ffffff;
-            --text-main: #18181b;
-            --text-muted: #52525b;
-            --primary: #27272a;
-            --primary-hover: #3f3f46;
-            --danger: #991b1b;
-            --danger-muted: #fef2f2;
-            --border: #e4e4e7;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-
+        /*! modern-normalize v1.1.0 */
         *, ::after, ::before { box-sizing: border-box; }
-        html { line-height: 1.5; -webkit-text-size-adjust: 100%; }
-        body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: var(--bg-app); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-        button { cursor: pointer; appearance: none; transition: all 0.2s ease; }
+        html { line-height: 1.15; -webkit-text-size-adjust: 100%; }
+        body { margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'; }
+        button { cursor: pointer; appearance: none; }
+        
+        body { 
+            background-color: #f3f4f6; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        /* Global no-underline */
         a { text-decoration: none; }
 
         .header { 
-            background: var(--bg-header); 
-            padding: 0.75rem 1.25rem; 
-            box-shadow: var(--shadow);
+            background: white; 
+            padding: 1rem; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
@@ -39,36 +35,42 @@
             z-index: 10;
         }
         
-        .title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.05em; }
+        .title { font-size: 1.25rem; font-weight: 800; color: #1f2937; }
         
-        .header-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
 
         .nav-btn {
-            background: var(--primary); 
+            background: #eab308; 
             color: white;
             border: none;
             padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            font-weight: 700;
-            font-size: 0.8rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: background 0.2s;
         }
-        .nav-btn:hover { background: var(--primary-hover); }
+        .nav-btn:active { background: #ca8a04; }
 
         .logout-btn { 
-            background: transparent; 
-            color: var(--danger); 
-            border: 1px solid var(--danger);
-            padding: 0.4rem 0.8rem; 
-            border-radius: 0.375rem; 
-            font-weight: 700; 
-            font-size: 0.8rem; 
+            background: #ef4444; 
+            color: white; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 0.5rem; 
+            font-weight: 600; 
+            font-size: 0.875rem; 
+            transition: background 0.2s;
         }
-        .logout-btn:hover { background: var(--danger-muted); }
+        .logout-btn:active { background: #dc2626; }
         
         .main-container { 
             flex: 1; 
             padding: 1.5rem; 
-            max-width: 32rem; 
+            max-width: 30rem; 
             margin: 0 auto; 
             width: 100%; 
             display: flex; 
@@ -76,62 +78,66 @@
             justify-content: center; 
         }
         
-        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 1rem; 
+        }
 
         .menu-btn { 
             display: flex; 
             align-items: center; 
-            padding: 1.25rem; 
-            border-radius: 0.75rem; 
-            border: 1px solid var(--border);
-            background: var(--bg-card);
-            color: var(--text-main); 
+            justify-content: flex-start; 
+            padding: 1.5rem; 
+            border-radius: 1rem; 
+            border: none; 
+            color: white; 
             font-weight: 700; 
-            font-size: 1rem; 
-            box-shadow: var(--shadow);
+            font-size: 1.125rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            transition: transform 0.1s ease-in-out;
             text-decoration: none; 
             width: 100%;
+            text-align: left; 
         }
-        .menu-btn:active { transform: scale(0.98); background: var(--bg-app); }
-        .menu-btn span { margin-left: 1rem; flex: 1; }
-        .menu-btn svg { width: 1.5rem; height: 1.5rem; flex-shrink: 0; color: var(--text-muted); }
+        
+        .menu-btn:active { transform: scale(0.98); }
+        
+        .menu-btn span { 
+            margin-left: 1rem; 
+            flex: 1;
+        }
+        
+        .menu-btn svg { 
+            width: 2rem; 
+            height: 2rem; 
+            flex-shrink: 0;
+        }
 
-        /* Modernized Menu Buttons (Monochromatic) */
-        .btn-order, .btn-stock, .btn-broiler, .btn-parts, .btn-lembik, .btn-do, .btn-chiller {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-        }
-        .btn-order:hover, .btn-stock:hover, .btn-broiler:hover, .btn-parts:hover, .btn-lembik:hover, .btn-do:hover, .btn-chiller:hover {
-            border-color: var(--primary);
-        }
+        /* Button Gradients */
+        .btn-order { background: linear-gradient(135deg, #3b82f6, #2563eb); } 
+        .btn-stock { background: linear-gradient(135deg, #4b5563, #374151); } 
+        .btn-broiler { background: linear-gradient(135deg, #f59e0b, #d97706); } 
+        .btn-parts { background: linear-gradient(135deg, #10b981, #059669); } 
+        .btn-lembik { background: linear-gradient(135deg, #db2777, #be185d); } /* Pink/Rose for Lembik */
+        .btn-do { background: linear-gradient(135deg, #8b5cf6, #7c3aed); } 
+        .btn-chiller { background: linear-gradient(135deg, #06b6d4, #0891b2); } 
 
         /* Modal Styles */
         .hidden { display: none !important; }
         .fixed { position: fixed; }
         .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
         .z-50 { z-index: 50; }
-        .bg-opacity-50 { background-color: rgba(9, 9, 11, 0.5); backdrop-filter: blur(4px); }
-        .modal-bg { background-color: var(--bg-card); border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid var(--border); }
+        .bg-opacity-50 { --tw-bg-opacity: 0.5; background-color: rgba(17, 24, 39, var(--tw-bg-opacity)); }
+        .bg-white { background-color: #fff; }
+        .rounded-2xl { border-radius: 1rem; }
+        .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .w-full { width: 100%; }
+        .max-w-sm { max-width: 24rem; }
         .p-6 { padding: 1.5rem; }
         .text-center { text-align: center; }
-        .justify-center { justify-content: center; }
-        .items-center { align-items: center; }
-        
-        .modal-link {
-            display: block;
-            width: 100%;
-            text-align: center;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            color: white;
-            background: var(--primary);
-            font-weight: 700;
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-        }
-        .modal-link:hover { background: var(--primary-hover); }
-        
+        .gap-3 { gap: 0.75rem; }
+        .flex { display: flex; }
         .flex-col { flex-direction: column; }
         .justify-center { justify-content: center; }
         .items-center { align-items: center; }
@@ -230,15 +236,15 @@
         </div>
     </div>
 
-    <div id="stock-modal" class="hidden fixed inset-0 z-50 bg-opacity-50 flex items-center justify-center p-4" onclick="handleModalClick(event)">
-        <div class="modal-bg w-full max-w-sm p-6 space-y-4">
-            <h2 class="text-xl">Select Stock Type</h2>
+    <div id="stock-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4" onclick="handleModalClick(event)">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Select Stock Type</h2>
             
             <div class="flex flex-col gap-3">
-                <a href="chiller_stck.html" class="modal-link">
+                <a href="chiller_stck.html" class="modal-link bg-cyan-500 hover:opacity-90">
                     Chiller Stock
                 </a>
-                <a href="freezer_stck.html" class="modal-link">
+                <a href="freezer_stck.html" class="modal-link bg-blue-500 hover:opacity-90">
                     Freezer Stock
                 </a>
             </div>
