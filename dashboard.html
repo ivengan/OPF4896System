@@ -99,8 +99,6 @@
             text-decoration: none; 
             width: 100%;
             text-align: left; 
-            -webkit-appearance: none;
-            appearance: none;
         }
         
         .menu-btn:active { transform: scale(0.98); }
@@ -146,6 +144,7 @@
         .text-gray-800 { color: #1f293d; }
         .text-xl { font-size: 1.25rem; font-weight: 700; }
         .mt-4 { margin-top: 1rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
         .text-gray-500 { color: #6b7281; }
         
         .modal-link {
@@ -171,7 +170,7 @@
 </head>
 <body>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
         const loginExpiry = localStorage.getItem('loginExpiry');
         if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
