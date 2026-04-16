@@ -142,11 +142,12 @@
 
     <header class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center min-h-16 py-2">
+            <div class="flex justify-between items-center min-h-16 py-2 relative">
                 <div class="flex items-center gap-4">
                     <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
                     <h1 class="text-xl font-bold text-gray-900 tracking-tight">Submit Staff Order</h1>
                 </div>
+                <div id="header-today-date" class="font-bold text-gray-800 text-lg" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
                 <div class="flex items-center gap-2">
                     <button id="ai-scan-btn" disabled class="bg-gray-400 text-white font-semibold py-2 px-3 rounded-lg shadow-md transition flex items-center gap-2 cursor-not-allowed">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
@@ -715,6 +716,18 @@
             } catch(e) { showNotification('Error saving', 'error'); }
             finally { btn.disabled = false; btn.textContent = 'Submit'; }
         });
+
+        function updateHeaderDate() {
+            const dateEl = document.getElementById('header-today-date');
+            if (dateEl) {
+                const now = new Date();
+                const d = String(now.getDate()).padStart(2, '0');
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const y = now.getFullYear();
+                dateEl.textContent = `${d}/${m}/${y}`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateHeaderDate);
 
         document.addEventListener('DOMContentLoaded', loadData);
     </script>

@@ -53,8 +53,9 @@
     <div id="order-screen" class="hidden min-h-screen pb-20">
         <header class="bg-white shadow-md sticky top-0 z-10 safe-top">
             <div class="max-w-3xl mx-auto px-4">
-                <div class="flex justify-between items-center py-4">
+                <div class="flex justify-between items-center py-4 relative">
                     <h1 class="text-xl font-bold text-gray-900 tracking-tight">Submit Order</h1>
+                    <div id="header-today-date" class="font-bold text-gray-800 text-lg" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
                     <button id="btn-logout" class="text-red-500 font-bold hover:text-red-700 text-sm bg-red-50 px-3 py-1 rounded-lg">Logout</button>
                 </div>
             </div>
@@ -477,6 +478,17 @@
                 btn.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Send Order to Admin`;
             }
         });
+        function updateHeaderDate() {
+            const dateEl = document.getElementById('header-today-date');
+            if (dateEl) {
+                const now = new Date();
+                const d = String(now.getDate()).padStart(2, '0');
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const y = now.getFullYear();
+                dateEl.textContent = `${d}/${m}/${y}`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateHeaderDate);
     </script>
 </body>
 </html>
