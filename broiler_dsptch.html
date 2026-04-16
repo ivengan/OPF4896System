@@ -1287,11 +1287,16 @@
 
         sortSelect.addEventListener('change', renderDispatchList);
 
-        function updateTareUI(containerId, countId, rId) {
+        function updateTareUI(containerId, countId, rId, sourceId) {
             const container = document.getElementById(containerId);
             const count = document.getElementById(countId);
             const r = document.getElementById(rId);
             
+            // If the user selects "Nett" as container, force count to 0
+            if (sourceId === containerId && container.value === 'Nett') {
+                count.value = '0';
+            }
+
             if (container.value === 'Nett' || count.value === '0') {
                 r.checked = false;
                 r.disabled = true;
@@ -1302,10 +1307,10 @@
             }
         }
 
-        document.getElementById('modal-container').addEventListener('change', () => updateTareUI('modal-container', 'modal-container-count', 'modal-r'));
-        document.getElementById('modal-container-count').addEventListener('change', () => updateTareUI('modal-container', 'modal-container-count', 'modal-r'));
-        document.getElementById('edit-container').addEventListener('change', () => updateTareUI('edit-container', 'edit-container-count', 'edit-r'));
-        document.getElementById('edit-container-count').addEventListener('change', () => updateTareUI('edit-container', 'edit-container-count', 'edit-r'));
+        document.getElementById('modal-container').addEventListener('change', () => updateTareUI('modal-container', 'modal-container-count', 'modal-r', 'modal-container'));
+        document.getElementById('modal-container-count').addEventListener('change', () => updateTareUI('modal-container', 'modal-container-count', 'modal-r', 'modal-container-count'));
+        document.getElementById('edit-container').addEventListener('change', () => updateTareUI('edit-container', 'edit-container-count', 'edit-r', 'edit-container'));
+        document.getElementById('edit-container-count').addEventListener('change', () => updateTareUI('edit-container', 'edit-container-count', 'edit-r', 'edit-container-count'));
 
         initialize();
 
