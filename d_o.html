@@ -168,12 +168,14 @@
 
     <header class="bg-white shadow-md sticky top-0 z-20">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="flex justify-between items-center min-h-16 py-2 relative">
+             <div class="flex justify-between items-center min-h-16 py-2">
                  <div class="flex items-center gap-4">
                      <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
-                     <h1 class="text-xl font-bold text-gray-900 tracking-tight sm:">DELIVERY ORDERS</h1>
+                     <div class="flex flex-col">
+                         <h1 class="text-xl font-bold text-gray-900 tracking-tight">DELIVERY ORDERS</h1>
+                         <div id="header-today-date" class="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1"></div>
+                     </div>
                  </div>
-                 <div id="header-today-date" class="font-bold text-gray-800 text-lg sm:text-xl" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
              </div>
          </div>
     </header>

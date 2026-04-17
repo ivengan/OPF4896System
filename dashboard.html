@@ -179,9 +179,11 @@
         }
     </script>
 
-    <div class="header" style="position: relative;">
-        <div class="title">Main Menu</div>
-        <div id="header-today-date" class="text-gray-800" style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 1.1rem; font-weight: 800;"></div>
+    <div class="header">
+        <div class="flex flex-col">
+            <div class="title">Main Menu</div>
+            <div id="header-today-date" class="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1"></div>
+        </div>
         <div class="header-actions">
             <button class="nav-btn" onclick="window.location.href='dashboard2.html'">TO ADMIN PANEL</button>
             <button id="logout-btn" class="logout-btn" onclick="logout()">Logout</button>
