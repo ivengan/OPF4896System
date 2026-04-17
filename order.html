@@ -176,14 +176,14 @@
                 <input type="text" id="customer-remark" class="w-full border border-gray-300 rounded-lg p-2 mt-2 text-[17px] text-gray-600 italic focus:ring-2 focus:ring-blue-500" placeholder="Remark for Customer (e.g., Deliver to back door)">
             </div>
 
-            <div>
+            <div class="pb-2">
                 <label for="delivery-date" class="text-lg font-bold text-gray-800">2. Delivery Date</label>
                 <input type="date" id="delivery-date" class="w-full border border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 mt-2">
             </div>
 
             <div id="broiler-section" class="p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-gray-900 tracking-tight">3. Broiler/ Slices</h2>
+                    <h2 class="font-bold text-gray-900 tracking-tight" style="font-size: 19px;">3. Broiler/ Slices</h2>
                     <span id="customer-tier-display" class="text-[17px] font-medium text-blue-500 hidden"></span>
                 </div>
                 
@@ -207,7 +207,7 @@
             </div>
 
             <div id="parts-section" class="p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-4">4. Parts</h2>
+                <h2 class="font-bold text-gray-900 tracking-tight mb-4" style="font-size: 19px;">4. Parts</h2>
                 
                 <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm space-y-2">
                     <div class="flex flex-col sm:flex-row gap-2">
@@ -220,7 +220,7 @@
                         </select>
                     </div>
                     <input type="text" id="part-remark" class="w-full border border-gray-300 rounded-lg p-2 text-[17px] text-gray-600 italic focus:ring-2 focus:ring-blue-500" placeholder="Remark for this part (e.g. 2KG packs)...">
-                    <button type="button" id="add-part-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold p-2 rounded-lg transition">Add Part</button>
+                    <button type="button" id="add-part-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition text-[19px]">Add Part</button>
                 </div>
 
                 <datalist id="item-names-list"></datalist>
@@ -231,7 +231,7 @@
             </div>
 
             <div>
-                <label for="order-general-remark" class="text-lg font-bold text-gray-800">5. General Order Remark</label>
+                <label for="order-general-remark" class="font-bold text-gray-800" style="font-size: 17px;">5. General Order Remark</label>
                 <textarea id="order-general-remark" rows="2" class="w-full border border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 mt-2" placeholder="Any other notes for the whole order..."></textarea>
             </div>
 
