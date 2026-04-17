@@ -108,13 +108,29 @@
         localStorage.removeItem('loginExpiry');
         window.location.href = 'index.html';
     }
+
+    // Force app update and cache refresh (v12)
+    if (localStorage.getItem('app_version_edit_inv') !== '12') {
+        localStorage.setItem('app_version_edit_inv', '12');
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (let r of registrations) r.unregister();
+            });
+        }
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                for (let name of names) caches.delete(name);
+            });
+        }
+        window.location.reload(true);
+    }
 </script>
     <header class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center min-h-16 py-2">
                 <div class="flex items-center gap-4">
                     <a href="dashboard2.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
-                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Edit Inventory</h1>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Edit Inventory <span class="text-xs text-blue-500">v1.1</span></h1>
                 </div>
             </div>
         </div>
