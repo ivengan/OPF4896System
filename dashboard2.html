@@ -44,28 +44,28 @@
         }
 
         .nav-btn {
-            background: #eab308; /* Yellow */
-            color: white;
+            background: #7FFFD4; 
+            color: #111827;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.875rem;
-            transition: background 0.2s;
+            transition: opacity 0.2s;
         }
-        .nav-btn:active { background: #ca8a04; }
+        .nav-btn:active { opacity: 0.8; }
 
         .logout-btn { 
-            background: #ef4444; 
-            color: white; 
+            background: #7FFFD4; 
+            color: #111827; 
             border: none; 
             padding: 0.5rem 1rem; 
             border-radius: 0.5rem; 
-            font-weight: 600; 
+            font-weight: 700; 
             font-size: 0.875rem; 
-            transition: background 0.2s;
+            transition: opacity 0.2s;
         }
-        .logout-btn:active { background: #dc2626; }
+        .logout-btn:active { opacity: 0.8; }
         
         .main-container { 
             flex: 1; 
@@ -92,11 +92,12 @@
             padding: 1.5rem; 
             border-radius: 1rem; 
             border: none; 
-            color: white; 
+            background: #7FFFD4;
+            color: #111827; 
             font-weight: 700; 
             font-size: 1.125rem; 
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            transition: transform 0.1s ease-in-out;
+            transition: transform 0.1s ease-in-out, opacity 0.2s;
             text-decoration: none; 
             width: 100%;
             text-align: left;
@@ -115,14 +116,6 @@
             flex-shrink: 0;
         }
 
-        /* Admin Button Gradients */
-        .btn-price { background: linear-gradient(135deg, #64748b, #475569); } /* Slate */
-        .btn-cust { background: linear-gradient(135deg, #06b6d4, #0891b2); } /* Cyan */
-        .btn-inv { background: linear-gradient(135deg, #f97316, #ea580c); } /* Orange */
-        .btn-assign { background: linear-gradient(135deg, #14b8a6, #0d9488); } /* Teal */
-        .btn-library { background: linear-gradient(135deg, #8b5cf6, #7c3aed); } /* Violet */
-        .btn-setting { background: linear-gradient(135deg, #ec4899, #be185d); } /* Pink/Rose */
-        .btn-staff { background: linear-gradient(135deg, #6366f1, #4f46e5); } /* Indigo */
         
             .whitespace-nowrap { white-space: nowrap; }
         .inline-flex { display: inline-flex; }
@@ -155,31 +148,31 @@
     <div class="main-container">
         <div class="menu-grid">
             
-            <a href="edit_price.html" class="menu-btn btn-price">
+            <a href="edit_price.html" class="menu-btn">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
                 <span>Edit Price</span>
                 <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
 
-            <a href="edit_cust.html" class="menu-btn btn-cust">
+            <a href="edit_cust.html" class="menu-btn">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 <span>Edit Customers</span>
                 <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
 
-            <a href="edit_inv.html" class="menu-btn btn-inv">
+            <a href="edit_inv.html" class="menu-btn">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 <span>Edit Inventory</span>
                 <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
 
-            <a href="assign_price.html" class="menu-btn btn-assign">
+            <a href="assign_price.html" class="menu-btn">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span>Assign Price</span>
                 <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
 
-            <a href="dashboard3.html" class="menu-btn btn-setting">
+            <a href="dashboard3.html" class="menu-btn">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 <span>System Settings</span>
                 <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
