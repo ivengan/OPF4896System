@@ -1,6 +1,6 @@
 // D:\OPF4896System\service-worker.js
 
-const CACHE_NAME = 'opf-system-v4';
+const CACHE_NAME = 'opf-system-v5';
 // List all files you want to work offline
 const ASSETS = [
   '.',
