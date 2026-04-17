@@ -132,7 +132,7 @@
             <div class="flex justify-between items-center min-h-16 py-2">
                 <div class="flex items-center gap-4">
                     <a href="dashboard2.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
-                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Edit Inventory <span class="text-xs text-blue-500">v1.2</span></h1>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Edit Inventory</h1>
                 </div>
             </div>
         </div>
@@ -144,15 +144,16 @@
                 <input type="text" id="item-name-input" placeholder="Item Name" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
                 <input type="text" id="item-desc-input" placeholder="Description (e.g., 2.5 KG/pack)" class="w-full border border-gray-300 rounded-lg p-3">
                 <div class="flex justify-center gap-2">
-                    <button id="add-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg flex items-center gap-2">
+                    <button id="add-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         Add
                     </button>
-                    <button id="update-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-lg flex items-center disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button id="update-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
                         Update
                     </button>
-                    <button id="delete-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg flex items-center disabled:opacity-50 disabled:cursor-not-allowed">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6"></path></svg>
+                    <button id="delete-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        Delete
                     </button>
                 </div>
             </div>
