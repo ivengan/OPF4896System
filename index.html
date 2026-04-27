@@ -208,6 +208,22 @@
         db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log(err.code));
 
         // --- 2. STATE & HELPERS ---
+        function bufferToBase64url(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let str = '';
+            for (let char of bytes) str += String.fromCharCode(char);
+            return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+        }
+
+        function base64urlToBuffer(base64url) {
+            const padding = '='.repeat((4 - base64url.length % 4) % 4);
+            const base64 = (base64url + padding).replace(/\-/g, "+").replace(/_/g, "/");
+            const raw = atob(base64);
+            const buffer = new Uint8Array(raw.length);
+            for (let i = 0; i < raw.length; i++) buffer[i] = raw.charCodeAt(i);
+            return buffer;
+        }
+
         let currentPhone = '';
         let currentDocId = null;
         let currentPasswordForBio = ''; // For prompted bio enablement
@@ -234,7 +250,7 @@
             if (loginExpiry && Date.now() < parseInt(loginExpiry)) {
                 openModal('modal-destination');
             }
-            if (window.PasswordCredential) {
+            if (window.PublicKeyCredential) {
                 document.getElementById('btn-use-biometric').classList.remove('hidden');
                 const bioPref = localStorage.getItem('bioPref');
                 if (bioPref === 'face') {
@@ -297,7 +313,7 @@
         });
 
         function proceedWithLoginFlow() {
-            if (localStorage.getItem('bioEnabled') === 'true' && window.PasswordCredential) {
+            if (localStorage.getItem('bioEnabled') === 'true' && window.PublicKeyCredential) {
                 executeBiometricLogin();
             } else {
                 document.getElementById('login-password-input').value = ''; 
@@ -323,39 +339,41 @@
 
         // --- 5. LOGIN METHOD HANDLERS ---
         async function executeBiometricLogin() {
-            if (!window.PasswordCredential) return alert("Biometrics not supported on this device/browser.");
+            if (!window.PublicKeyCredential) return alert("Biometrics not supported on this device/browser.");
             
-            try {
-                const cred = await navigator.credentials.get({ password: true, mediation: 'required' });
-                if (cred) {
-                    if (cred.id !== currentPhone) {
-                        alert("Phone number mismatch. Please enter your phone number first.");
-                        return proceedWithPasswordFallback();
-                    }
-                    
-                    let dbPassword;
-                    if (currentDocId === 'fixed-admin') {
-                        dbPassword = DEFAULT_ADMIN.pass;
-                    } else {
-                        const doc = await db.collection('staff').doc(currentDocId).get();
-                        if (!doc.exists) return alert("Account not found.");
-                        const data = doc.data();
-                        dbPassword = data.password || data.Password || null;
-                    }
+            const storedCredIdStr = localStorage.getItem(`webauthn_id_${currentPhone}`);
+            if (!storedCredIdStr) {
+                alert("No biometric credentials found on this device for this phone number. Please login with password.");
+                return proceedWithPasswordFallback();
+            }
 
-                    if (dbPassword === cred.password) {
-                        performLogin();
-                    } else {
-                        alert("Saved biometric credentials valid, but password changed. Please login via password.");
-                        proceedWithPasswordFallback();
-                    }
+            try {
+                const challenge = window.crypto.getRandomValues(new Uint8Array(32));
+                const credentialIdBuffer = base64urlToBuffer(storedCredIdStr);
+
+                const publicKeyCredentialRequestOptions = {
+                    challenge: challenge,
+                    allowCredentials: [{
+                        id: credentialIdBuffer,
+                        type: 'public-key',
+                        transports: ['internal']
+                    }],
+                    userVerification: 'required',
+                    timeout: 60000
+                };
+
+                const assertion = await navigator.credentials.get({
+                    publicKey: publicKeyCredentialRequestOptions
+                });
+
+                if (assertion) {
+                    performLogin();
                 } else {
-                    // User cancelled the OS prompt
                     proceedWithPasswordFallback();
                 }
             } catch (e) {
                 console.error("Bio Error", e);
-                alert("Biometric validation failed. Please use your password.");
+                alert("Biometric validation failed or was cancelled. Please use your password.");
                 proceedWithPasswordFallback();
             }
         }
@@ -397,7 +415,7 @@
                     }
                     
                     // Check if biometric should be enabled
-                    if (window.PasswordCredential) {
+                    if (window.PublicKeyCredential) {
                         currentPasswordForBio = pwd; // Temporary store for bio prompt
                         closeModal('modal-enter-password');
                         openModal('modal-enable-bio');
@@ -416,7 +434,7 @@
 
                     if (dbPassword === pwd) {
                         // Check if biometric should be enabled for regular staff too if not already
-                        if (window.PasswordCredential) {
+                        if (window.PublicKeyCredential) {
                             currentPasswordForBio = pwd;
                             closeModal('modal-enter-password');
                             openModal('modal-enable-bio');
@@ -479,9 +497,36 @@
                     }
                 }
                 
-                if (enableBio && window.PasswordCredential) {
-                    const cred = new PasswordCredential({ id: currentPhone, password: pass, name: 'Staff' });
-                    await navigator.credentials.store(cred);
+                if (enableBio && window.PublicKeyCredential) {
+                    const challenge = window.crypto.getRandomValues(new Uint8Array(32));
+                    const userId = window.crypto.getRandomValues(new Uint8Array(16));
+
+                    const publicKeyCredentialCreationOptions = {
+                        challenge: challenge,
+                        rp: {
+                            name: "OPF4896System"
+                        },
+                        user: {
+                            id: userId,
+                            name: currentPhone,
+                            displayName: currentPhone
+                        },
+                        pubKeyCredParams: [{alg: -7, type: "public-key"}, {alg: -257, type: "public-key"}],
+                        authenticatorSelection: {
+                            authenticatorAttachment: "platform",
+                            userVerification: "required"
+                        },
+                        timeout: 60000,
+                        attestation: "none"
+                    };
+
+                    const credential = await navigator.credentials.create({
+                        publicKey: publicKeyCredentialCreationOptions
+                    });
+
+                    const credIdStr = bufferToBase64url(credential.rawId);
+                    localStorage.setItem(`webauthn_id_${currentPhone}`, credIdStr);
+
                     localStorage.setItem('bioPref', bioPref);
                     localStorage.setItem('bioEnabled', 'true'); // For settings page
                 } else {
