@@ -156,6 +156,7 @@
     <main class="max-w-lg mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div id="notification-area" class="mb-6"></div>
         <div class="bg-white p-6 rounded-lg shadow space-y-6">
+            <!-- Weight -->
             <div class="flex items-center justify-between">
                 <label class="text-lg font-semibold text-gray-700">Weight:</label>
                 <div class="flex items-center gap-2">
@@ -163,16 +164,29 @@
                     <span class="text-lg font-semibold text-gray-500">KG</span>
                 </div>
             </div>
+
+            <!-- Category 1 -->
             <div class="flex items-center justify-between">
-                <label class="text-lg font-semibold text-gray-700">Category:</label>
+                <label class="text-lg font-semibold text-gray-700">Category 1:</label>
+                <div class="flex rounded-lg shadow-sm">
+                    <button id="category-live-btn" class="inactive-segment font-semibold py-2 px-6 rounded-l-lg">Live</button>
+                    <button id="category-waste-btn" class="inactive-segment font-semibold py-2 px-6 rounded-r-lg">Waste</button>
+                </div>
+            </div>
+
+            <!-- Category 2 -->
+            <div class="flex items-center justify-between">
+                <label class="text-lg font-semibold text-gray-700">Category 2:</label>
                 <div class="flex rounded-lg shadow-sm">
                     <button id="category-broiler-btn" class="inactive-segment font-semibold py-2 px-3 rounded-l-lg">Broiler</button>
                     <button id="category-slices-btn" class="inactive-segment font-semibold py-2 px-3">Slices</button>
-                    <button id="category-parts-btn" class="inactive-segment font-semibold py-2 px-3">Parts</button>
-                    <button id="category-waste-btn" class="inactive-segment font-semibold py-2 px-3 rounded-r-lg">Waste</button>
+                    <button id="category-kopek-btn" class="inactive-segment font-semibold py-2 px-3">Kopek</button>
+                    <button id="category-parts-btn" class="inactive-segment font-semibold py-2 px-3 rounded-r-lg">Parts</button>
                 </div>
             </div>
-             <div id="category-summary" class="text-right text-gray-500 font-semibold"></div>
+            <div id="category-summary" class="text-right text-gray-500 font-semibold"></div>
+
+            <!-- Container -->
             <div class="flex items-center justify-between">
                 <label id="container-label" class="text-lg font-semibold text-gray-700 transition">Container:</label>
                 <div id="container-buttons" class="flex rounded-lg shadow-sm transition">
@@ -216,6 +230,22 @@
         </div>
     </div>
     
+    <div id="slices-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
+            <button data-modal-id="slices-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
+            <h3 class="text-xl font-bold">Slices Details</h3>
+            <input type="number" id="slices-count-input" placeholder="How many slices?" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg">
+            <div class="flex items-center mt-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <input type="checkbox" id="slices-ayam-lama" class="h-5 w-5 text-blue-600 rounded border-gray-300">
+                <label for="slices-ayam-lama" class="ml-3 text-lg font-semibold text-gray-700">Ayam lama</label>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button id="slices-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
+                <button id="slices-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
+            </div>
+        </div>
+    </div>
+
     <div id="remark-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4">
             <h3 class="text-xl font-bold">Enter Remark</h3>
@@ -329,9 +359,11 @@
         let tempRemarkText = null;
 
         const weightInput = document.getElementById('weight-input');
+        const catLiveBtn = document.getElementById('category-live-btn');
         const catBroilerBtn = document.getElementById('category-broiler-btn');
         const catSlicesBtn = document.getElementById('category-slices-btn');
         const catPartsBtn = document.getElementById('category-parts-btn');
+        const catKopekBtn = document.getElementById('category-kopek-btn');
         const catWasteBtn = document.getElementById('category-waste-btn');
         const conCrateBtn = document.getElementById('container-crate-btn');
         const conBasketBtn = document.getElementById('container-basket-btn');
@@ -344,6 +376,7 @@
         
         const broilerModal = document.getElementById('broiler-modal');
         const broilerCountModal = document.getElementById('broiler-count-modal');
+        const slicesModal = document.getElementById('slices-modal');
         const remarkModal = document.getElementById('remark-modal');
         const partsModal = document.getElementById('parts-modal');
         const crateModal = document.getElementById('crate-modal');
@@ -354,9 +387,9 @@
         function showModal(modal) { modal.classList.remove('hidden'); }
         function hideModal(modal) { modal.classList.add('hidden'); }
 
-        function showNotification(message, type) {
+        function showNotification(message, type, timeout = 4000) {
             notificationArea.innerHTML = `<div class="p-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${message}</div>`;
-            setTimeout(() => { notificationArea.innerHTML = ''; }, 4000);
+            setTimeout(() => { notificationArea.innerHTML = ''; }, timeout);
         }
 
         function resetPage() {
@@ -369,12 +402,16 @@
             if(crateCount) crateCount.value = 1;
             const broilerCount = document.getElementById('broiler-count-input');
             if(broilerCount) broilerCount.value = '';
+            const slicesCount = document.getElementById('slices-count-input');
+            if(slicesCount) slicesCount.value = '';
+            const slicesAL = document.getElementById('slices-ayam-lama');
+            if(slicesAL) slicesAL.checked = false;
         }
 
         function resetCategorySelection() {
             selectedCategory = null;
             selectedCategoryDetails = null;
-            [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
+            [catLiveBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
             categorySummary.textContent = '';
         }
 
@@ -400,7 +437,7 @@
         document.querySelectorAll('.modal-cancel-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const modalId = btn.dataset.modalId;
-                if (['broiler-modal', 'remark-modal', 'parts-modal'].includes(modalId)) {
+                if (['broiler-modal', 'remark-modal', 'parts-modal', 'slices-modal'].includes(modalId)) {
                     if(!selectedCategoryDetails) resetCategorySelection();
                 }
                 if (['crate-modal', 'basket-modal', 'barrel-modal'].includes(modalId)) {
@@ -410,8 +447,19 @@
             });
         });
         
+        const allCatBtns = [catLiveBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn];
+
+        catLiveBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catLiveBtn, allCatBtns, 'category', 'Live');
+            if(value) {
+                selectedCategory = value;
+                tempBroilerType = 'Live'; 
+                showModal(broilerCountModal); 
+            }
+        });
+
         catBroilerBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(catBroilerBtn, [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn], 'category', 'Broiler');
+            const value = handleSegmentClick(catBroilerBtn, allCatBtns, 'category', 'Broiler');
             if(value) {
                 selectedCategory = value;
                 showModal(broilerModal);
@@ -419,16 +467,24 @@
         });
 
         catSlicesBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(catSlicesBtn, [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn], 'category', 'Slices');
+            const value = handleSegmentClick(catSlicesBtn, allCatBtns, 'category', 'Slices');
             if(value) {
                 selectedCategory = value;
-                tempBroilerType = 'Slices'; 
+                showModal(slicesModal); 
+            }
+        });
+        
+        catKopekBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catKopekBtn, allCatBtns, 'category', 'Kopek');
+            if(value) {
+                selectedCategory = value;
+                tempBroilerType = 'Kopek'; 
                 showModal(broilerCountModal); 
             }
         });
         
         catPartsBtn.addEventListener('click', async () => {
-            const value = handleSegmentClick(catPartsBtn, [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn], 'category', 'Parts');
+            const value = handleSegmentClick(catPartsBtn, allCatBtns, 'category', 'Parts');
             if(value) {
                 selectedCategory = value;
                 try {
@@ -448,7 +504,7 @@
         });
         
         catWasteBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(catWasteBtn, [catBroilerBtn, catSlicesBtn, catPartsBtn, catWasteBtn], 'category', 'Waste');
+            const value = handleSegmentClick(catWasteBtn, allCatBtns, 'category', 'Waste');
             if(value) {
                 selectedCategory = value;
                 selectedCategoryDetails = { type: 'Waste' };
@@ -522,6 +578,23 @@
             hideModal(broilerCountModal);
         });
         
+        document.getElementById('slices-clear-btn').addEventListener('click', () => {
+            document.getElementById('slices-count-input').value = '';
+            document.getElementById('slices-ayam-lama').checked = false;
+        });
+
+        document.getElementById('slices-ok-btn').addEventListener('click', () => {
+            const count = parseInt(document.getElementById('slices-count-input').value);
+            if (isNaN(count) || count <= 0) {
+                alert('Please enter a valid number of slices.');
+                return;
+            }
+            const isAyamLama = document.getElementById('slices-ayam-lama').checked;
+            selectedCategoryDetails = { type: 'Slices', count: count, ayamLama: isAyamLama };
+            categorySummary.textContent = `Selected: Slices (x${count})${isAyamLama ? ' [Ayam Lama]' : ''}`;
+            hideModal(slicesModal);
+        });
+
         document.getElementById('remark-ok-btn').addEventListener('click', () => {
             tempRemarkText = document.getElementById('remark-text').value;
             hideModal(remarkModal);
@@ -623,6 +696,53 @@
 
                 const netWeight = grossWeight - tareWeight;
                 
+                // --- CHILLER BALANCE VERIFICATION FOR AYAM LAMA SLICES ---
+                if (selectedCategory === 'Slices' && selectedCategoryDetails && selectedCategoryDetails.ayamLama) {
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    
+                    const [sSnap, oSnap] = await Promise.all([
+                        db.collection('stock_entries').where('timestamp', '>=', thirtyDaysAgo).get(),
+                        db.collection('orders').where('timestamp', '>=', thirtyDaysAgo).get()
+                    ]);
+                    
+                    let broilerBalance = 0;
+                    sSnap.docs.forEach(doc => {
+                        const d = doc.data();
+                        const w = parseFloat(d.netWeight) || 0;
+                        if (d.category === 'Broiler' || d.category === 'Kopek' || (d.categoryDetails && (d.categoryDetails.type === 'H/P' || d.categoryDetails.type === 'Kopek'))) {
+                            broilerBalance += w;
+                        } else if (d.category === 'Slices' && d.categoryDetails && d.categoryDetails.ayamLama) {
+                            broilerBalance -= w;
+                        }
+                    });
+                    
+                    oSnap.docs.forEach(doc => {
+                        const o = doc.data();
+                        if (o.broilers && Array.isArray(o.broilers)) {
+                            o.broilers.forEach(b => {
+                                let itemType = (b.description || '').toLowerCase();
+                                if (!itemType.includes('slice')) {
+                                    if (b.history && Array.isArray(b.history)) {
+                                        b.history.forEach(h => {
+                                            if (h.qty > 0) broilerBalance -= (parseFloat(h.net) || parseFloat(h.gross) || 0);
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    
+                    if (broilerBalance < netWeight) {
+                        const proceed = confirm(`There are no old stock in the chiller! (Current estimated balance: ${broilerBalance.toFixed(2)}kg).\n\nWould you like to add stock and proceed?`);
+                        if (!proceed) {
+                            finalOkBtn.disabled = false;
+                            finalOkBtn.innerHTML = "OK";
+                            return;
+                        }
+                    }
+                }
+
                 const stockEntry = {
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     grossWeight: grossWeight,
@@ -635,7 +755,38 @@
                 };
 
                 await db.collection('stock_entries').add(stockEntry);
-                showNotification(`Stock recorded successfully! Net weight: ${netWeight.toFixed(2)} KG`, 'success');
+                
+                let extraMessage = '';
+                let timeout = 4000;
+                if (selectedCategory === 'Kopek' || selectedCategory === 'Parts') {
+                    const startOfDay = new Date();
+                    startOfDay.setHours(0,0,0,0);
+                    const endOfDay = new Date();
+                    endOfDay.setHours(23,59,59,999);
+                    
+                    const snapshot = await db.collection('stock_entries')
+                        .where('timestamp', '>=', startOfDay)
+                        .where('timestamp', '<=', endOfDay)
+                        .get();
+                        
+                    let totalKopek = 0;
+                    let totalParts = 0;
+                    
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (data.category === 'Kopek' || (data.category === 'Broiler' && data.categoryDetails && data.categoryDetails.type === 'Kopek')) {
+                            totalKopek += data.netWeight || 0;
+                        } else if (data.category === 'Parts') {
+                            totalParts += data.netWeight || 0;
+                        }
+                    });
+                    
+                    const difference = totalKopek - totalParts;
+                    extraMessage = `<br><span class="font-bold">Daily Summary:</span> Kopek (${totalKopek.toFixed(2)} KG) - Parts (${totalParts.toFixed(2)} KG) = ${difference.toFixed(2)} KG Remaining.`;
+                    timeout = 10000;
+                }
+
+                showNotification(`Stock recorded successfully! Net weight: ${netWeight.toFixed(2)} KG${extraMessage}`, 'success', timeout);
                 resetPage();
                 
             } catch (error) {
