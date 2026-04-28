@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Drawing
 
-function Create-Icon {
+function New-Icon {
     param(
         [int]$size,
         [string]$text,
@@ -35,5 +35,5 @@ if (!(Test-Path $dir)) {
     New-Item -ItemType Directory -Force -Path $dir
 }
 
-Create-Icon -size 512 -text "OPF" -outputPath "$dir\icon-512.png"
-Create-Icon -size 192 -text "OPF" -outputPath "$dir\icon-192.png"
+New-Icon -size 512 -text "OPF" -outputPath "$dir\icon-512.png"
+New-Icon -size 192 -text "OPF" -outputPath "$dir\icon-192.png"
