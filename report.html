@@ -93,19 +93,19 @@
                 <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 print-break-inside flex flex-col justify-between">
                     <div>
                         <h3 class="text-lg font-bold text-gray-800 mb-1">Daily Yield & Shrinkage Report (Today)</h3>
-                        <p class="text-sm text-gray-500 mb-4">Live Received vs Documented Processed Stock</p>
+                        <p class="text-sm text-gray-500 mb-4">Live Received vs Documented Processed Output</p>
                         
                         <div class="flex items-end justify-between mb-2">
-                            <span class="text-gray-600 font-semibold">Total Stock In (All Processed):</span>
-                            <span class="text-xl font-bold font-mono" id="val-processed">0.00 kg</span>
+                            <span class="text-gray-600 font-semibold">Total Live Received:</span>
+                            <span class="text-xl font-bold font-mono" id="val-live-in">0.00 kg</span>
                         </div>
                         <div class="flex items-end justify-between mb-4 border-b pb-4 border-dashed border-gray-200">
-                            <span class="text-gray-600 font-semibold">Total Dispatched (Today):</span>
-                            <span class="text-xl font-bold font-mono" id="val-dispatched">0.00 kg</span>
+                            <span class="text-gray-600 font-semibold">Total Processed Output:</span>
+                            <span class="text-xl font-bold font-mono" id="val-processed">0.00 kg</span>
                         </div>
                     </div>
                     <div class="bg-blue-50 rounded-lg p-4 flex justify-between items-center border border-blue-100">
-                        <span class="font-bold text-blue-800">Net Movement delta:</span>
+                        <span class="font-bold text-blue-800">Processing Yield:</span>
                         <span class="text-2xl font-extrabold text-blue-700" id="val-movement">0.00%</span>
                     </div>
                 </div>
@@ -301,10 +301,12 @@
 
                 // --- 1. PROCESS STOCK ENTRIES ---
                 let totalStockAllTime = 0;
-                let todayStockIn = 0;
+                let todayLiveIn = 0;
+                let todayProcessedIn = 0;
                 let unDispatchedOlderThanTodayStock = 0; 
                 
                 let balanceMap = {
+                    'Live Broiler': 0,
                     'Whole Broiler (H/P, Kopek)': 0,
                     'Slices': 0,
                     'Parts': 0,
@@ -322,14 +324,22 @@
 
                     totalStockAllTime += weight;
                     if (d.getTime() === now.getTime()) {
-                        todayStockIn += weight;
+                        if (data.category === 'Live') {
+                            todayLiveIn += weight;
+                        } else if (!(data.category === 'Slices' && data.categoryDetails && data.categoryDetails.ayamLama)) {
+                            todayProcessedIn += weight;
+                        }
                     } else if (d.getTime() < now.getTime()) {
-                        unDispatchedOlderThanTodayStock += weight; // accumulate all past stock
+                        if (data.category !== 'Live') {
+                            unDispatchedOlderThanTodayStock += weight; // accumulate all past processed stock
+                        }
                     }
 
                     // Categorize for physical balance
                     let cat = 'Others';
-                    if (data.category === 'Broiler' || (data.categoryDetails && (data.categoryDetails.type === 'H/P' || data.categoryDetails.type === 'Kopek'))) {
+                    if (data.category === 'Live') {
+                        cat = 'Live Broiler';
+                    } else if (data.category === 'Broiler' || data.category === 'Kopek' || (data.categoryDetails && (data.categoryDetails.type === 'H/P' || data.categoryDetails.type === 'Kopek'))) {
                         cat = 'Whole Broiler (H/P, Kopek)';
                     } else if (data.category === 'Slices' || (data.categoryDetails && data.categoryDetails.type === 'Slices')) {
                         cat = 'Slices';
@@ -340,6 +350,10 @@
                     }
 
                     balanceMap[cat] += weight;
+                    
+                    if (data.category === 'Slices' && data.categoryDetails && data.categoryDetails.ayamLama) {
+                        balanceMap['Whole Broiler (H/P, Kopek)'] -= weight;
+                    }
                 });
 
                 // --- 2. PROCESS ORDERS ---
@@ -452,15 +466,15 @@
                 // --- 3. DOM INJECTION ---
                 
                 // CATEGORY 1: YIELD & SHRINKAGE
-                document.getElementById('val-processed').innerHTML = `${todayStockIn.toFixed(2)} <span class="text-xs">kg</span>`;
-                document.getElementById('val-dispatched').innerHTML = `${todayDispatched.toFixed(2)} <span class="text-xs">kg</span>`;
+                document.getElementById('val-live-in').innerHTML = `${todayLiveIn.toFixed(2)} <span class="text-xs">kg</span>`;
+                document.getElementById('val-processed').innerHTML = `${todayProcessedIn.toFixed(2)} <span class="text-xs">kg</span>`;
                 
-                // Net delta movement (This is a simplified shrinkage ratio for the day)
-                let mPct = todayStockIn > 0 ? ((todayDispatched / todayStockIn) * 100).toFixed(1) : 0;
+                // Processing Yield (Processed Output / Live Received)
+                let mPct = todayLiveIn > 0 ? ((todayProcessedIn / todayLiveIn) * 100).toFixed(1) : 0;
                 document.getElementById('val-movement').innerText = `${mPct}%`;
-                if (todayDispatched > todayStockIn && todayStockIn > 0) {
+                if (todayProcessedIn > todayLiveIn && todayLiveIn > 0) {
                      document.getElementById('val-movement').classList.replace('text-blue-700', 'text-green-600');
-                     document.getElementById('val-movement').innerHTML += ' <span class="text-xs font-bold text-gray-500 block text-right mt-1 no-print">Yield +</span>';
+                     document.getElementById('val-movement').innerHTML += ' <span class="text-xs font-bold text-gray-500 block text-right mt-1 no-print">Over 100%</span>';
                 }
 
                 // CATEGORY 1: AYAM LAMA ALERT
