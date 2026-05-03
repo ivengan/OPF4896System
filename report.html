@@ -80,29 +80,27 @@
         </div>
 
         
-<!-- STAGE 1 LAYOUT (Paper form style) -->
-<section class="bg-white p-6 mb-4 shadow-md print:shadow-none print:p-0 print:mb-4 text-black mx-auto overflow-x-auto" style="font-family: Arial, sans-serif;">
-    <div style="min-width: 1000px; zoom: 0.7;">
+<!-- STAGE 1 LAYOUT (A4 Optimized) -->
+<section class="bg-white p-4 mb-6 shadow-md print:shadow-none print:p-0 print:mb-0 text-black mx-auto overflow-hidden" style="width: 21cm; min-height: 29.7cm; font-family: 'Courier New', Courier, monospace; border: 1px solid #ddd; padding: 1cm;">
     
-    <!-- Top Row: Title + 2 Tables -->
-    <div class="flex justify-start items-start mb-4 gap-5">
-        <div class="w-[50%]">
-            <h1 class="text-2xl font-bold uppercase tracking-wider mb-2 border-b-4 border-black pb-1 inline-block">STOCK RECORD STAGE 1</h1>
-            
-            <div class="mt-4 flex items-center">
-                <span class="font-bold mr-2 text-sm">DATE:</span>
-                <div class="border-b-2 border-black w-auto h-4 font-bold text-sm px-2 flex items-end pb-0.5" id="stg1-main-date"></div>
+    <!-- Top Header -->
+    <div class="flex justify-between items-start mb-6">
+        <div style="width: 55%;">
+            <h1 class="text-3xl font-bold uppercase mb-2 border-b-4 border-black pb-1 inline-block">STOCK RECORD STAGE 1</h1>
+            <div class="mt-4 flex items-end">
+                <span class="font-bold mr-2 text-base">DATE:</span>
+                <div class="border-b-2 border-black flex-grow h-6 font-bold text-lg px-2" id="stg1-main-date"></div>
             </div>
         </div>
         
-        <div class="w-[32%] flex justify-end gap-2">
+        <div class="flex gap-4" style="width: 40%;">
             <!-- Ayam A/B Table -->
-            <table class="border-collapse border-2 border-black text-center text-xs h-min">
+            <table class="border-collapse border-2 border-black text-center text-xs flex-grow">
                 <thead>
                     <tr>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap w-1/3"></th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap font-bold">EKOR</th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap font-bold">BERAT (KG)</th>
+                        <th class="border-2 border-black p-1 whitespace-nowrap"></th>
+                        <th class="border-2 border-black p-1 whitespace-nowrap font-bold">EKOR</th>
+                        <th class="border-2 border-black p-1 whitespace-nowrap font-bold">BERAT(KG)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -120,72 +118,69 @@
             </table>
 
             <!-- Parts Table -->
-            <table class="border-collapse border-2 border-black text-center text-xs h-min">
+            <table class="border-collapse border-2 border-black text-center text-xs w-32">
                 <thead>
                     <tr>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap w-1/2"></th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap font-bold">BERAT (KG)</th>
+                        <th class="border-2 border-black p-1 whitespace-nowrap"></th>
+                        <th class="border-2 border-black p-1 whitespace-nowrap font-bold">BERAT(KG)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr><td class="border-2 border-black p-1 font-bold h-6">HATI</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-hati"></td></tr>
                     <tr><td class="border-2 border-black p-1 font-bold h-6">PEDAL</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-pedal"></td></tr>
                     <tr><td class="border-2 border-black p-1 font-bold h-6">USUS</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-usus"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6" style="font-size: 0.65rem;">TULANG (BUANG)</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-tulang"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6" style="font-size: 0.6rem;">TULANG(BUANG)</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-tulang"></td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Middle Row: 3 Columns -->
-    <div class="flex justify-start gap-8 mb-4 relative pl-8">
-        <!-- Vertical Text Label for Col 1 -->
-        <div class="absolute left-0 top-16 w-6 flex flex-col justify-center items-center bg-gray-200 border border-black py-2 text-xs font-bold" style="writing-mode: vertical-rl; text-orientation: upright; letter-spacing: 4px;">
+    <!-- Main 3 Columns Grid -->
+    <div class="flex justify-between gap-4 mb-8 relative pl-8">
+        <!-- Vertical Side Label -->
+        <div class="absolute left-0 top-1/4 -ml-4 w-8 flex flex-col justify-center items-center bg-gray-100 border-2 border-black py-4 text-sm font-bold" style="writing-mode: vertical-rl; text-orientation: upright; letter-spacing: 6px;">
             出新鸡
         </div>
-        
-        <!-- Col 1: EKOR 1-25 -->
-        <div class="w-auto">
-            <h2 class="text-left font-bold text-sm mb-1 pl-6">EKOR</h2>
-            <table class="border-collapse w-full text-center text-xs">
+
+        <!-- Col 1: EKOR -->
+        <div style="width: 31%;">
+            <h2 class="font-bold text-sm mb-1 ml-2">EKOR</h2>
+            <table class="border-collapse border-2 border-black w-full text-center text-xs">
                 <thead>
-                    <tr>
-                        <th class="whitespace-nowrap" class="border-none"></th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap text-[10px] font-bold">BAKUL</th>
-                        
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap text-[10px] font-bold">KG (格 & 轮)</th>
+                    <tr class="bg-gray-100">
+                        <th class="border-2 border-black p-1 w-6 text-[8px]">NO</th>
+                        <th class="border-2 border-black p-1 font-bold">BAKUL</th>
+                        <th class="border-2 border-black p-1 font-bold">KG</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col1"></tbody>
             </table>
         </div>
 
-        <!-- Col 2: EKOR 26-50 -->
-        <div class="w-auto">
-            <h2 class="text-left font-bold text-sm mb-1 pl-6">EKOR</h2>
-            <table class="border-collapse w-full text-center text-xs">
+        <!-- Col 2: EKOR -->
+        <div style="width: 31%;">
+            <h2 class="font-bold text-sm mb-1 ml-2">EKOR</h2>
+            <table class="border-collapse border-2 border-black w-full text-center text-xs">
                 <thead>
-                    <tr>
-                        <th class="whitespace-nowrap" class="border-none"></th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap text-[10px] font-bold">BAKUL</th>
-                        
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap text-[10px] font-bold">KG (格 & 轮)</th>
+                    <tr class="bg-gray-100">
+                        <th class="border-2 border-black p-1 w-6 text-[8px]">NO</th>
+                        <th class="border-2 border-black p-1 font-bold">BAKUL</th>
+                        <th class="border-2 border-black p-1 font-bold">KG</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col2"></tbody>
             </table>
         </div>
 
-        <!-- Col 3: KOPEK 1-25 -->
-        <div class="w-auto">
-            <h2 class="text-left font-bold text-sm mb-1 pl-6">KOPEK</h2>
-            <table class="border-collapse w-full text-center text-xs">
+        <!-- Col 3: KOPEK -->
+        <div style="width: 31%;">
+            <h2 class="font-bold text-sm mb-1 ml-2">KOPEK</h2>
+            <table class="border-collapse border-2 border-black w-full text-center text-xs">
                 <thead>
-                    <tr>
-                        <th class="whitespace-nowrap" class="border-none"></th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap text-[10px] font-bold">BAKUL</th>
-                        
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap text-[10px] font-bold">KG (格 & 轮)</th>
+                    <tr class="bg-gray-100">
+                        <th class="border-2 border-black p-1 w-6 text-[8px]">NO</th>
+                        <th class="border-2 border-black p-1 font-bold">BAKUL</th>
+                        <th class="border-2 border-black p-1 font-bold">KG</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col3"></tbody>
@@ -193,59 +188,57 @@
         </div>
     </div>
 
-    <!-- Bottom Row -->
-    <div class="flex justify-start items-end gap-16 mt-6">
-        <!-- Bottom Left: Date/Reban/DO -->
-        <div class="w-auto">
-            <p class="font-bold text-xs mb-1">* 如果没有格子 / 轮子请注明 *</p>
+    <!-- Bottom Section -->
+    <div class="flex justify-between items-start gap-8">
+        <!-- Live Data Table -->
+        <div style="width: 62%;">
+            <p class="font-bold text-xs mb-1 italic">* 如果没有格子 / 轮子请注明 *</p>
             <table class="border-collapse border-2 border-black w-full text-center text-xs">
                 <thead>
-                    <tr>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap">DATE</th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap">REBAN</th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap">NO. DO.</th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap text-[10px]">EKOR (A)</th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap">B</th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap">料包</th>
+                    <tr class="bg-gray-100">
+                        <th class="border-2 border-black p-1">DATE</th>
+                        <th class="border-2 border-black p-1">REBAN</th>
+                        <th class="border-2 border-black p-1">NO. DO.</th>
+                        <th class="border-2 border-black p-1 text-[10px]">EKOR(A)</th>
+                        <th class="border-2 border-black p-1">B</th>
+                        <th class="border-2 border-black p-1">料包</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-live-tbl"></tbody>
             </table>
-            <div class="mt-6 flex justify-center">
-                <div class="border-b-2 border-blue-400 w-32 h-2"></div>
+            <div class="mt-8 flex justify-center">
+                <div class="border-b-4 border-blue-600 w-48 opacity-50"></div>
             </div>
         </div>
-        
-        <!-- Bottom Right: Laporan -->
-        <div class="w-auto">
-            <table class="border-collapse border-2 border-black w-full text-center text-xs">
+
+        <!-- Laporan Table -->
+        <div style="width: 35%;">
+            <table class="border-collapse border-2 border-black w-full text-center text-sm font-bold">
                 <thead>
-                    <tr>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap font-bold">LAPORAN</th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap font-bold">EKOR</th>
-                        <th class="whitespace-nowrap" class="border-2 border-black p-1 whitespace-nowrap font-bold">KG</th>
+                    <tr class="bg-gray-100">
+                        <th class="border-2 border-black p-2">LAPORAN</th>
+                        <th class="border-2 border-black p-2">EKOR</th>
+                        <th class="border-2 border-black p-2">KG</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6">EKOR</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ekor-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ekor-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">EKOR (KOPEK)</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ekor-kopek-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ekor-kopek-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">MATI</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-mati-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-mati-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">HILANG</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-hilang-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-hilang-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">HATI, PEDAL, USUS</td><td class="border-2 border-black p-1 relative"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-hpu-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">ROSAK</td><td class="border-2 border-black p-1 relative"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-rosak-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">AYAM B (kalau ada)</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ayam-b-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ayam-b-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8">EKOR</td><td class="border-2 border-black p-2" id="stg1-lap-ekor-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-ekor-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8 text-[11px]">EKOR(KOPEK)</td><td class="border-2 border-black p-2" id="stg1-lap-ekor-kopek-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-ekor-kopek-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8">MATI</td><td class="border-2 border-black p-2" id="stg1-lap-mati-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-mati-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8">HILANG</td><td class="border-2 border-black p-2" id="stg1-lap-hilang-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-hilang-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8 text-[11px]">HATI,PEDAL,USUS</td><td class="border-2 border-black p-2 relative bg-gray-50"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-2" id="stg1-lap-hpu-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8">ROSAK</td><td class="border-2 border-black p-2 relative bg-gray-50"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-2" id="stg1-lap-rosak-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8 text-[11px]">AYAM B(kalau ada)</td><td class="border-2 border-black p-2" id="stg1-lap-ayam-b-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-ayam-b-kg"></td></tr>
                 </tbody>
             </table>
-            <div class="mt-4 flex justify-end">
-                 <div class="border-b-4 border-gray-600 w-48 h-2"></div>
+            <div class="mt-8 flex justify-end">
+                <div class="border-b-4 border-gray-800 w-full h-2 opacity-80"></div>
             </div>
         </div>
     </div>
-    </div>
 </section>
 
-
-        <!-- CATEGORY 1: PRODUCTION & YIELD -->
+<!-- CATEGORY 1: PRODUCTION & YIELD -->
         <section class="space-y-6 print-break-inside">
             <div class="flex items-center gap-3 mb-2 border-b-2 border-indigo-200 pb-2">
                 <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 no-print">
@@ -721,6 +714,14 @@
                         let rowNum = i + 1 + offset;
                         let r = rows[i] || { bakul: '', ekor: '', kg: '' };
                         html += `<tr>
+                            <td class="border-2 border-black h-5 text-[8px] font-bold text-center w-6">${rowNum}</td>
+                            <td class="border-2 border-black h-5 text-center font-bold text-xs">${r.bakul||''}</td>
+                            <td class="border-2 border-black h-5 text-center font-bold text-xs">${r.kg ? r.kg.toFixed(2) : ''}</td>
+                        </tr>`;
+                    }
+                    document.getElementById(id).innerHTML = html;
+                };
+                        html += `<tr>
                             <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">${rowNum}</td>
                             <td class="border-2 border-black h-3 text-center font-bold text-xs">${r.bakul||''}</td>
                             
@@ -747,15 +748,14 @@
                 let liveHtml = '';
                 for (let i = 0; i < 9; i++) {
                     let r = stgLiveRows[i] || { date: '/', farm: '', do: '', a: '', b: '', pack: '' };
-                    let displayDate = r.date;
-                    if(!displayDate) displayDate = '/';
+                    let displayDate = r.date || '/';
                     liveHtml += `<tr>
-                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${displayDate}</td>
-                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${r.farm||''}</td>
-                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${r.do||''}</td>
-                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${r.a||''}</td>
-                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${r.b||''}</td>
-                        <td class="border-2 border-black h-3 font-bold text-center text-xs"></td>
+                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${displayDate}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${r.farm||''}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${r.do||''}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${r.a||''}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${r.b||''}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center text-xs"></td>
                     </tr>`;
                 }
                 document.getElementById('stg1-live-tbl').innerHTML = liveHtml;
