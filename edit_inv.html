@@ -329,9 +329,6 @@
         
         itemNameInput.addEventListener('input', () => {
             const searchTerm = itemNameInput.value.toLowerCase();
-            if(selectedItemId) {
-                resetSelection();
-            }
             const filteredItems = allItems.filter(item => item.name.includes(searchTerm));
             displayItems(filteredItems);
         });
