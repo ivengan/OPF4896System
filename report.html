@@ -92,7 +92,7 @@
             </div>
             <div class="mt-4 flex items-center">
                 <span class="font-bold mr-2 text-sm">DATE:</span>
-                <div class="border-b-2 border-black flex-grow h-4"></div>
+                <div class="border-b-2 border-black flex-grow h-4 font-bold text-sm px-2 flex items-end pb-0.5" id="stg1-main-date"></div>
             </div>
         </div>
         
@@ -109,13 +109,13 @@
                 <tbody>
                     <tr>
                         <td class="border-2 border-black p-1 font-bold">AYAM A</td>
-                        <td class="border-2 border-black p-1 h-6"></td>
-                        <td class="border-2 border-black p-1 h-6"></td>
+                        <td class="border-2 border-black p-1 h-6 font-bold" id="stg1-ayam-a-ekor"></td>
+                        <td class="border-2 border-black p-1 h-6 font-bold" id="stg1-ayam-a-berat"></td>
                     </tr>
                     <tr>
                         <td class="border-2 border-black p-1 font-bold">AYAM B</td>
-                        <td class="border-2 border-black p-1 h-6"></td>
-                        <td class="border-2 border-black p-1 h-6"></td>
+                        <td class="border-2 border-black p-1 h-6 font-bold" id="stg1-ayam-b-ekor"></td>
+                        <td class="border-2 border-black p-1 h-6 font-bold" id="stg1-ayam-b-berat"></td>
                     </tr>
                 </tbody>
             </table>
@@ -129,10 +129,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6">HATI</td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6">PEDAL</td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6">USUS</td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6" style="font-size: 0.65rem;">TULANG (BUANG)</td><td class="border-2 border-black p-1"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6">HATI</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-hati"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6">PEDAL</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-pedal"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6">USUS</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-usus"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6" style="font-size: 0.65rem;">TULANG (BUANG)</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-tulang"></td></tr>
                 </tbody>
             </table>
         </div>
@@ -157,159 +157,7 @@
                         <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">1</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">2</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">3</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">4</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">5</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">6</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">7</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">8</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">9</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">10</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">11</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">12</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">13</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">14</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">15</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">16</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">17</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">18</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">19</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">20</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">21</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">22</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">23</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">24</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">25</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-                </tbody>
+                <tbody id="stg1-col1"></tbody>
             </table>
         </div>
 
@@ -325,159 +173,7 @@
                         <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">26</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">27</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">28</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">29</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">30</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">31</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">32</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">33</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">34</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">35</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">36</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">37</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">38</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">39</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">40</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">41</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">42</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">43</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">44</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">45</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">46</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">47</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">48</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">49</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">50</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-                </tbody>
+                <tbody id="stg1-col2"></tbody>
             </table>
         </div>
 
@@ -493,159 +189,7 @@
                         <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">1</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">2</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">3</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">4</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">5</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">6</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">7</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">8</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">9</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">10</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">11</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">12</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">13</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">14</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">15</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">16</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">17</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">18</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">19</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">20</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">21</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">22</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">23</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">24</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-        <tr>
-            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">25</td>
-            <td class="border-2 border-black h-5 w-[20%]"></td>
-            <td class="border-2 border-black h-5 w-[25%]"></td>
-            <td class="border-2 border-black h-5 w-[55%]"></td>
-        </tr>
-                </tbody>
+                <tbody id="stg1-col3"></tbody>
             </table>
         </div>
     </div>
@@ -666,81 +210,7 @@
                         <th class="border-2 border-black p-1 w-[15%]">料包</th>
                     </tr>
                 </thead>
-                <tbody>
-                    
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-        <tr>
-            <td class="border-2 border-black h-6 font-bold text-center">/</td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-            <td class="border-2 border-black h-6"></td>
-        </tr>
-                </tbody>
+                <tbody id="stg1-live-tbl"></tbody>
             </table>
             <div class="mt-6 flex justify-center">
                 <div class="border-b-2 border-blue-400 w-32 h-2"></div>
@@ -758,13 +228,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6">EKOR</td><td class="border-2 border-black p-1"></td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">EKOR (KOPEK)</td><td class="border-2 border-black p-1"></td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">MATI</td><td class="border-2 border-black p-1"></td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">HILANG</td><td class="border-2 border-black p-1"></td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">HATI, PEDAL, USUS</td><td class="border-2 border-black p-1 relative"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">ROSAK</td><td class="border-2 border-black p-1 relative"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-1"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">AYAM B (kalau ada)</td><td class="border-2 border-black p-1"></td><td class="border-2 border-black p-1"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6">EKOR</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ekor-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ekor-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">EKOR (KOPEK)</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ekor-kopek-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ekor-kopek-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">MATI</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-mati-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-mati-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">HILANG</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-hilang-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-hilang-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">HATI, PEDAL, USUS</td><td class="border-2 border-black p-1 relative"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-hpu-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[11px]">ROSAK</td><td class="border-2 border-black p-1 relative"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-rosak-kg"></td></tr>
+                    <tr><td class="border-2 border-black p-1 font-bold h-6 text-[10px]">AYAM B (kalau ada)</td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ayam-b-ekor"></td><td class="border-2 border-black p-1 font-bold" id="stg1-lap-ayam-b-kg"></td></tr>
                 </tbody>
             </table>
             <div class="mt-4 flex justify-end">
@@ -1157,6 +627,165 @@
                          });
                     }
                 });
+
+
+                
+                // --- 4. PROCESS STAGE 1 REPORT ---
+                let stgLiveRows = [];
+                let matiEkor = 0;
+                let ayamAWeight = 0, ayamBEkor = 0;
+                let topParts = { hati: 0, pedal: 0, usus: 0, tulang: 0 };
+                
+                let col1Rows = []; // Dispatch Broilers (Today)
+                let col2Rows = []; // Chiller Broilers (Today)
+                let col3Rows = []; // Kopek (Today)
+                let ayamA_Live = 0, ayamB_Live = 0;
+
+                // Process Stock Entries for Stage 1
+                stockSnap.docs.forEach(doc => {
+                    const data = doc.data();
+                    let d = data.timestamp ? data.timestamp.toDate() : new Date();
+                    d.setHours(0,0,0,0);
+                    if (d.getTime() !== now.getTime()) return; // Only today
+                    
+                    if (data.category === 'Live') {
+                        let details = data.categoryDetails && data.categoryDetails.entries ? data.categoryDetails.entries : [];
+                        details.forEach(e => {
+                            stgLiveRows.push({
+                                date: e.date || '', farm: e.farm || '', do: e.doSerial || '', 
+                                a: e.ayamA || 0, b: e.ayamB || 0
+                            });
+                            ayamA_Live += parseInt(e.ayamA || 0);
+                            ayamB_Live += parseInt(e.ayamB || 0);
+                        });
+                    }
+                    
+                    if (data.category === 'Eliminate') {
+                        let aDead = parseInt(data.categoryDetails?.ayamADead || 0);
+                        let bDead = parseInt(data.categoryDetails?.ayamBDead || 0);
+                        matiEkor += (aDead + bDead);
+                    }
+                    
+                    let weight = parseFloat(data.netWeight) || 0;
+                    if (weight <= 0) return;
+
+                    let catType = data.category === 'Kopek' || (data.categoryDetails && data.categoryDetails.type === 'Kopek') ? 'Kopek' : data.category;
+                    
+                    if (catType === 'Broiler' || (data.categoryDetails && data.categoryDetails.type === 'H/P')) {
+                        let bakul = data.containerDetails ? (data.containerDetails.count || 1) : 1;
+                        col2Rows.push({ bakul: bakul, ekor: '', kg: weight });
+                    }
+                    
+                    if (catType === 'Kopek') {
+                        let bakul = data.containerDetails ? (data.containerDetails.count || 1) : 1;
+                        col3Rows.push({ bakul: bakul, ekor: '', kg: weight });
+                    }
+                    
+                    if (data.category === 'Parts') {
+                        let pName = (data.categoryDetails && data.categoryDetails.partName) ? data.categoryDetails.partName.toLowerCase() : '';
+                        if (pName.includes('hati')) topParts.hati += weight;
+                        if (pName.includes('pedal')) topParts.pedal += weight;
+                        if (pName.includes('usus')) topParts.usus += weight;
+                        if (pName.includes('tulang') && pName.includes('buang')) topParts.tulang += weight;
+                    }
+                });
+
+                // Process Orders for Stage 1 (Col 1 - Dispatch)
+                ordersSnap.docs.forEach(doc => {
+                    const o = doc.data();
+                    let orderDate = o.timestamp ? o.timestamp.toDate() : new Date();
+                    orderDate.setHours(0,0,0,0);
+                    if (orderDate.getTime() !== now.getTime()) return; // Only today
+                    
+                    if (o.broilers && Array.isArray(o.broilers)) {
+                        o.broilers.forEach(b => {
+                            if (b.history && Array.isArray(b.history)) {
+                                b.history.forEach(h => {
+                                    if (h.qty > 0) {
+                                        let itemType = (b.description || '').toLowerCase();
+                                        if (!itemType.includes('slice')) {
+                                            let hWeight = parseFloat(h.net) || parseFloat(h.gross) || 0;
+                                            col1Rows.push({ bakul: '', ekor: h.qty, kg: hWeight });
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+                // Helper to populate 3-column table
+                const populateCol = (id, rows, offset) => {
+                    let html = '';
+                    for (let i = 0; i < 25; i++) {
+                        let rowNum = i + 1 + offset;
+                        let r = rows[i] || { bakul: '', ekor: '', kg: '' };
+                        html += `<tr>
+                            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">${rowNum}</td>
+                            <td class="border-2 border-black h-5 w-[20%] text-center font-bold text-sm">${r.bakul||''}</td>
+                            <td class="border-2 border-black h-5 w-[25%] text-center font-bold text-sm">${r.ekor||''}</td>
+                            <td class="border-2 border-black h-5 w-[55%] text-center font-bold text-sm">${r.kg ? r.kg.toFixed(2) : ''}</td>
+                        </tr>`;
+                    }
+                    document.getElementById(id).innerHTML = html;
+                };
+
+                populateCol('stg1-col1', col1Rows, 0);
+                populateCol('stg1-col2', col2Rows, 25);
+                populateCol('stg1-col3', col3Rows, 0);
+
+                // Populate Top Tables
+                document.getElementById('stg1-ayam-a-ekor').innerText = ayamA_Live > 0 ? ayamA_Live : '';
+                document.getElementById('stg1-ayam-b-ekor').innerText = ayamB_Live > 0 ? ayamB_Live : '';
+                
+                document.getElementById('stg1-part-hati').innerText = topParts.hati > 0 ? topParts.hati.toFixed(2) : '';
+                document.getElementById('stg1-part-pedal').innerText = topParts.pedal > 0 ? topParts.pedal.toFixed(2) : '';
+                document.getElementById('stg1-part-usus').innerText = topParts.usus > 0 ? topParts.usus.toFixed(2) : '';
+                document.getElementById('stg1-part-tulang').innerText = topParts.tulang > 0 ? topParts.tulang.toFixed(2) : '';
+
+                // Populate Bottom Left Table (Live Entries)
+                let liveHtml = '';
+                for (let i = 0; i < 9; i++) {
+                    let r = stgLiveRows[i] || { date: '/', farm: '', do: '', a: '', b: '', pack: '' };
+                    let displayDate = r.date;
+                    if(!displayDate) displayDate = '/';
+                    liveHtml += `<tr>
+                        <td class="border-2 border-black h-6 font-bold text-center">${displayDate}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center">${r.farm||''}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center">${r.do||''}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center">${r.a||''}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center">${r.b||''}</td>
+                        <td class="border-2 border-black h-6 font-bold text-center"></td>
+                    </tr>`;
+                }
+                document.getElementById('stg1-live-tbl').innerHTML = liveHtml;
+
+                // Populate Laporan Table
+                let totalEkorCol1 = col1Rows.reduce((sum, r) => sum + (parseInt(r.ekor)||0), 0);
+                let totalKgCol1 = col1Rows.reduce((sum, r) => sum + (parseFloat(r.kg)||0), 0);
+                document.getElementById('stg1-lap-ekor-ekor').innerText = totalEkorCol1 > 0 ? totalEkorCol1 : '';
+                document.getElementById('stg1-lap-ekor-kg').innerText = totalKgCol1 > 0 ? totalKgCol1.toFixed(2) : '';
+
+                let totalEkorCol3 = col3Rows.reduce((sum, r) => sum + (parseInt(r.ekor)||0), 0);
+                let totalKgCol3 = col3Rows.reduce((sum, r) => sum + (parseFloat(r.kg)||0), 0);
+                document.getElementById('stg1-lap-ekor-kopek-ekor').innerText = totalEkorCol3 > 0 ? totalEkorCol3 : '';
+                document.getElementById('stg1-lap-ekor-kopek-kg').innerText = totalKgCol3 > 0 ? totalKgCol3.toFixed(2) : '';
+
+                document.getElementById('stg1-lap-mati-ekor').innerText = matiEkor > 0 ? matiEkor : '';
+                
+                // Hilang Calculation: Total Live (A+B) - (Col 1 Dispatch Ekor + Col 2 Chiller Ekor + Col 3 Kopek Ekor)
+                // Note: Col 2 (Chiller) typically doesn't record Ekor. If it doesn't, Hilang ekor calculation will be inaccurate.
+                // Assuming Col 2 ekor sum is 0 if not provided.
+                let totalEkorCol2 = col2Rows.reduce((sum, r) => sum + (parseInt(r.ekor)||0), 0);
+                let totalLiveEkor = ayamA_Live + ayamB_Live;
+                let hilangEkor = totalLiveEkor - (totalEkorCol1 + totalEkorCol2 + totalEkorCol3);
+                if (hilangEkor > 0) {
+                    document.getElementById('stg1-lap-hilang-ekor').innerText = hilangEkor;
+                }
+
+                document.getElementById('stg1-lap-hpu-kg').innerText = (topParts.hati + topParts.pedal + topParts.usus) > 0 ? (topParts.hati + topParts.pedal + topParts.usus).toFixed(2) : '';
+
+                document.getElementById('stg1-main-date').innerText = new Date().toLocaleDateString();
 
 
                 // --- 3. DOM INJECTION ---
