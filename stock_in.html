@@ -124,6 +124,9 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .animate-spin { animation: spin 1s linear infinite; }
         .spinner-svg { width: 1.25rem; height: 1.25rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; }
+
+        .active-segment { background-color: #3b82f6 !important; color: white !important; border-color: #2563eb !important; }
+        .inactive-segment { background-color: #f3f4f6 !important; color: #4b5563 !important; border-color: #d1d5db !important; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
@@ -256,12 +259,18 @@
                     <label class="font-semibold text-gray-700 text-sm">Number of live broiler (A):</label>
                     <input type="number" id="live-a" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0">
                 </div>
-
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Weight (A) in KG:</label>
+                    <input type="number" id="live-weight-a" step="0.1" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0.0">
+                </div>
                 <div>
                     <label class="font-semibold text-gray-700 text-sm">Number of live broiler (B):</label>
                     <input type="number" id="live-b" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0">
                 </div>
-
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Weight (B) in KG:</label>
+                    <input type="number" id="live-weight-b" step="0.1" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0.0">
+                </div>
                 <div class="flex items-center mt-2 bg-gray-50 p-2 rounded-lg border border-gray-200">
                     <input type="checkbox" id="live-crop" class="h-5 w-5 text-blue-600 rounded border-gray-300">
                     <label for="live-crop" class="ml-3 text-sm font-semibold text-gray-700">Crop (live chicken with crop)</label>
@@ -490,7 +499,7 @@
                 if (el) el.value = '';
             });
 
-            const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-b'];
+            const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
             liveInputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
@@ -516,9 +525,8 @@
 
         function handleSegmentClick(btn, group, stateVar, value) {
             if (btn.classList.contains('active-segment')) {
-                if (stateVar === 'category') resetCategorySelection();
-                if (stateVar === 'container') resetContainerSelection();
-                return null;
+                // If already active, just return the value (allows re-opening modals without resetting)
+                return value;
             } else {
                 group.forEach(b => b.classList.replace('active-segment', 'inactive-segment'));
                 btn.classList.replace('inactive-segment', 'active-segment');
@@ -550,7 +558,9 @@
                 if (entry.farm) parts.push(entry.farm);
                 if (entry.doSerial) parts.push(`DO: ${entry.doSerial}`);
                 if (entry.ayamA > 0) parts.push(`A: ${entry.ayamA}`);
+                if (entry.weightA > 0) parts.push(`Wt A: ${entry.weightA}KG`);
                 if (entry.ayamB > 0) parts.push(`B: ${entry.ayamB}`);
+                if (entry.weightB > 0) parts.push(`Wt B: ${entry.weightB}KG`);
                 if (entry.hasCrop) parts.push(`[CROP]`);
                 
                 const entryText = `- ` + parts.join(', ');
@@ -574,7 +584,9 @@
                         document.getElementById('live-farm').value = entry.farm || '';
                         document.getElementById('live-do').value = entry.doSerial || '';
                         document.getElementById('live-a').value = entry.ayamA || '';
+                        document.getElementById('live-weight-a').value = entry.weightA || '';
                         document.getElementById('live-b').value = entry.ayamB || '';
+                        document.getElementById('live-weight-b').value = entry.weightB || '';
                         document.getElementById('live-crop').checked = entry.hasCrop || false;
                         document.getElementById('live-ok-btn').textContent = 'Update';
                         document.getElementById('live-del-btn').classList.remove('hidden');
@@ -598,12 +610,16 @@
         catLiveBtn.addEventListener('click', () => {
             const value = handleSegmentClick(catLiveBtn, allCatBtns, 'category', 'Live');
             if(value) {
-                selectedCategory = value;
-                liveEntries = [];
-                editingLiveIndex = -1;
-                document.getElementById('live-ok-btn').textContent = 'Add';
-                document.getElementById('live-del-btn').classList.add('hidden');
-                renderLiveEntries();
+                // Only reset data if switching FROM a different category to Live
+                if (selectedCategory !== 'Live') {
+                    selectedCategory = value;
+                    liveEntries = [];
+                    selectedCategoryDetails = null;
+                    editingLiveIndex = -1;
+                    document.getElementById('live-ok-btn').textContent = 'Add';
+                    document.getElementById('live-del-btn').classList.add('hidden');
+                    renderLiveEntries();
+                }
                 showModal(liveModal); 
             }
         });
@@ -624,7 +640,7 @@
                     
                     renderLiveEntries();
                     
-                    const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-b'];
+                    const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
                     liveInputs.forEach(id => {
                         const el = document.getElementById(id);
                         if (el) el.value = '';
@@ -819,10 +835,12 @@
             const farmVal = document.getElementById('live-farm').value.trim();
             const doVal = document.getElementById('live-do').value.trim();
             const aVal = parseInt(document.getElementById('live-a').value) || 0;
+            const weightAVal = parseFloat(document.getElementById('live-weight-a').value) || 0;
             const bVal = parseInt(document.getElementById('live-b').value) || 0;
+            const weightBVal = parseFloat(document.getElementById('live-weight-b').value) || 0;
             const cropVal = document.getElementById('live-crop').checked;
 
-            if (!dateVal && !farmVal && !doVal && aVal === 0 && bVal === 0) {
+            if (!dateVal && !farmVal && !doVal && aVal === 0 && weightAVal === 0 && bVal === 0 && weightBVal === 0) {
                 return; // Nothing entered
             }
 
@@ -831,7 +849,9 @@
                 farm: farmVal,
                 doSerial: doVal,
                 ayamA: aVal,
+                weightA: weightAVal,
                 ayamB: bVal,
+                weightB: weightBVal,
                 hasCrop: cropVal
             };
             
@@ -852,7 +872,7 @@
             renderLiveEntries();
             
             // Clear inputs
-            const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-b'];
+            const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
             liveInputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
