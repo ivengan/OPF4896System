@@ -429,7 +429,7 @@
                     db.collection('customers').get() 
                 ]);
 
-                // --- 1. PROCESS STOCK ENTRIES ---
+                // --- 1. INITIALIZE ACCUMULATORS ---
                 let totalStockAllTime = 0;
                 let todayLiveIn = 0;
                 let todayProcessedIn = 0;
@@ -444,173 +444,14 @@
                     'Others': 0
                 };
 
-                stockSnap.docs.forEach(doc => {
-                    const data = doc.data();
-                    const weight = parseFloat(data.netWeight) || 0;
-                    if(weight <= 0) return;
-
-                    let d = data.timestamp ? data.timestamp.toDate() : new Date();
-                    d.setHours(0,0,0,0);
-
-                    totalStockAllTime += weight;
-                    if (d.getTime() === now.getTime()) {
-                        if (data.category === 'Live') {
-                            todayLiveIn += weight;
-                        } else if (!(data.category === 'Slices' && data.categoryDetails && data.categoryDetails.ayamLama)) {
-                            todayProcessedIn += weight;
-                        }
-                    } else if (d.getTime() < now.getTime()) {
-                        if (data.category !== 'Live') {
-                            unDispatchedOlderThanTodayStock += weight; // accumulate all past processed stock
-                        }
-                    }
-
-                    // Categorize for physical balance
-                    let cat = 'Others';
-                    if (data.category === 'Live') {
-                        cat = 'Live Broiler';
-                    } else if (data.category === 'Broiler' || data.category === 'Kopek' || (data.categoryDetails && (data.categoryDetails.type === 'H/P' || data.categoryDetails.type === 'Kopek'))) {
-                        cat = 'Whole Broiler (H/P, Kopek)';
-                    } else if (data.category === 'Slices' || (data.categoryDetails && data.categoryDetails.type === 'Slices')) {
-                        cat = 'Slices';
-                    } else if (data.category === 'Parts') {
-                        cat = 'Parts';
-                    } else if (data.category === 'Waste') {
-                        cat = 'Waste';
-                    }
-
-                    balanceMap[cat] += weight;
-                    
-                    if (data.category === 'Slices' && data.categoryDetails && data.categoryDetails.ayamLama) {
-                        balanceMap['Whole Broiler (H/P, Kopek)'] -= weight;
-                    }
-                });
-
-                // --- 2. PROCESS ORDERS ---
-                let todayDispatched = 0;
-                let ayamLamaDispatchedPast = 0; // Past dispatches marked as Ayam Lama
-                let ayamLamaDispatchedToday = 0; // Today dispatches marked as Ayam Lama
-
-                let doSummary = {
-                    'Wholesale Broilers': 0,
-                    'Broiler Slices': 0,
-                    'Specific Cut Parts': 0
-                };
-                
-                let trendVolumes = { broiler: 0, parts: 0, slices: 0 };
-                let partsDemandMap = {};
-                let customerVolumes = {};
-                let customerLastOrder = {};
-
-                // Initialize tracked customers
-                customersSnap.docs.forEach(doc => {
-                    customerVolumes[doc.data().displayName] = 0;
-                    customerLastOrder[doc.data().displayName] = 0; // 0 timestamp = never
-                });
-
-                ordersSnap.docs.forEach(doc => {
-                    const o = doc.data();
-                    const isCompleted = o.status === 'completed';
-                    const custName = o.customerName || 'Unknown';
-                    
-                    let orderDate = o.timestamp ? o.timestamp.toDate() : new Date();
-                    orderDate.setHours(0,0,0,0);
-                    
-                    // Track drop off (last order date)
-                    if (orderDate.getTime() > (customerLastOrder[custName] || 0)) {
-                        customerLastOrder[custName] = orderDate.getTime();
-                    }
-
-                    // Iterate broilers
-                    if (o.broilers && Array.isArray(o.broilers)) {
-                        o.broilers.forEach(b => {
-                            if (b.history && Array.isArray(b.history)) {
-                                b.history.forEach(h => {
-                                    if (h.qty > 0) { // Positive qty means added to dispatch
-                                        let hWeight = parseFloat(h.net) || parseFloat(h.gross) || 0;
-                                        
-                                        // VIP Tiering
-                                        if(!customerVolumes[custName]) customerVolumes[custName] = 0;
-                                        if(hWeight > 0) customerVolumes[custName] += hWeight;
-
-                                        // Trend Volumes
-                                        let itemType = (b.description || '').toLowerCase();
-                                        if (itemType.includes('slice')) trendVolumes.slices += hWeight;
-                                        else trendVolumes.broiler += hWeight;
-
-                                        // Balance deduction
-                                        if (itemType.includes('slice')) balanceMap['Slices'] -= hWeight;
-                                        else balanceMap['Whole Broiler (H/P, Kopek)'] -= hWeight;
-
-                                        // Today vs Past logic
-                                        let hDate = orderDate; 
-                                        if (hDate.getTime() === now.getTime()) {
-                                            todayDispatched += hWeight;
-                                            
-                                            // DO Summary categorization
-                                            if (itemType.includes('slice')) doSummary['Broiler Slices'] += hWeight;
-                                            else doSummary['Wholesale Broilers'] += hWeight;
-                                            
-                                            if (h.ayamLama) ayamLamaDispatchedToday += hWeight;
-                                        } 
-                                        
-                                        // Deduct from the "Old Stock" pool if it was dispatched earlier AND was ayamLama
-                                        // OR if the dispatch itself happened BEFORE today
-                                        if (hDate.getTime() < now.getTime()) {
-                                            ayamLamaDispatchedPast += hWeight; // Past dispatches reduce the old stock amount
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    // Iterate Parts
-                    if (o.parts && Array.isArray(o.parts)) {
-                         o.parts.forEach(p => {
-                            let pWeight = parseFloat(p.totalWeight) || 0; // parts logic
-                            if (pWeight > 0) {
-                                // VIP Tiering
-                                if(!customerVolumes[custName]) customerVolumes[custName] = 0;
-                                customerVolumes[custName] += pWeight;
-
-                                trendVolumes.parts += pWeight;
-                                balanceMap['Parts'] -= pWeight;
-
-                                if (orderDate.getTime() === now.getTime()) {
-                                    todayDispatched += pWeight;
-                                    doSummary['Specific Cut Parts'] += pWeight;
-                                } else if (orderDate.getTime() < now.getTime()) {
-                                    ayamLamaDispatchedPast += pWeight; 
-                                }
-
-                                let partNameStr = p.name || 'Unknown Part';
-                                if (!partsDemandMap[partNameStr]) partsDemandMap[partNameStr] = 0;
-                                partsDemandMap[partNameStr] += pWeight;
-                            }
-                         });
-                    }
-                });
-
-
-                
-                // --- 4. PROCESS STAGE 1 REPORT (NEW LOGIC) ---
-                let totalLiveIn = 0;
-                let todayLiveIn = 0;
-                let todayProcessedIn = 0;
-                let unDispatchedOlderThanTodayStock = 0;
-                let ayamLamaDispatchedPast = 0;
-                let ayamLamaDispatchedToday = 0;
-
-                let doMap = {}; // Group by DO Single
+                // STAGE 1 Specific
+                let doMap = {}; 
                 let totalA_Live = 0;
                 let totalB_Live = 0;
                 let totalLiveWeight = 0;
-
                 let deadCount = 0;
                 let deadWeight = 0;
                 let damagedWeight = 0;
-
                 let processWholeCount = 0;
                 let processWholeWeight = 0;
                 let processSlicesCount = 0;
@@ -618,29 +459,49 @@
                 let processHeartGizzardWeight = 0;
                 let processWasteWeight = 0;
 
-                let trendVolumes = { broiler: 0, parts: 0, slices: 0 };
-                let balanceMap = {
-                    'Whole Broiler (H/P)': 0,
-                    'Kopek': 0,
-                    'Slices': 0,
-                    'Parts': 0
-                };
-                let doSummary = {};
-
                 const startOfToday = new Date();
                 startOfToday.setHours(0, 0, 0, 0);
 
-                stockSnap.docs.forEach(docSnap => {
-                    const d = docSnap.data();
-                    if (!d.category) return;
+                // --- 2. PROCESS STOCK ENTRIES ---
+                stockSnap.docs.forEach(doc => {
+                    const d = doc.data();
+                    const weight = parseFloat(d.netWeight) || 0;
+                    if(weight <= 0) return;
+
                     let docDate = d.timestamp ? d.timestamp.toDate() : new Date();
-                    let isToday = docDate.getTime() >= startOfToday.getTime();
+                    docDate.setHours(0,0,0,0);
+                    let isToday = docDate.getTime() === startOfToday.getTime();
 
-                    // --- STAGE 1 DATA (TODAY ONLY) ---
+                    totalStockAllTime += weight;
                     if (isToday) {
-                        let docWeight = d.netWeight || d.grossWeight || 0;
+                        if (d.category === 'Live') {
+                            todayLiveIn += weight;
+                        } else if (!(d.category === 'Slices' && d.categoryDetails && d.categoryDetails.ayamLama)) {
+                            todayProcessedIn += weight;
+                        }
+                    } else if (docDate.getTime() < startOfToday.getTime()) {
+                        if (d.category !== 'Live') {
+                            unDispatchedOlderThanTodayStock += weight;
+                        }
+                    }
 
-                        // 1. Live Entries (买鸡)
+                    // Physical Balance Categorization
+                    let cat = 'Others';
+                    if (d.category === 'Live') cat = 'Live Broiler';
+                    else if (d.category === 'Broiler' || d.category === 'Kopek' || (d.categoryDetails && (d.categoryDetails.type === 'H/P' || d.categoryDetails.type === 'Kopek'))) {
+                        cat = 'Whole Broiler (H/P, Kopek)';
+                    } else if (d.category === 'Slices' || (d.categoryDetails && d.categoryDetails.type === 'Slices')) {
+                        cat = 'Slices';
+                    } else if (d.category === 'Parts') cat = 'Parts';
+                    else if (d.category === 'Waste') cat = 'Waste';
+
+                    balanceMap[cat] += weight;
+                    if (d.category === 'Slices' && d.categoryDetails && d.categoryDetails.ayamLama) {
+                        balanceMap['Whole Broiler (H/P, Kopek)'] -= weight;
+                    }
+
+                    // STAGE 1 LOGIC (Today Only)
+                    if (isToday) {
                         if (d.category === 'Live' && d.categoryDetails && d.categoryDetails.entries) {
                             let entries = d.categoryDetails.entries;
                             let entryA = 0, entryB = 0;
@@ -650,66 +511,144 @@
                                 entryB += e.ayamB || 0;
                                 if(e.doSerial && !firstDo) firstDo = e.doSerial;
                             });
-                            
                             let doKey = firstDo || 'NO_DO';
                             if (!doMap[doKey]) doMap[doKey] = { a: 0, b: 0, w: 0 };
                             doMap[doKey].a += entryA;
                             doMap[doKey].b += entryB;
-                            doMap[doKey].w += docWeight;
-
+                            doMap[doKey].w += weight;
                             totalA_Live += entryA;
                             totalB_Live += entryB;
-                            totalLiveWeight += docWeight;
+                            totalLiveWeight += weight;
                         }
 
-                        // 2. Eliminate (死鸡 / 损坏)
                         if (d.category === 'Eliminate' && d.categoryDetails) {
                             let tDead = (parseInt(d.categoryDetails.ayamADead) || 0) + (parseInt(d.categoryDetails.ayamBDead) || 0);
                             let tAfter = (parseInt(d.categoryDetails.ayamAAfter) || 0) + (parseInt(d.categoryDetails.ayamBAfter) || 0);
-                            
                             if (tDead > 0 || tAfter > 0) {
                                 let totalCount = tDead + tAfter;
                                 let ratioDead = tDead / totalCount;
                                 deadCount += tDead;
-                                deadWeight += docWeight * ratioDead;
-                                damagedWeight += docWeight * (1 - ratioDead);
+                                deadWeight += weight * ratioDead;
+                                damagedWeight += weight * (1 - ratioDead);
                             }
                         }
 
-                        // 3. Waste (废弃)
-                        if (d.category === 'Waste') {
-                            processWasteWeight += docWeight;
-                        }
+                        if (d.category === 'Waste') processWasteWeight += weight;
 
-                        // 4. Processed Output (杀出来)
                         if (d.category === 'Broiler' && d.categoryDetails) {
                             if (d.categoryDetails.type === 'H/P' || d.categoryDetails.type === 'Kopek') {
                                 processWholeCount += (parseInt(d.categoryDetails.count) || 0);
-                                processWholeWeight += docWeight;
+                                processWholeWeight += weight;
                             } else if (d.categoryDetails.type === 'Slices') {
                                 processSlicesCount += (parseInt(d.categoryDetails.count) || 0);
-                                processSlicesWeight += docWeight;
+                                processSlicesWeight += weight;
                             }
                         } else if (d.category === 'Slices' && d.categoryDetails) {
                             processSlicesCount += (parseInt(d.categoryDetails.count) || 0);
-                            processSlicesWeight += docWeight;
+                            processSlicesWeight += weight;
                         } else if (d.category === 'Parts' && d.categoryDetails && d.categoryDetails.partName) {
                             let pName = d.categoryDetails.partName.toUpperCase();
                             if (pName.includes('HATI') || pName.includes('PEDAL')) {
-                                processHeartGizzardWeight += docWeight;
+                                processHeartGizzardWeight += weight;
                             } else if (pName.includes('USUS')) {
-                                processWasteWeight += docWeight; 
+                                processWasteWeight += weight; 
                             }
                         }
                     }
                 });
 
-                // --- STAGE 1 DOM POPULATION ---
-                let todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.');
-                let dateEl = document.getElementById('stg1-new-date');
-                if (dateEl) dateEl.innerText = todayStr;
+                // --- 3. PROCESS ORDERS ---
+                let todayDispatched = 0;
+                let ayamLamaDispatchedPast = 0; 
+                let ayamLamaDispatchedToday = 0; 
+                let doSummary = {
+                    'Wholesale Broilers': 0,
+                    'Broiler Slices': 0,
+                    'Specific Cut Parts': 0
+                };
+                let trendVolumes = { broiler: 0, parts: 0, slices: 0 };
+                let partsDemandMap = {};
+                let customerVolumes = {};
+                let customerLastOrder = {};
 
-                // Left Pane
+                customersSnap.docs.forEach(doc => {
+                    let name = doc.data().displayName;
+                    customerVolumes[name] = 0;
+                    customerLastOrder[name] = 0;
+                });
+
+                ordersSnap.docs.forEach(doc => {
+                    const o = doc.data();
+                    const custName = o.customerName || 'Unknown';
+                    let orderDate = o.timestamp ? o.timestamp.toDate() : new Date();
+                    orderDate.setHours(0,0,0,0);
+                    let isToday = orderDate.getTime() === startOfToday.getTime();
+
+                    if (orderDate.getTime() > (customerLastOrder[custName] || 0)) {
+                        customerLastOrder[custName] = orderDate.getTime();
+                    }
+
+                    if (o.broilers && Array.isArray(o.broilers)) {
+                        o.broilers.forEach(b => {
+                            if (b.history && Array.isArray(b.history)) {
+                                b.history.forEach(h => {
+                                    if (h.qty > 0) {
+                                        let hWeight = parseFloat(h.net) || parseFloat(h.gross) || 0;
+                                        if(!customerVolumes[custName]) customerVolumes[custName] = 0;
+                                        customerVolumes[custName] += hWeight;
+
+                                        let itemType = (b.description || '').toLowerCase();
+                                        if (itemType.includes('slice')) {
+                                            trendVolumes.slices += hWeight;
+                                            balanceMap['Slices'] -= hWeight;
+                                        } else {
+                                            trendVolumes.broiler += hWeight;
+                                            balanceMap['Whole Broiler (H/P, Kopek)'] -= hWeight;
+                                        }
+
+                                        if (isToday) {
+                                            todayDispatched += hWeight;
+                                            if (itemType.includes('slice')) doSummary['Broiler Slices'] += hWeight;
+                                            else doSummary['Wholesale Broilers'] += hWeight;
+                                            if (h.ayamLama) ayamLamaDispatchedToday += hWeight;
+                                        } else if (orderDate.getTime() < startOfToday.getTime()) {
+                                            ayamLamaDispatchedPast += hWeight;
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    if (o.parts && Array.isArray(o.parts)) {
+                        o.parts.forEach(p => {
+                            let pWeight = parseFloat(p.totalWeight) || 0;
+                            if (pWeight > 0) {
+                                if(!customerVolumes[custName]) customerVolumes[custName] = 0;
+                                customerVolumes[custName] += pWeight;
+                                trendVolumes.parts += pWeight;
+                                balanceMap['Parts'] -= pWeight;
+                                if (isToday) {
+                                    todayDispatched += pWeight;
+                                    doSummary['Specific Cut Parts'] += pWeight;
+                                } else if (orderDate.getTime() < startOfToday.getTime()) {
+                                    ayamLamaDispatchedPast += pWeight; 
+                                }
+                                let pName = p.name || 'Unknown Part';
+                                if (!partsDemandMap[pName]) partsDemandMap[pName] = 0;
+                                partsDemandMap[pName] += pWeight;
+                            }
+                        });
+                    }
+                });
+
+                // --- 4. DOM INJECTION ---
+                
+                // STAGE 1
+                let todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.');
+                let setTxt = (id, txt) => { let el = document.getElementById(id); if(el) el.innerText = txt; };
+                setTxt('stg1-new-date', todayStr);
+
                 let leftHtml = '';
                 for (let doNum in doMap) {
                     let r = doMap[doNum];
@@ -723,51 +662,32 @@
                         <td class="border-2 border-black p-1 text-right text-xs">${kgPerPiece}</td>
                     </tr>`;
                 }
-                
-                let rowCount = Object.keys(doMap).length;
-                for (let i = rowCount; i < 5; i++) {
-                    leftHtml += `<tr>
-                        <td class="border-2 border-black p-1 h-7"></td>
-                        <td class="border-2 border-black p-1"></td>
-                        <td class="border-2 border-black p-1"></td>
-                        <td class="border-2 border-black p-1"></td>
-                        <td class="border-2 border-black p-1 text-right text-xs">#DIV/0!</td>
-                    </tr>`;
+                for (let i = Object.keys(doMap).length; i < 5; i++) {
+                    leftHtml += `<tr><td class="border-2 border-black p-1 h-7"></td><td class="border-2 border-black p-1"></td><td class="border-2 border-black p-1"></td><td class="border-2 border-black p-1"></td><td class="border-2 border-black p-1 text-right text-xs">#DIV/0!</td></tr>`;
                 }
-                
                 let leftTbl = document.getElementById('stg1-left-tbl');
                 if(leftTbl) leftTbl.innerHTML = leftHtml;
                 
-                let setTxt = (id, txt) => { let el = document.getElementById(id); if(el) el.innerText = txt; };
-
                 setTxt('stg1-left-total-a', totalA_Live);
                 setTxt('stg1-left-total-b', totalB_Live > 0 ? totalB_Live : '-');
                 setTxt('stg1-left-total-kg', totalLiveWeight.toFixed(2));
                 setTxt('stg1-left-avg-kg', (totalA_Live + totalB_Live) > 0 ? (totalLiveWeight / (totalA_Live + totalB_Live)).toFixed(2) : '#DIV/0!');
-
                 setTxt('stg1-dead-kg', deadWeight > 0 ? `(${deadWeight.toFixed(2)})` : '(0.00)');
                 let killableKg = totalLiveWeight - deadWeight;
                 setTxt('stg1-killable-kg', killableKg.toFixed(2));
-
-                // Right Pane
                 setTxt('stg1-right-whole-count', processWholeCount);
                 setTxt('stg1-right-whole-kg', processWholeWeight.toFixed(2));
                 setTxt('stg1-right-slices-count', processSlicesCount > 0 ? processSlicesCount : '');
                 setTxt('stg1-right-slices-kg', processSlicesWeight > 0 ? processSlicesWeight.toFixed(2) : '');
                 setTxt('stg1-right-heart-kg', processHeartGizzardWeight > 0 ? processHeartGizzardWeight.toFixed(2) : '');
-
                 let rightTotalCount = processWholeCount + processSlicesCount;
                 let rightTotalKg = processWholeWeight + processSlicesWeight + processHeartGizzardWeight;
                 setTxt('stg1-right-total-count', rightTotalCount);
                 setTxt('stg1-right-total-kg', rightTotalKg.toFixed(2));
-
                 let rightNetKg = rightTotalKg * 0.98;
                 setTxt('stg1-right-net-kg', rightNetKg.toFixed(2));
-
                 let lossPct = killableKg > 0 ? (1 - (rightNetKg / killableKg)) * 100 : 0;
                 setTxt('stg1-loss-pct', lossPct.toFixed(2) + '%');
-
-                // Remarks
                 let countDiff = (totalA_Live + totalB_Live) - deadCount - rightTotalCount;
                 setTxt('stg1-diff-count', Math.abs(countDiff));
                 setTxt('stg1-waste-kg', processWasteWeight.toFixed(2));
@@ -775,39 +695,21 @@
                 setTxt('stg1-dead-kg-remark', deadWeight.toFixed(2));
                 setTxt('stg1-damaged-kg', damagedWeight.toFixed(2));
 
-                
-// --- 3. DOM INJECTION ---
-                
                 // CATEGORY 1: YIELD & SHRINKAGE
-                document.getElementById('val-live-in').innerHTML = `${todayLiveIn.toFixed(2)} <span class="text-xs">kg</span>`;
-                document.getElementById('val-processed').innerHTML = `${todayProcessedIn.toFixed(2)} <span class="text-xs">kg</span>`;
-                
-                // Processing Yield (Processed Output / Live Received)
+                setTxt('val-live-in', `${todayLiveIn.toFixed(2)} kg`);
+                setTxt('val-processed', `${todayProcessedIn.toFixed(2)} kg`);
                 let mPct = todayLiveIn > 0 ? ((todayProcessedIn / todayLiveIn) * 100).toFixed(1) : 0;
-                document.getElementById('val-movement').innerText = `${mPct}%`;
-                if (todayProcessedIn > todayLiveIn && todayLiveIn > 0) {
-                     document.getElementById('val-movement').classList.replace('text-blue-700', 'text-green-600');
-                     document.getElementById('val-movement').innerHTML += ' <span class="text-xs font-bold text-gray-500 block text-right mt-1 no-print">Over 100%</span>';
-                }
+                setTxt('val-movement', `${mPct}%`);
 
                 // CATEGORY 1: AYAM LAMA ALERT
-                // Logic: All stock added BEFORE today - ALL completely dispatched stock BEFORE today = Remaining old stock
-                // Then subtract what we dispatched TODAY natively marked as ayam lama.
-                // NOTE: This represents all physical kg still in the chiller from prior days.
                 let remainingAyamLama = unDispatchedOlderThanTodayStock - ayamLamaDispatchedPast - ayamLamaDispatchedToday;
-                if (remainingAyamLama < 0) remainingAyamLama = 0; // Failsafe
-                document.getElementById('val-ayamlama').innerText = remainingAyamLama.toFixed(2);
+                setTxt('val-ayamlama', Math.max(0, remainingAyamLama).toFixed(2));
 
                 // CATEGORY 1: PHYSICAL BALANCE TABLE
                 let tblBalanceHtml = '';
                 for (let category in balanceMap) {
                     let weightClass = balanceMap[category] < 0 ? 'text-red-500 font-bold' : 'font-semibold';
-                    tblBalanceHtml += `
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-3 border-b border-gray-100 font-medium">${category}</td>
-                            <td class="p-3 border-b border-gray-100 text-right ${weightClass} font-mono">${balanceMap[category].toFixed(2)} kg</td>
-                        </tr>
-                    `;
+                    tblBalanceHtml += `<tr class="hover:bg-gray-50 transition"><td class="p-3 border-b border-gray-100 font-medium">${category}</td><td class="p-3 border-b border-gray-100 text-right ${weightClass} font-mono">${balanceMap[category].toFixed(2)} kg</td></tr>`;
                 }
                 document.getElementById('tbl-balance').innerHTML = tblBalanceHtml;
 
@@ -817,28 +719,20 @@
                 for (let type in doSummary) {
                     if (doSummary[type] > 0) {
                         totalDoToday += doSummary[type];
-                        listDoHtml += `
-                            <li class="p-3 flex justify-between items-center bg-white border border-amber-50 rounded mb-2">
-                                <span class="font-medium text-gray-700">${type}</span>
-                                <span class="font-bold font-mono text-amber-700">${doSummary[type].toFixed(2)} kg</span>
-                            </li>
-                        `;
+                        listDoHtml += `<li class="p-3 flex justify-between items-center bg-white border border-amber-50 rounded mb-2"><span class="font-medium text-gray-700">${type}</span><span class="font-bold font-mono text-amber-700">${doSummary[type].toFixed(2)} kg</span></li>`;
                     }
                 }
-                if (listDoHtml === '') listDoHtml = '<li class="p-4 text-center text-gray-400 italic">No dispatch data recorded for today yet.</li>';
-                document.getElementById('list-do').innerHTML = listDoHtml;
-                document.getElementById('val-do-total').innerText = `${totalDoToday.toFixed(2)} kg`;
+                document.getElementById('list-do').innerHTML = listDoHtml || '<li class="p-4 text-center text-gray-400 italic">No dispatch data recorded for today yet.</li>';
+                setTxt('val-do-total', `${totalDoToday.toFixed(2)} kg`);
 
                 // CATEGORY 2: VOLUME TRENDS BARS
                 let globalTotalVolume = trendVolumes.broiler + trendVolumes.parts + trendVolumes.slices;
                 if (globalTotalVolume > 0) {
-                    document.getElementById('trend-broiler').innerText = `${trendVolumes.broiler.toFixed(0)} kg`;
+                    setTxt('trend-broiler', `${trendVolumes.broiler.toFixed(0)} kg`);
                     document.getElementById('bar-broiler').style.width = `${(trendVolumes.broiler/globalTotalVolume)*100}%`;
-                    
-                    document.getElementById('trend-parts').innerText = `${trendVolumes.parts.toFixed(0)} kg`;
+                    setTxt('trend-parts', `${trendVolumes.parts.toFixed(0)} kg`);
                     document.getElementById('bar-parts').style.width = `${(trendVolumes.parts/globalTotalVolume)*100}%`;
-                    
-                    document.getElementById('trend-slices').innerText = `${trendVolumes.slices.toFixed(0)} kg`;
+                    setTxt('trend-slices', `${trendVolumes.slices.toFixed(0)} kg`);
                     document.getElementById('bar-slices').style.width = `${(trendVolumes.slices/globalTotalVolume)*100}%`;
                 }
 
@@ -847,15 +741,7 @@
                 let vipHtml = '';
                 sortedVips.slice(0, 10).forEach((vip, idx) => {
                     let badgeColor = idx === 0 ? 'bg-yellow-400 text-yellow-900 shadow-md' : (idx === 1 ? 'bg-gray-300 text-gray-800' : (idx === 2 ? 'bg-amber-600 text-white' : 'bg-emerald-100 text-emerald-800'));
-                    vipHtml += `
-                        <li class="p-3 flex justify-between items-center hover:bg-emerald-50 transition border border-transparent border-b-gray-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-6 h-6 rounded-full flex justify-center items-center font-bold text-xs ${badgeColor}">${idx+1}</div>
-                                <span class="font-bold text-gray-800">${vip.name}</span>
-                            </div>
-                            <span class="font-mono font-bold text-emerald-700">${vip.vol.toFixed(1)} kg</span>
-                        </li>
-                    `;
+                    vipHtml += `<li class="p-3 flex justify-between items-center hover:bg-emerald-50 transition border border-transparent border-b-gray-100"><div class="flex items-center gap-3"><div class="w-6 h-6 rounded-full flex justify-center items-center font-bold text-xs ${badgeColor}">${idx+1}</div><span class="font-bold text-gray-800">${vip.name}</span></div><span class="font-mono font-bold text-emerald-700">${vip.vol.toFixed(1)} kg</span></li>`;
                 });
                 document.getElementById('list-vip').innerHTML = vipHtml || '<li class="p-4 text-center text-gray-400">No data available</li>';
 
@@ -863,36 +749,19 @@
                 let sortedParts = Object.keys(partsDemandMap).map(k => ({ name: k, vol: partsDemandMap[k] })).sort((a,b) => b.vol - a.vol).filter(i => i.vol > 0);
                 let partsHtml = '';
                 sortedParts.slice(0, 10).forEach((p, idx) => {
-                    partsHtml += `
-                        <li class="p-3 flex justify-between items-center hover:bg-sky-50 transition border border-transparent border-b-gray-100">
-                            <span class="font-semibold text-gray-700"><span class="text-sky-500 mr-2 font-bold">#${idx+1}</span> ${p.name}</span>
-                            <span class="font-mono font-bold text-sky-700">${p.vol.toFixed(1)} kg</span>
-                        </li>
-                    `;
+                    partsHtml += `<li class="p-3 flex justify-between items-center hover:bg-sky-50 transition border border-transparent border-b-gray-100"><span class="font-semibold text-gray-700"><span class="text-sky-500 mr-2 font-bold">#${idx+1}</span> ${p.name}</span><span class="font-mono font-bold text-sky-700">${p.vol.toFixed(1)} kg</span></li>`;
                 });
                 document.getElementById('list-parts-demand').innerHTML = partsHtml || '<li class="p-4 text-center text-gray-400">No parts data recorded.</li>';
 
-                // CATEGORY 3: DROP OFF CALL LIST (Zero orders in 14 days)
+                // CATEGORY 3: DROP OFF CALL LIST
                 let dropoffHtml = '';
-                let dropoffCount = 0;
+                const twoWeeksAgo = new Date(startOfToday.getTime() - (14 * 24 * 60 * 60 * 1000));
                 for (let cName in customerLastOrder) {
-                    // Exclude empty test customers
                     if (!cName || cName.trim() === '' || cName.toLowerCase() === 'unknown') continue;
-                    
                     let lastTime = customerLastOrder[cName];
                     if (lastTime < twoWeeksAgo.getTime()) {
-                        dropoffCount++;
-                        let daysAgo = "Never";
-                        if (lastTime > 0) {
-                            daysAgo = Math.floor((now.getTime() - lastTime) / (1000 * 3600 * 24)) + " days ago";
-                        }
-                        dropoffHtml += `
-                            <li class="p-3 flex justify-between items-center hover:bg-red-50 transition border border-transparent border-b-gray-100 hover:border-red-100">
-                                <span class="font-bold text-gray-800 block">${cName}</span>
-                                <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded border border-red-200 no-print">${daysAgo}</span>
-                                <span class="hidden print:inline text-red-700 font-bold">${daysAgo}</span>
-                            </li>
-                        `;
+                        let daysAgo = lastTime > 0 ? Math.floor((startOfToday.getTime() - lastTime) / (1000 * 3600 * 24)) + " days ago" : "Never";
+                        dropoffHtml += `<li class="p-3 flex justify-between items-center hover:bg-red-50 transition border border-transparent border-b-gray-100 hover:border-red-100"><span class="font-bold text-gray-800 block">${cName}</span><span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded border border-red-200 no-print">${daysAgo}</span><span class="hidden print:inline text-red-700 font-bold">${daysAgo}</span></li>`;
                     }
                 }
                 document.getElementById('list-dropoff').innerHTML = dropoffHtml || '<li class="p-4 text-center text-green-600 font-bold">Excellent! No missing customers in last 14 days.</li>';
@@ -901,9 +770,7 @@
                 console.error("Dashboard Generation Error", error);
                 alert("Failed to load operations dashboard. Check console.");
             }
-        }
-
-        // Boot
+        }// Boot
         generateDashboard();
 
     </script>
