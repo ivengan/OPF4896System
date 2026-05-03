@@ -207,13 +207,22 @@
         let rawInventoryData = []; 
 
         function formatItemName(name, pack) {
-            let cleanName = (name || 'Unknown').trim();
-            if (!pack || pack === 'No pack = 0KG' || pack === 'KG') return cleanName;
+            let itemName = (name || 'Unknown').trim();
             
-            if (cleanName.toLowerCase().includes(pack.toLowerCase())) return cleanName;
+            // Replacements: whole leg -> W/Leg, keping -> pcs
+            itemName = itemName.replace(/whole leg/gi, 'W/Leg');
+            itemName = itemName.replace(/keping/gi, 'pcs');
             
-            if (pack.toLowerCase().includes('pack')) return `${cleanName} ${pack}`;
-            return `${cleanName} ${pack}/pack`;
+            // Title Case: Capitalize first letter of each word
+            itemName = itemName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+            
+            let packStr = (pack || '').trim();
+            if (!packStr || packStr === 'No pack = 0KG' || packStr === 'KG') return itemName;
+            
+            if (itemName.toLowerCase().includes(packStr.toLowerCase())) return itemName;
+            
+            if (packStr.toLowerCase().includes('pack')) return `${itemName} ${packStr}`;
+            return `${itemName} ${packStr}/pack`;
         }
 
         // Display '-' instead of 0.00 KG
