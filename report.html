@@ -95,7 +95,7 @@
             </div>
         </div>
         
-        <div class="w-[45%] flex justify-end gap-2">
+        <div class="w-[32%] flex justify-end gap-2">
             <!-- Ayam A/B Table -->
             <table class="border-collapse border-2 border-black text-center text-xs w-[40%] h-min">
                 <thead>
@@ -120,7 +120,7 @@
             </table>
 
             <!-- Parts Table -->
-            <table class="border-collapse border-2 border-black text-center text-xs w-[55%] h-min">
+            <table class="border-collapse border-2 border-black text-center text-xs w-[68%] h-min">
                 <thead>
                     <tr>
                         <th class="border-2 border-black p-1 w-1/2"></th>
@@ -151,9 +151,9 @@
                 <thead>
                     <tr>
                         <th class="border-none"></th>
-                        <th class="border-2 border-black p-1 w-[45%] text-[10px] font-bold">BAKUL</th>
+                        <th class="border-2 border-black p-1 w-[32%] text-[10px] font-bold">BAKUL</th>
                         
-                        <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
+                        <th class="border-2 border-black p-1 w-[68%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col1"></tbody>
@@ -167,9 +167,9 @@
                 <thead>
                     <tr>
                         <th class="border-none"></th>
-                        <th class="border-2 border-black p-1 w-[45%] text-[10px] font-bold">BAKUL</th>
+                        <th class="border-2 border-black p-1 w-[32%] text-[10px] font-bold">BAKUL</th>
                         
-                        <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
+                        <th class="border-2 border-black p-1 w-[68%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col2"></tbody>
@@ -183,9 +183,9 @@
                 <thead>
                     <tr>
                         <th class="border-none"></th>
-                        <th class="border-2 border-black p-1 w-[45%] text-[10px] font-bold">BAKUL</th>
+                        <th class="border-2 border-black p-1 w-[32%] text-[10px] font-bold">BAKUL</th>
                         
-                        <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
+                        <th class="border-2 border-black p-1 w-[68%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col3"></tbody>
@@ -196,17 +196,17 @@
     <!-- Bottom Row -->
     <div class="flex justify-between items-end gap-4 mt-6">
         <!-- Bottom Left: Date/Reban/DO -->
-        <div class="w-[55%]">
+        <div class="w-[68%]">
             <p class="font-bold text-xs mb-1">* 如果没有格子 / 轮子请注明 *</p>
             <table class="border-collapse border-2 border-black w-full text-center text-xs">
                 <thead>
                     <tr>
-                        <th class="border-2 border-black p-1 w-[15%]">DATE</th>
-                        <th class="border-2 border-black p-1 w-[15%]">REBAN</th>
-                        <th class="border-2 border-black p-1 w-[30%]">NO. DO.</th>
-                        <th class="border-2 border-black p-1 w-[15%] text-[10px]">EKOR (A)</th>
-                        <th class="border-2 border-black p-1 w-[10%]">B</th>
-                        <th class="border-2 border-black p-1 w-[15%]">料包</th>
+                        <th class="border-2 border-black p-1 w-[20%]">DATE</th>
+                        <th class="border-2 border-black p-1 w-[20%]">REBAN</th>
+                        <th class="border-2 border-black p-1 w-[20%]">NO. DO.</th>
+                        <th class="border-2 border-black p-1 w-[20%] text-[10px]">EKOR (A)</th>
+                        <th class="border-2 border-black p-1 w-[11%]">B</th>
+                        <th class="border-2 border-black p-1 w-[9%]">料包</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-live-tbl"></tbody>
@@ -221,8 +221,8 @@
             <table class="border-collapse border-2 border-black w-full text-center text-xs">
                 <thead>
                     <tr>
-                        <th class="border-2 border-black p-1 font-bold w-[45%]">LAPORAN</th>
-                        <th class="border-2 border-black p-1 font-bold w-[45%]">EKOR</th>
+                        <th class="border-2 border-black p-1 font-bold w-[32%]">LAPORAN</th>
+                        <th class="border-2 border-black p-1 font-bold w-[32%]">EKOR</th>
                         <th class="border-2 border-black p-1 font-bold w-[30%]">KG</th>
                     </tr>
                 </thead>
@@ -722,9 +722,9 @@
                         let r = rows[i] || { bakul: '', ekor: '', kg: '' };
                         html += `<tr>
                             <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">${rowNum}</td>
-                            <td class="border-2 border-black h-3 w-[45%] text-center font-bold text-xs">${r.bakul||''}</td>
+                            <td class="border-2 border-black h-3 w-[32%] text-center font-bold text-xs">${r.bakul||''}</td>
                             
-                            <td class="border-2 border-black h-3 w-[55%] text-center font-bold text-xs">${r.kg ? r.kg.toFixed(2) : ''}</td>
+                            <td class="border-2 border-black h-3 w-[68%] text-center font-bold text-xs">${r.kg ? r.kg.toFixed(2) : ''}</td>
                         </tr>`;
                     }
                     document.getElementById(id).innerHTML = html;
