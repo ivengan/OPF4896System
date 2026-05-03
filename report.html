@@ -594,163 +594,189 @@
 
 
                 
-                // --- 4. PROCESS STAGE 1 REPORT ---
-                let stgLiveRows = [];
-                let matiEkor = 0;
-                let ayamAWeight = 0, ayamBEkor = 0;
-                let topParts = { hati: 0, pedal: 0, usus: 0, tulang: 0 };
-                
-                let col1Rows = []; // Dispatch Broilers (Today)
-                let col2Rows = []; // Chiller Broilers (Today)
-                let col3Rows = []; // Kopek (Today)
-                let ayamA_Live = 0, ayamB_Live = 0;
+                // --- 4. PROCESS STAGE 1 REPORT (NEW LOGIC) ---
+                let totalLiveIn = 0;
+                let todayLiveIn = 0;
+                let todayProcessedIn = 0;
+                let unDispatchedOlderThanTodayStock = 0;
+                let ayamLamaDispatchedPast = 0;
+                let ayamLamaDispatchedToday = 0;
 
-                // Process Stock Entries for Stage 1
-                stockSnap.docs.forEach(doc => {
-                    const data = doc.data();
-                    let d = data.timestamp ? data.timestamp.toDate() : new Date();
-                    d.setHours(0,0,0,0);
-                    if (d.getTime() !== now.getTime()) return; // Only today
-                    
-                    if (data.category === 'Live') {
-                        let details = data.categoryDetails && data.categoryDetails.entries ? data.categoryDetails.entries : [];
-                        details.forEach(e => {
-                            stgLiveRows.push({
-                                date: e.date || '', farm: e.farm || '', do: e.doSerial || '', 
-                                a: e.ayamA || 0, b: e.ayamB || 0
-                            });
-                            ayamA_Live += parseInt(e.ayamA || 0);
-                            ayamB_Live += parseInt(e.ayamB || 0);
-                        });
-                    }
-                    
-                    if (data.category === 'Eliminate') {
-                        let aDead = parseInt(data.categoryDetails?.ayamADead || 0);
-                        let bDead = parseInt(data.categoryDetails?.ayamBDead || 0);
-                        matiEkor += (aDead + bDead);
-                    }
-                    
-                    let weight = parseFloat(data.netWeight) || 0;
-                    if (weight <= 0) return;
+                let doMap = {}; // Group by DO Single
+                let totalA_Live = 0;
+                let totalB_Live = 0;
+                let totalLiveWeight = 0;
 
-                    let catType = data.category === 'Kopek' || (data.categoryDetails && data.categoryDetails.type === 'Kopek') ? 'Kopek' : data.category;
-                    
-                    if (catType === 'Broiler' || (data.categoryDetails && data.categoryDetails.type === 'H/P')) {
-                        let bakul = data.containerDetails ? (data.containerDetails.count || 1) : 1;
-                        col2Rows.push({ bakul: bakul, ekor: '', kg: weight });
-                    }
-                    
-                    if (catType === 'Kopek') {
-                        let bakul = data.containerDetails ? (data.containerDetails.count || 1) : 1;
-                        col3Rows.push({ bakul: bakul, ekor: '', kg: weight });
-                    }
-                    
-                    if (data.category === 'Parts') {
-                        let pName = (data.categoryDetails && data.categoryDetails.partName) ? data.categoryDetails.partName.toLowerCase() : '';
-                        if (pName.includes('hati')) topParts.hati += weight;
-                        if (pName.includes('pedal')) topParts.pedal += weight;
-                        if (pName.includes('usus')) topParts.usus += weight;
-                        if (pName.includes('tulang') && pName.includes('buang')) topParts.tulang += weight;
-                    }
-                });
+                let deadCount = 0;
+                let deadWeight = 0;
+                let damagedWeight = 0;
 
-                // Process Orders for Stage 1 (Col 1 - Dispatch)
-                ordersSnap.docs.forEach(doc => {
-                    const o = doc.data();
-                    let orderDate = o.timestamp ? o.timestamp.toDate() : new Date();
-                    orderDate.setHours(0,0,0,0);
-                    if (orderDate.getTime() !== now.getTime()) return; // Only today
-                    
-                    if (o.broilers && Array.isArray(o.broilers)) {
-                        o.broilers.forEach(b => {
-                            if (b.history && Array.isArray(b.history)) {
-                                b.history.forEach(h => {
-                                    if (h.qty > 0) {
-                                        let itemType = (b.description || '').toLowerCase();
-                                        if (!itemType.includes('slice')) {
-                                            let hWeight = parseFloat(h.net) || parseFloat(h.gross) || 0;
-                                            col1Rows.push({ bakul: '', ekor: h.qty, kg: hWeight });
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
+                let processWholeCount = 0;
+                let processWholeWeight = 0;
+                let processSlicesCount = 0;
+                let processSlicesWeight = 0;
+                let processHeartGizzardWeight = 0;
+                let processWasteWeight = 0;
 
-                // Helper to populate 3-column table
-                const populateCol = (id, rows, offset) => {
-                    let html = '';
-                    for (let i = 0; i < 25; i++) {
-                        let rowNum = i + 1 + offset;
-                        let r = rows[i] || { bakul: '', ekor: '', kg: '' };
-                        html += `<tr>
-                            <td class="border-2 border-black h-5 text-[8px] font-bold text-center w-6">${rowNum}</td>
-                            <td class="border-2 border-black h-5 text-center font-bold text-xs">${r.bakul||''}</td>
-                            <td class="border-2 border-black h-5 text-center font-bold text-xs">${r.kg ? r.kg.toFixed(2) : ''}</td>
-                        </tr>`;
-                    }
-                    document.getElementById(id).innerHTML = html;
+                let trendVolumes = { broiler: 0, parts: 0, slices: 0 };
+                let balanceMap = {
+                    'Whole Broiler (H/P)': 0,
+                    'Kopek': 0,
+                    'Slices': 0,
+                    'Parts': 0
                 };
+                let doSummary = {};
 
-                populateCol('stg1-col1', col1Rows, 0);
-                populateCol('stg1-col2', col2Rows, 25);
-                populateCol('stg1-col3', col3Rows, 0);
+                const startOfToday = new Date();
+                startOfToday.setHours(0, 0, 0, 0);
 
-                // Populate Top Tables
-                document.getElementById('stg1-ayam-a-ekor').innerText = ayamA_Live > 0 ? ayamA_Live : '';
-                document.getElementById('stg1-ayam-b-ekor').innerText = ayamB_Live > 0 ? ayamB_Live : '';
-                
-                document.getElementById('stg1-part-hati').innerText = topParts.hati > 0 ? topParts.hati.toFixed(2) : '';
-                document.getElementById('stg1-part-pedal').innerText = topParts.pedal > 0 ? topParts.pedal.toFixed(2) : '';
-                document.getElementById('stg1-part-usus').innerText = topParts.usus > 0 ? topParts.usus.toFixed(2) : '';
-                document.getElementById('stg1-part-tulang').innerText = topParts.tulang > 0 ? topParts.tulang.toFixed(2) : '';
+                stockSnap.docs.forEach(docSnap => {
+                    const d = docSnap.data();
+                    if (!d.category) return;
+                    let docDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                    let isToday = docDate.getTime() >= startOfToday.getTime();
 
-                // Populate Bottom Left Table (Live Entries)
-                let liveHtml = '';
-                for (let i = 0; i < 9; i++) {
-                    let r = stgLiveRows[i] || { date: '/', farm: '', do: '', a: '', b: '', pack: '' };
-                    let displayDate = r.date || '/';
-                    liveHtml += `<tr>
-                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${displayDate}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${r.farm||''}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${r.do||''}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${r.a||''}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center text-xs">${r.b||''}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center text-xs"></td>
+                    // --- STAGE 1 DATA (TODAY ONLY) ---
+                    if (isToday) {
+                        let docWeight = d.netWeight || d.grossWeight || 0;
+
+                        // 1. Live Entries (买鸡)
+                        if (d.category === 'Live' && d.categoryDetails && d.categoryDetails.entries) {
+                            let entries = d.categoryDetails.entries;
+                            let entryA = 0, entryB = 0;
+                            let firstDo = '';
+                            entries.forEach(e => {
+                                entryA += e.ayamA || 0;
+                                entryB += e.ayamB || 0;
+                                if(e.doSerial && !firstDo) firstDo = e.doSerial;
+                            });
+                            
+                            let doKey = firstDo || 'NO_DO';
+                            if (!doMap[doKey]) doMap[doKey] = { a: 0, b: 0, w: 0 };
+                            doMap[doKey].a += entryA;
+                            doMap[doKey].b += entryB;
+                            doMap[doKey].w += docWeight;
+
+                            totalA_Live += entryA;
+                            totalB_Live += entryB;
+                            totalLiveWeight += docWeight;
+                        }
+
+                        // 2. Eliminate (死鸡 / 损坏)
+                        if (d.category === 'Eliminate' && d.categoryDetails) {
+                            let tDead = (parseInt(d.categoryDetails.ayamADead) || 0) + (parseInt(d.categoryDetails.ayamBDead) || 0);
+                            let tAfter = (parseInt(d.categoryDetails.ayamAAfter) || 0) + (parseInt(d.categoryDetails.ayamBAfter) || 0);
+                            
+                            if (tDead > 0 || tAfter > 0) {
+                                let totalCount = tDead + tAfter;
+                                let ratioDead = tDead / totalCount;
+                                deadCount += tDead;
+                                deadWeight += docWeight * ratioDead;
+                                damagedWeight += docWeight * (1 - ratioDead);
+                            }
+                        }
+
+                        // 3. Waste (废弃)
+                        if (d.category === 'Waste') {
+                            processWasteWeight += docWeight;
+                        }
+
+                        // 4. Processed Output (杀出来)
+                        if (d.category === 'Broiler' && d.categoryDetails) {
+                            if (d.categoryDetails.type === 'H/P' || d.categoryDetails.type === 'Kopek') {
+                                processWholeCount += (parseInt(d.categoryDetails.count) || 0);
+                                processWholeWeight += docWeight;
+                            } else if (d.categoryDetails.type === 'Slices') {
+                                processSlicesCount += (parseInt(d.categoryDetails.count) || 0);
+                                processSlicesWeight += docWeight;
+                            }
+                        } else if (d.category === 'Slices' && d.categoryDetails) {
+                            processSlicesCount += (parseInt(d.categoryDetails.count) || 0);
+                            processSlicesWeight += docWeight;
+                        } else if (d.category === 'Parts' && d.categoryDetails && d.categoryDetails.partName) {
+                            let pName = d.categoryDetails.partName.toUpperCase();
+                            if (pName.includes('HATI') || pName.includes('PEDAL')) {
+                                processHeartGizzardWeight += docWeight;
+                            } else if (pName.includes('USUS')) {
+                                processWasteWeight += docWeight; 
+                            }
+                        }
+                    }
+                });
+
+                // --- STAGE 1 DOM POPULATION ---
+                let todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.');
+                let dateEl = document.getElementById('stg1-new-date');
+                if (dateEl) dateEl.innerText = todayStr;
+
+                // Left Pane
+                let leftHtml = '';
+                for (let doNum in doMap) {
+                    let r = doMap[doNum];
+                    let totalA_B = r.a + r.b;
+                    let kgPerPiece = totalA_B > 0 ? (r.w / totalA_B).toFixed(2) : '#DIV/0!';
+                    leftHtml += `<tr>
+                        <td class="border-2 border-black p-1">${doNum}</td>
+                        <td class="border-2 border-black p-1 text-right">${r.a || ''}</td>
+                        <td class="border-2 border-black p-1 text-right">${r.b || ''}</td>
+                        <td class="border-2 border-black p-1 text-right">${r.w.toFixed(2)}</td>
+                        <td class="border-2 border-black p-1 text-right text-xs">${kgPerPiece}</td>
                     </tr>`;
                 }
-                document.getElementById('stg1-live-tbl').innerHTML = liveHtml;
-
-                // Populate Laporan Table
-                let totalEkorCol1 = col1Rows.reduce((sum, r) => sum + (parseInt(r.ekor)||0), 0);
-                let totalKgCol1 = col1Rows.reduce((sum, r) => sum + (parseFloat(r.kg)||0), 0);
-                document.getElementById('stg1-lap-ekor-ekor').innerText = totalEkorCol1 > 0 ? totalEkorCol1 : '';
-                document.getElementById('stg1-lap-ekor-kg').innerText = totalKgCol1 > 0 ? totalKgCol1.toFixed(2) : '';
-
-                let totalEkorCol3 = col3Rows.reduce((sum, r) => sum + (parseInt(r.ekor)||0), 0);
-                let totalKgCol3 = col3Rows.reduce((sum, r) => sum + (parseFloat(r.kg)||0), 0);
-                document.getElementById('stg1-lap-ekor-kopek-ekor').innerText = totalEkorCol3 > 0 ? totalEkorCol3 : '';
-                document.getElementById('stg1-lap-ekor-kopek-kg').innerText = totalKgCol3 > 0 ? totalKgCol3.toFixed(2) : '';
-
-                document.getElementById('stg1-lap-mati-ekor').innerText = matiEkor > 0 ? matiEkor : '';
                 
-                // Hilang Calculation: Total Live (A+B) - (Col 1 Dispatch Ekor + Col 2 Chiller Ekor + Col 3 Kopek Ekor)
-                // Note: Col 2 (Chiller) typically doesn't record Ekor. If it doesn't, Hilang ekor calculation will be inaccurate.
-                // Assuming Col 2 ekor sum is 0 if not provided.
-                let totalEkorCol2 = col2Rows.reduce((sum, r) => sum + (parseInt(r.ekor)||0), 0);
-                let totalLiveEkor = ayamA_Live + ayamB_Live;
-                let hilangEkor = totalLiveEkor - (totalEkorCol1 + totalEkorCol2 + totalEkorCol3);
-                if (hilangEkor > 0) {
-                    document.getElementById('stg1-lap-hilang-ekor').innerText = hilangEkor;
+                let rowCount = Object.keys(doMap).length;
+                for (let i = rowCount; i < 5; i++) {
+                    leftHtml += `<tr>
+                        <td class="border-2 border-black p-1 h-7"></td>
+                        <td class="border-2 border-black p-1"></td>
+                        <td class="border-2 border-black p-1"></td>
+                        <td class="border-2 border-black p-1"></td>
+                        <td class="border-2 border-black p-1 text-right text-xs">#DIV/0!</td>
+                    </tr>`;
                 }
+                
+                let leftTbl = document.getElementById('stg1-left-tbl');
+                if(leftTbl) leftTbl.innerHTML = leftHtml;
+                
+                let setTxt = (id, txt) => { let el = document.getElementById(id); if(el) el.innerText = txt; };
 
-                document.getElementById('stg1-lap-hpu-kg').innerText = (topParts.hati + topParts.pedal + topParts.usus) > 0 ? (topParts.hati + topParts.pedal + topParts.usus).toFixed(2) : '';
+                setTxt('stg1-left-total-a', totalA_Live);
+                setTxt('stg1-left-total-b', totalB_Live > 0 ? totalB_Live : '-');
+                setTxt('stg1-left-total-kg', totalLiveWeight.toFixed(2));
+                setTxt('stg1-left-avg-kg', (totalA_Live + totalB_Live) > 0 ? (totalLiveWeight / (totalA_Live + totalB_Live)).toFixed(2) : '#DIV/0!');
 
-                document.getElementById('stg1-main-date').innerText = new Date().toLocaleDateString();
+                setTxt('stg1-dead-kg', deadWeight > 0 ? `(${deadWeight.toFixed(2)})` : '(0.00)');
+                let killableKg = totalLiveWeight - deadWeight;
+                setTxt('stg1-killable-kg', killableKg.toFixed(2));
 
+                // Right Pane
+                setTxt('stg1-right-whole-count', processWholeCount);
+                setTxt('stg1-right-whole-kg', processWholeWeight.toFixed(2));
+                setTxt('stg1-right-slices-count', processSlicesCount > 0 ? processSlicesCount : '');
+                setTxt('stg1-right-slices-kg', processSlicesWeight > 0 ? processSlicesWeight.toFixed(2) : '');
+                setTxt('stg1-right-heart-kg', processHeartGizzardWeight > 0 ? processHeartGizzardWeight.toFixed(2) : '');
 
-                // --- 3. DOM INJECTION ---
+                let rightTotalCount = processWholeCount + processSlicesCount;
+                let rightTotalKg = processWholeWeight + processSlicesWeight + processHeartGizzardWeight;
+                setTxt('stg1-right-total-count', rightTotalCount);
+                setTxt('stg1-right-total-kg', rightTotalKg.toFixed(2));
+
+                let rightNetKg = rightTotalKg * 0.98;
+                setTxt('stg1-right-net-kg', rightNetKg.toFixed(2));
+
+                let lossPct = killableKg > 0 ? (1 - (rightNetKg / killableKg)) * 100 : 0;
+                setTxt('stg1-loss-pct', lossPct.toFixed(2) + '%');
+
+                // Remarks
+                let countDiff = (totalA_Live + totalB_Live) - deadCount - rightTotalCount;
+                setTxt('stg1-diff-count', Math.abs(countDiff));
+                setTxt('stg1-waste-kg', processWasteWeight.toFixed(2));
+                setTxt('stg1-dead-count', deadCount);
+                setTxt('stg1-dead-kg-remark', deadWeight.toFixed(2));
+                setTxt('stg1-damaged-kg', damagedWeight.toFixed(2));
+
+                
+// --- 3. DOM INJECTION ---
                 
                 // CATEGORY 1: YIELD & SHRINKAGE
                 document.getElementById('val-live-in').innerHTML = `${todayLiveIn.toFixed(2)} <span class="text-xs">kg</span>`;
