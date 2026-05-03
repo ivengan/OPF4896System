@@ -80,159 +80,130 @@
         </div>
 
         
-<!-- STAGE 1 LAYOUT (A4 Optimized) -->
-<section class="bg-white p-4 mb-6 shadow-md print:shadow-none print:p-0 print:mb-0 text-black mx-auto" style="width: 21cm; min-height: 29.7cm; font-family: 'Courier New', Courier, monospace; border: 1px solid #ddd; padding: 1cm;">
-    
-    <!-- Top Header -->
-    <div class="flex justify-between items-start mb-6">
-        <div style="width: 55%;">
-            <h1 class="text-3xl font-bold uppercase mb-2 border-b-4 border-black pb-1 inline-block">STOCK RECORD STAGE 1</h1>
-            <div class="mt-4 flex items-end">
-                <span class="font-bold mr-2 text-base">DATE:</span>
-                <div class="border-b-2 border-black flex-grow h-6 font-bold text-lg px-2" id="stg1-main-date"></div>
+<!-- STAGE 1 LAYOUT (New Format) -->
+<section class="bg-white p-4 mb-6 shadow-md print:shadow-none print:p-0 print:mb-0 text-black mx-auto" style="max-width: 900px; font-family: 'Inter', sans-serif;">
+    <div class="mb-4">
+        <h2 class="text-xl font-bold border-b-2 border-black inline-block pb-1 pr-12" id="stg1-new-date"></h2>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-8 items-start">
+        <!-- Left Pane: 买鸡 (Bought Chicken) -->
+        <div class="w-full md:w-1/2">
+            <h3 class="font-bold mb-1">买鸡</h3>
+            <table class="w-full border-collapse border-2 border-black text-center text-sm">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border-2 border-black p-2">DO 单号</th>
+                        <th class="border-2 border-black p-2">A 鸡 (只)</th>
+                        <th class="border-2 border-black p-2">B 鸡 (只)</th>
+                        <th class="border-2 border-black p-2">总重量 KG</th>
+                        <th class="border-2 border-black p-2 text-xs">KG/只</th>
+                    </tr>
+                </thead>
+                <tbody id="stg1-left-tbl">
+                    <!-- Dynamic Rows -->
+                </tbody>
+                <tfoot>
+                    <tr class="font-bold bg-gray-50">
+                        <td class="border-2 border-black p-2"></td>
+                        <td class="border-2 border-black p-2" id="stg1-left-total-a"></td>
+                        <td class="border-2 border-black p-2" id="stg1-left-total-b"></td>
+                        <td class="border-2 border-black p-2" id="stg1-left-total-kg"></td>
+                        <td class="border-2 border-black p-2 text-xs" id="stg1-left-avg-kg"></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="mt-4 flex justify-end">
+                <div class="text-right">
+                    <div class="flex justify-end gap-4 mb-1 text-sm">
+                        <span>死鸡重量</span>
+                        <span class="w-24 text-right" id="stg1-dead-kg"></span>
+                    </div>
+                    <div class="flex justify-end gap-4 text-sm font-bold">
+                        <span>可以杀的鸡 KG</span>
+                        <span class="w-24 text-right" id="stg1-killable-kg"></span>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="flex gap-4" style="width: 40%;">
-            <!-- Ayam A/B Table -->
-            <table class="border-collapse border-2 border-black text-center text-xs flex-grow">
-                <thead>
-                    <tr>
-                        <th class="border-2 border-black p-1 whitespace-nowrap"></th>
-                        <th class="border-2 border-black p-1 whitespace-nowrap font-bold">EKOR</th>
-                        <th class="border-2 border-black p-1 whitespace-nowrap font-bold">BERAT(KG)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="border-2 border-black p-1 font-bold">AYAM A</td>
-                        <td class="border-2 border-black p-1 h-6 font-bold" id="stg1-ayam-a-ekor"></td>
-                        <td class="border-2 border-black p-1 h-6 font-bold" id="stg1-ayam-a-berat"></td>
-                    </tr>
-                    <tr>
-                        <td class="border-2 border-black p-1 font-bold">AYAM B</td>
-                        <td class="border-2 border-black p-1 h-6 font-bold" id="stg1-ayam-b-ekor"></td>
-                        <td class="border-2 border-black p-1 h-6 font-bold" id="stg1-ayam-b-berat"></td>
-                    </tr>
-                </tbody>
-            </table>
 
-            <!-- Parts Table -->
-            <table class="border-collapse border-2 border-black text-center text-xs w-32">
-                <thead>
-                    <tr>
-                        <th class="border-2 border-black p-1 whitespace-nowrap"></th>
-                        <th class="border-2 border-black p-1 whitespace-nowrap font-bold">BERAT(KG)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6">HATI</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-hati"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6">PEDAL</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-pedal"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6">USUS</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-usus"></td></tr>
-                    <tr><td class="border-2 border-black p-1 font-bold h-6" style="font-size: 0.6rem;">TULANG(BUANG)</td><td class="border-2 border-black p-1 font-bold" id="stg1-part-tulang"></td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Main 3 Columns Grid -->
-    <div class="flex justify-between gap-4 mb-8 relative pl-8">
-        <!-- Vertical Side Label -->
-        <div class="absolute left-0 top-1/4 -ml-4 w-8 flex flex-col justify-center items-center bg-gray-100 border-2 border-black py-4 text-sm font-bold" style="writing-mode: vertical-rl; text-orientation: upright; letter-spacing: 6px;">
-            出新鸡
-        </div>
-
-        <!-- Col 1: EKOR -->
-        <div style="width: 31%;">
-            <h2 class="font-bold text-sm mb-1 ml-2">EKOR</h2>
-            <table class="border-collapse border-2 border-black w-full text-center text-xs">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="border-2 border-black p-1 w-6 text-[8px]">NO</th>
-                        <th class="border-2 border-black p-1 font-bold">BAKUL</th>
-                        <th class="border-2 border-black p-1 font-bold">KG</th>
-                    </tr>
-                </thead>
-                <tbody id="stg1-col1"></tbody>
-            </table>
-        </div>
-
-        <!-- Col 2: EKOR -->
-        <div style="width: 31%;">
-            <h2 class="font-bold text-sm mb-1 ml-2">EKOR</h2>
-            <table class="border-collapse border-2 border-black w-full text-center text-xs">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="border-2 border-black p-1 w-6 text-[8px]">NO</th>
-                        <th class="border-2 border-black p-1 font-bold">BAKUL</th>
-                        <th class="border-2 border-black p-1 font-bold">KG</th>
-                    </tr>
-                </thead>
-                <tbody id="stg1-col2"></tbody>
-            </table>
-        </div>
-
-        <!-- Col 3: KOPEK -->
-        <div style="width: 31%;">
-            <h2 class="font-bold text-sm mb-1 ml-2">KOPEK</h2>
-            <table class="border-collapse border-2 border-black w-full text-center text-xs">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="border-2 border-black p-1 w-6 text-[8px]">NO</th>
-                        <th class="border-2 border-black p-1 font-bold">BAKUL</th>
-                        <th class="border-2 border-black p-1 font-bold">KG</th>
-                    </tr>
-                </thead>
-                <tbody id="stg1-col3"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Bottom Section -->
-    <div class="flex justify-between items-start gap-8">
-        <!-- Live Data Table -->
-        <div style="width: 62%;">
-            <p class="font-bold text-xs mb-1 italic">* 如果没有格子 / 轮子请注明 *</p>
-            <table class="border-collapse border-2 border-black w-full text-center text-xs">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="border-2 border-black p-1">DATE</th>
-                        <th class="border-2 border-black p-1">REBAN</th>
-                        <th class="border-2 border-black p-1">NO. DO.</th>
-                        <th class="border-2 border-black p-1 text-[10px]">EKOR(A)</th>
-                        <th class="border-2 border-black p-1">B</th>
-                        <th class="border-2 border-black p-1">料包</th>
-                    </tr>
-                </thead>
-                <tbody id="stg1-live-tbl"></tbody>
-            </table>
-            <div class="mt-8 flex justify-center">
-                <div class="border-b-4 border-blue-600 w-48 opacity-50"></div>
+            <div class="mt-8 text-sm space-y-1">
+                <div class="flex gap-4">
+                    <span class="w-48">备注: 杀出来鸡的只数差</span>
+                    <span>少 / (多)</span>
+                    <span class="w-16 text-right font-bold" id="stg1-diff-count"></span>
+                </div>
+                <div class="flex gap-4">
+                    <span class="w-48">备注: 废弃的鸡肠 KG</span>
+                    <span class="w-16 text-right font-bold ml-14" id="stg1-waste-kg"></span>
+                </div>
+                <div class="flex gap-4">
+                    <span class="w-12">备注: 死鸡</span>
+                    <span class="w-8 text-right font-bold" id="stg1-dead-count"></span>
+                    <span class="w-6 text-center">只</span>
+                    <span class="w-16 text-right font-bold" id="stg1-dead-kg-remark"></span>
+                    <span class="w-6 text-center">KG</span>
+                </div>
+                <div class="flex gap-4">
+                    <span class="w-48">备注: 损坏 KG</span>
+                    <span class="w-16 text-right font-bold ml-14" id="stg1-damaged-kg"></span>
+                </div>
             </div>
         </div>
 
-        <!-- Laporan Table -->
-        <div style="width: 35%;">
-            <table class="border-collapse border-2 border-black w-full text-center text-sm font-bold">
+        <!-- Right Pane: 杀出来 (Processed) -->
+        <div class="w-full md:w-1/2 md:max-w-md">
+            <h3 class="font-bold mb-1">杀出来</h3>
+            <table class="w-full border-collapse border-2 border-black text-center text-sm">
                 <thead>
                     <tr class="bg-gray-100">
-                        <th class="border-2 border-black p-2">LAPORAN</th>
-                        <th class="border-2 border-black p-2">EKOR</th>
-                        <th class="border-2 border-black p-2">KG</th>
+                        <th class="border-2 border-black p-2 w-1/3"></th>
+                        <th class="border-2 border-black p-2 w-1/3">只数</th>
+                        <th class="border-2 border-black p-2 w-1/3">净重 KG</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td class="border-2 border-black p-2 h-8">EKOR</td><td class="border-2 border-black p-2" id="stg1-lap-ekor-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-ekor-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-2 h-8 text-[11px]">EKOR(KOPEK)</td><td class="border-2 border-black p-2" id="stg1-lap-ekor-kopek-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-ekor-kopek-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-2 h-8">MATI</td><td class="border-2 border-black p-2" id="stg1-lap-mati-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-mati-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-2 h-8">HILANG</td><td class="border-2 border-black p-2" id="stg1-lap-hilang-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-hilang-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-2 h-8 text-[11px]">HATI,PEDAL,USUS</td><td class="border-2 border-black p-2 relative bg-gray-50"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-2" id="stg1-lap-hpu-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-2 h-8">ROSAK</td><td class="border-2 border-black p-2 relative bg-gray-50"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td><td class="border-2 border-black p-2" id="stg1-lap-rosak-kg"></td></tr>
-                    <tr><td class="border-2 border-black p-2 h-8 text-[11px]">AYAM B(kalau ada)</td><td class="border-2 border-black p-2" id="stg1-lap-ayam-b-ekor"></td><td class="border-2 border-black p-2" id="stg1-lap-ayam-b-kg"></td></tr>
+                    <tr>
+                        <td class="border-2 border-black p-2 text-left">全鸡</td>
+                        <td class="border-2 border-black p-2" id="stg1-right-whole-count"></td>
+                        <td class="border-2 border-black p-2" id="stg1-right-whole-kg"></td>
+                    </tr>
+                    <tr><td class="border-2 border-black p-2 h-8"></td><td class="border-2 border-black p-2"></td><td class="border-2 border-black p-2"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8"></td><td class="border-2 border-black p-2"></td><td class="border-2 border-black p-2"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8"></td><td class="border-2 border-black p-2"></td><td class="border-2 border-black p-2"></td></tr>
+                    <tr><td class="border-2 border-black p-2 h-8"></td><td class="border-2 border-black p-2"></td><td class="border-2 border-black p-2"></td></tr>
+                    <tr>
+                        <td class="border-2 border-black p-2 text-left">要切片</td>
+                        <td class="border-2 border-black p-2" id="stg1-right-slices-count"></td>
+                        <td class="border-2 border-black p-2" id="stg1-right-slices-kg"></td>
+                    </tr>
+                    <tr>
+                        <td class="border-2 border-black p-2 text-left text-xs">鸡心/鸡胗</td>
+                        <td class="border-2 border-black p-2 bg-gray-50 relative"><div class="absolute inset-0 border-b-2 border-black transform -skew-y-[25deg] origin-bottom-left"></div></td>
+                        <td class="border-2 border-black p-2" id="stg1-right-heart-kg"></td>
+                    </tr>
                 </tbody>
+                <tfoot>
+                    <tr class="font-bold bg-gray-50">
+                        <td class="border-2 border-black p-2"></td>
+                        <td class="border-2 border-black p-2" id="stg1-right-total-count"></td>
+                        <td class="border-2 border-black p-2" id="stg1-right-total-kg"></td>
+                    </tr>
+                </tfoot>
             </table>
-            <div class="mt-8 flex justify-end">
-                <div class="border-b-4 border-gray-800 w-full h-2 opacity-80"></div>
+
+            <div class="mt-4 flex flex-col items-end text-sm space-y-2">
+                <div class="flex gap-4">
+                    <span>扣水分 2% 净重</span>
+                    <span class="w-24 text-right font-bold" id="stg1-right-net-kg"></span>
+                </div>
+                <div class="flex gap-4 font-bold mt-2">
+                    <span>第一阶段损失</span>
+                    <span class="w-24 text-right" id="stg1-loss-pct"></span>
+                </div>
+                <div class="text-xs text-gray-500 mr-2">
+                    (杀出来重量 / 可以杀的鸡重量)
+                </div>
             </div>
         </div>
     </div>
