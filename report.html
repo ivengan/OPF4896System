@@ -722,9 +722,9 @@
                         let r = rows[i] || { bakul: '', ekor: '', kg: '' };
                         html += `<tr>
                             <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">${rowNum}</td>
-                            <td class="border-2 border-black h-5 w-[25%] text-center font-bold text-sm">${r.bakul||''}</td>
+                            <td class="border-2 border-black h-3 w-[25%] text-center font-bold text-xs">${r.bakul||''}</td>
                             
-                            <td class="border-2 border-black h-5 w-[75%] text-center font-bold text-sm">${r.kg ? r.kg.toFixed(2) : ''}</td>
+                            <td class="border-2 border-black h-3 w-[75%] text-center font-bold text-xs">${r.kg ? r.kg.toFixed(2) : ''}</td>
                         </tr>`;
                     }
                     document.getElementById(id).innerHTML = html;
@@ -750,12 +750,12 @@
                     let displayDate = r.date;
                     if(!displayDate) displayDate = '/';
                     liveHtml += `<tr>
-                        <td class="border-2 border-black h-6 font-bold text-center">${displayDate}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center">${r.farm||''}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center">${r.do||''}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center">${r.a||''}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center">${r.b||''}</td>
-                        <td class="border-2 border-black h-6 font-bold text-center"></td>
+                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${displayDate}</td>
+                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${r.farm||''}</td>
+                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${r.do||''}</td>
+                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${r.a||''}</td>
+                        <td class="border-2 border-black h-3 font-bold text-center text-xs">${r.b||''}</td>
+                        <td class="border-2 border-black h-3 font-bold text-center text-xs"></td>
                     </tr>`;
                 }
                 document.getElementById('stg1-live-tbl').innerHTML = liveHtml;
