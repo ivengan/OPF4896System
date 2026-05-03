@@ -156,6 +156,12 @@
         <div id="header-today-date" style="font-weight: bold; font-size: 12px; color: #6b7281; text-transform: uppercase; letter-spacing: 0.05em;"></div>
     </div>
 
+    <!-- Live Entries Outside Panel -->
+    <div id="live-panel" style="display:none; background:#fff8f0; border-bottom: 2px solid #FFD080; padding: 8px 16px;">
+        <div style="font-size: 11px; font-weight: 700; color: #b45309; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Today's Live Deliveries (long-press to edit)</div>
+        <div id="live-entries-outside"></div>
+    </div>
+
     <main class="max-w-lg mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div id="notification-area" class="mb-6"></div>
         <div class="bg-white p-6 rounded-lg shadow space-y-6">
@@ -553,61 +559,79 @@
         
         const allCatBtns = [catLiveBtn, catEliminateBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn];
 
+        function buildEntryRow(entry, index, targetDiv, onLongPress) {
+            const parts = [];
+            if (entry.date) parts.push(entry.date);
+            if (entry.farm) parts.push(entry.farm);
+            if (entry.doSerial) parts.push(`DO: ${entry.doSerial}`);
+            if (entry.ayamA > 0) parts.push(`A: ${entry.ayamA}`);
+            if (entry.weightA > 0) parts.push(`Wt A: ${entry.weightA}KG`);
+            if (entry.ayamB > 0) parts.push(`B: ${entry.ayamB}`);
+            if (entry.weightB > 0) parts.push(`Wt B: ${entry.weightB}KG`);
+            if (entry.hasCrop) parts.push(`[CROP]`);
+            const div = document.createElement('div');
+            div.style.color = '#FF8C00';
+            div.style.fontSize = '0.875rem';
+            div.style.padding = '0.25rem 0';
+            div.style.borderBottom = '1px solid #ffe0b2';
+            div.style.cursor = 'pointer';
+            div.style.userSelect = 'none';
+            div.textContent = `- ` + parts.join(', ');
+            let pressTimer;
+            const startPress = () => { pressTimer = window.setTimeout(() => onLongPress(index), 2000); };
+            const cancelPress = () => clearTimeout(pressTimer);
+            div.addEventListener('mousedown', startPress);
+            div.addEventListener('touchstart', startPress);
+            div.addEventListener('mouseup', cancelPress);
+            div.addEventListener('mouseleave', cancelPress);
+            div.addEventListener('touchend', cancelPress);
+            targetDiv.appendChild(div);
+        }
+
+        function openModalForEdit(index) {
+            const entry = liveEntries[index];
+            editingLiveIndex = index;
+            document.getElementById('live-date').value = entry.date || '';
+            document.getElementById('live-farm').value = entry.farm || '';
+            document.getElementById('live-do').value = entry.doSerial || '';
+            document.getElementById('live-a').value = entry.ayamA || '';
+            document.getElementById('live-weight-a').value = entry.weightA || '';
+            document.getElementById('live-b').value = entry.ayamB || '';
+            document.getElementById('live-weight-b').value = entry.weightB || '';
+            document.getElementById('live-crop').checked = entry.hasCrop || false;
+            document.getElementById('live-ok-btn').textContent = 'Update';
+            document.getElementById('live-del-btn').classList.remove('hidden');
+            selectedCategory = 'Live';
+            catLiveBtn.classList.replace('inactive-segment', 'active-segment');
+            renderLiveEntries();
+            showModal(liveModal);
+        }
+
+        function renderLiveEntriesOutside() {
+            const panel = document.getElementById('live-panel');
+            const listDiv = document.getElementById('live-entries-outside');
+            listDiv.innerHTML = '';
+            if (liveEntries.length === 0) { panel.style.display = 'none'; return; }
+            panel.style.display = 'block';
+            liveEntries.forEach((entry, index) => buildEntryRow(entry, index, listDiv, openModalForEdit));
+        }
+
         function renderLiveEntries() {
             const listDiv = document.getElementById('live-entries-list');
             listDiv.innerHTML = '';
-            liveEntries.forEach((entry, index) => {
-                const parts = [];
-                if (entry.date) parts.push(entry.date);
-                if (entry.farm) parts.push(entry.farm);
-                if (entry.doSerial) parts.push(`DO: ${entry.doSerial}`);
-                if (entry.ayamA > 0) parts.push(`A: ${entry.ayamA}`);
-                if (entry.weightA > 0) parts.push(`Wt A: ${entry.weightA}KG`);
-                if (entry.ayamB > 0) parts.push(`B: ${entry.ayamB}`);
-                if (entry.weightB > 0) parts.push(`Wt B: ${entry.weightB}KG`);
-                if (entry.hasCrop) parts.push(`[CROP]`);
-                
-                const entryText = `- ` + parts.join(', ');
-                
-                const div = document.createElement('div');
-                div.style.color = '#FF8C00';
-                div.style.fontSize = '0.875rem';
-                div.style.padding = '0.25rem 0';
-                div.style.borderBottom = '1px solid #e5e7eb';
-                div.style.cursor = 'pointer';
-                div.style.userSelect = 'none';
-                div.textContent = entryText;
-                
-                let pressTimer;
-                const startPress = (e) => {
-                    // Prevent default if it's a touch to avoid scrolling while long pressing
-                    // but we don't strictly need to for a simple timeout.
-                    pressTimer = window.setTimeout(() => {
-                        editingLiveIndex = index;
-                        document.getElementById('live-date').value = entry.date || '';
-                        document.getElementById('live-farm').value = entry.farm || '';
-                        document.getElementById('live-do').value = entry.doSerial || '';
-                        document.getElementById('live-a').value = entry.ayamA || '';
-                        document.getElementById('live-weight-a').value = entry.weightA || '';
-                        document.getElementById('live-b').value = entry.ayamB || '';
-                        document.getElementById('live-weight-b').value = entry.weightB || '';
-                        document.getElementById('live-crop').checked = entry.hasCrop || false;
-                        document.getElementById('live-ok-btn').textContent = 'Update';
-                        document.getElementById('live-del-btn').classList.remove('hidden');
-                    }, 2000); // 2 seconds long press
-                };
-                const cancelPress = () => {
-                    clearTimeout(pressTimer);
-                };
-                
-                div.addEventListener('mousedown', startPress);
-                div.addEventListener('touchstart', startPress);
-                div.addEventListener('mouseup', cancelPress);
-                div.addEventListener('mouseleave', cancelPress);
-                div.addEventListener('touchend', cancelPress);
-                
-                listDiv.appendChild(div);
-            });
+            liveEntries.forEach((entry, index) => buildEntryRow(entry, index, listDiv, (i) => {
+                editingLiveIndex = i;
+                document.getElementById('live-date').value = liveEntries[i].date || '';
+                document.getElementById('live-farm').value = liveEntries[i].farm || '';
+                document.getElementById('live-do').value = liveEntries[i].doSerial || '';
+                document.getElementById('live-a').value = liveEntries[i].ayamA || '';
+                document.getElementById('live-weight-a').value = liveEntries[i].weightA || '';
+                document.getElementById('live-b').value = liveEntries[i].ayamB || '';
+                document.getElementById('live-weight-b').value = liveEntries[i].weightB || '';
+                document.getElementById('live-crop').checked = liveEntries[i].hasCrop || false;
+                document.getElementById('live-ok-btn').textContent = 'Update';
+                document.getElementById('live-del-btn').classList.remove('hidden');
+            }));
             categorySummary.textContent = `Selected: Live (${liveEntries.length} deliveries)`;
         }
 
@@ -642,6 +666,7 @@
                     document.getElementById('live-ok-btn').textContent = 'Add';
                     document.getElementById('live-del-btn').classList.add('hidden');
                     renderLiveEntries();
+                    renderLiveEntriesOutside();
                     const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
                     liveInputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
                     document.getElementById('live-crop').checked = false;
@@ -931,6 +956,7 @@
 
                 selectedCategoryDetails = { type: 'Live', entries: liveEntries };
                 renderLiveEntries();
+                renderLiveEntriesOutside();
 
                 const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
                 liveInputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
@@ -1181,7 +1207,48 @@
                 datalist.innerHTML = html;
             }
         }
+        async function loadTodayLiveEntries() {
+            const startOfDay = new Date();
+            startOfDay.setHours(0, 0, 0, 0);
+            try {
+                const snapshot = await db.collection('stock_entries')
+                    .where('timestamp', '>=', startOfDay)
+                    .orderBy('timestamp', 'asc')
+                    .get();
+                liveEntries = [];
+                liveDocIds = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.category === 'Live' && data.categoryDetails && data.categoryDetails.entries && data.categoryDetails.entries.length > 0) {
+                        liveEntries.push(data.categoryDetails.entries[0]);
+                        liveDocIds.push(doc.id);
+                    }
+                });
+                renderLiveEntriesOutside();
+            } catch(e) { console.log('Could not load today live entries:', e); }
+        }
+
+        function scheduleMidnightReset() {
+            const now = new Date();
+            const next = new Date(now);
+            next.setDate(now.getDate() + 1);
+            next.setHours(0, 1, 0, 0); // 12:01 AM
+            setTimeout(() => {
+                liveEntries = [];
+                liveDocIds = [];
+                renderLiveEntriesOutside();
+                renderLiveEntries();
+                categorySummary.textContent = '';
+                scheduleMidnightReset();
+            }, next - now);
+        }
+
         document.addEventListener('DOMContentLoaded', populateDateList);
+        document.addEventListener('DOMContentLoaded', updateHeaderDate);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTodayLiveEntries();
+            scheduleMidnightReset();
+        });
 
         function updateHeaderDate() {
             const dateEl = document.getElementById('header-today-date');
