@@ -910,12 +910,27 @@
                     containerDetails: selectedContainerDetails
                 };
 
-                const docRef = await db.collection('stock_entries').add(stockEntry);
-                liveDocIds.push(docRef.id);
-                liveEntries.push(entry);
+                if (editingLiveIndex >= 0) {
+                    // --- EDIT: update the existing Firestore document ---
+                    const existingDocId = liveDocIds[editingLiveIndex];
+                    await db.collection('stock_entries').doc(existingDocId).update({
+                        grossWeight, tareWeight, netWeight,
+                        categoryDetails: { type: 'Live', entries: [entry] },
+                        container: selectedContainer,
+                        containerDetails: selectedContainerDetails
+                    });
+                    liveEntries[editingLiveIndex] = entry;
+                    showNotification(`Updated! Net: ${netWeight.toFixed(2)} KG`, 'success');
+                } else {
+                    // --- NEW: add a fresh Firestore document ---
+                    const docRef = await db.collection('stock_entries').add(stockEntry);
+                    liveDocIds.push(docRef.id);
+                    liveEntries.push(entry);
+                    showNotification(`Saved! Net: ${netWeight.toFixed(2)} KG`, 'success');
+                }
+
                 selectedCategoryDetails = { type: 'Live', entries: liveEntries };
                 renderLiveEntries();
-                showNotification(`Saved! Net: ${netWeight.toFixed(2)} KG`, 'success');
 
                 const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
                 liveInputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
