@@ -81,7 +81,7 @@
 
         
 <!-- STAGE 1 LAYOUT (A4 Optimized) -->
-<section class="bg-white p-4 mb-6 shadow-md print:shadow-none print:p-0 print:mb-0 text-black mx-auto overflow-hidden" style="width: 21cm; min-height: 29.7cm; font-family: 'Courier New', Courier, monospace; border: 1px solid #ddd; padding: 1cm;">
+<section class="bg-white p-4 mb-6 shadow-md print:shadow-none print:p-0 print:mb-0 text-black mx-auto" style="width: 21cm; min-height: 29.7cm; font-family: 'Courier New', Courier, monospace; border: 1px solid #ddd; padding: 1cm;">
     
     <!-- Top Header -->
     <div class="flex justify-between items-start mb-6">
@@ -717,15 +717,6 @@
                             <td class="border-2 border-black h-5 text-[8px] font-bold text-center w-6">${rowNum}</td>
                             <td class="border-2 border-black h-5 text-center font-bold text-xs">${r.bakul||''}</td>
                             <td class="border-2 border-black h-5 text-center font-bold text-xs">${r.kg ? r.kg.toFixed(2) : ''}</td>
-                        </tr>`;
-                    }
-                    document.getElementById(id).innerHTML = html;
-                };
-                        html += `<tr>
-                            <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">${rowNum}</td>
-                            <td class="border-2 border-black h-3 text-center font-bold text-xs">${r.bakul||''}</td>
-                            
-                            <td class="border-2 border-black h-3 text-center font-bold text-xs">${r.kg ? r.kg.toFixed(2) : ''}</td>
                         </tr>`;
                     }
                     document.getElementById(id).innerHTML = html;
