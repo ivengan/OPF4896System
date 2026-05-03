@@ -81,15 +81,14 @@
 
         
 <!-- STAGE 1 LAYOUT (Paper form style) -->
-<section class="bg-white p-6 mb-10 shadow-md print:shadow-none print:p-0 print:mb-4 text-black mx-auto" style="max-width: 900px; font-family: Arial, sans-serif;">
+<section class="bg-white p-6 mb-10 shadow-md print:shadow-none print:p-0 print:mb-4 text-black mx-auto overflow-x-auto" style="font-family: Arial, sans-serif;">
+    <div style="min-width: 1000px;">
     
     <!-- Top Row: Title + 2 Tables -->
     <div class="flex justify-between items-start mb-4">
         <div class="w-[50%]">
             <h1 class="text-2xl font-bold uppercase tracking-wider mb-2 border-b-4 border-black pb-1 inline-block">STOCK RECORD STAGE 1</h1>
-            <div class="border-2 border-black h-16 p-1 relative w-full">
-                <span class="text-xs font-semibold absolute top-1 left-1">REMARK:</span>
-            </div>
+            
             <div class="mt-4 flex items-center">
                 <span class="font-bold mr-2 text-sm">DATE:</span>
                 <div class="border-b-2 border-black flex-grow h-4 font-bold text-sm px-2 flex items-end pb-0.5" id="stg1-main-date"></div>
@@ -121,7 +120,7 @@
             </table>
 
             <!-- Parts Table -->
-            <table class="border-collapse border-2 border-black text-center text-xs w-[55%] h-min">
+            <table class="border-collapse border-2 border-black text-center text-xs w-[75%] h-min">
                 <thead>
                     <tr>
                         <th class="border-2 border-black p-1 w-1/2"></th>
@@ -152,9 +151,9 @@
                 <thead>
                     <tr>
                         <th class="border-none"></th>
-                        <th class="border-2 border-black p-1 w-[20%] text-[10px] font-bold">BAKUL</th>
-                        <th class="border-2 border-black p-1 w-[25%] text-[10px] font-bold">EKOR</th>
-                        <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
+                        <th class="border-2 border-black p-1 w-[25%] text-[10px] font-bold">BAKUL</th>
+                        
+                        <th class="border-2 border-black p-1 w-[75%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col1"></tbody>
@@ -168,9 +167,9 @@
                 <thead>
                     <tr>
                         <th class="border-none"></th>
-                        <th class="border-2 border-black p-1 w-[20%] text-[10px] font-bold">BAKUL</th>
-                        <th class="border-2 border-black p-1 w-[25%] text-[10px] font-bold">EKOR</th>
-                        <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
+                        <th class="border-2 border-black p-1 w-[25%] text-[10px] font-bold">BAKUL</th>
+                        
+                        <th class="border-2 border-black p-1 w-[75%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col2"></tbody>
@@ -184,9 +183,9 @@
                 <thead>
                     <tr>
                         <th class="border-none"></th>
-                        <th class="border-2 border-black p-1 w-[20%] text-[10px] font-bold">BAKUL</th>
-                        <th class="border-2 border-black p-1 w-[25%] text-[10px] font-bold">EKOR</th>
-                        <th class="border-2 border-black p-1 w-[55%] text-[10px] font-bold">KG (格 & 轮)</th>
+                        <th class="border-2 border-black p-1 w-[25%] text-[10px] font-bold">BAKUL</th>
+                        
+                        <th class="border-2 border-black p-1 w-[75%] text-[10px] font-bold">KG (格 & 轮)</th>
                     </tr>
                 </thead>
                 <tbody id="stg1-col3"></tbody>
@@ -197,7 +196,7 @@
     <!-- Bottom Row -->
     <div class="flex justify-between items-end gap-4 mt-6">
         <!-- Bottom Left: Date/Reban/DO -->
-        <div class="w-[55%]">
+        <div class="w-[75%]">
             <p class="font-bold text-xs mb-1">* 如果没有格子 / 轮子请注明 *</p>
             <table class="border-collapse border-2 border-black w-full text-center text-xs">
                 <thead>
@@ -241,6 +240,7 @@
                  <div class="border-b-4 border-gray-600 w-48 h-2"></div>
             </div>
         </div>
+    </div>
     </div>
 </section>
 
@@ -722,9 +722,9 @@
                         let r = rows[i] || { bakul: '', ekor: '', kg: '' };
                         html += `<tr>
                             <td class="text-right pr-1 font-bold text-xs" style="width: 20px;">${rowNum}</td>
-                            <td class="border-2 border-black h-5 w-[20%] text-center font-bold text-sm">${r.bakul||''}</td>
-                            <td class="border-2 border-black h-5 w-[25%] text-center font-bold text-sm">${r.ekor||''}</td>
-                            <td class="border-2 border-black h-5 w-[55%] text-center font-bold text-sm">${r.kg ? r.kg.toFixed(2) : ''}</td>
+                            <td class="border-2 border-black h-5 w-[25%] text-center font-bold text-sm">${r.bakul||''}</td>
+                            
+                            <td class="border-2 border-black h-5 w-[75%] text-center font-bold text-sm">${r.kg ? r.kg.toFixed(2) : ''}</td>
                         </tr>`;
                     }
                     document.getElementById(id).innerHTML = html;
