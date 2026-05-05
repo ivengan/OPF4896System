@@ -366,7 +366,7 @@
                           }
 
                           row.innerHTML = `
-                              <div class="font-bold text-gray-900 text-lg leading-tight">
+                              <div class="font-bold text-gray-900 text-lg leading-tight pointer-events-none">
                                   ${displayLabel}
                               </div>
                               <div class="flex gap-2">
@@ -374,6 +374,46 @@
                                   <button class="del-btn px-3 py-1.5 bg-white text-red-600 border border-red-200 rounded-lg text-[17px] font-bold shadow-sm hover:bg-red-50 hover:border-red-300 transition">DEL</button>
                               </div>
                           `;
+
+                          // Long press to Quick Edit
+                          let pressTimer;
+                          let isPressing = false;
+                          function startPress(e) {
+                              if(e.target.closest('button')) return; // Ignore if clicking buttons
+                              isPressing = true;
+                              pressTimer = setTimeout(() => {
+                                  if(isPressing) {
+                                      isPressing = false;
+                                      let newValStr = prompt(`Enter new weight (KG) for this entry:`, item.grossWeight || item.netWeight);
+                                      if (newValStr !== null) {
+                                          let newVal = parseFloat(newValStr);
+                                          if (!isNaN(newVal) && newVal > 0) {
+                                              let tare = item.tareWeight || 0;
+                                              let net = newVal - tare;
+                                              db.collection('stock_entries').doc(item.id).update({
+                                                  grossWeight: newVal,
+                                                  netWeight: net
+                                              }).then(() => showNotification("Weight updated via quick edit.", "success"));
+                                          } else {
+                                              alert("Invalid weight.");
+                                          }
+                                      }
+                                  }
+                              }, 2000);
+                          }
+                          function cancelPress() {
+                              isPressing = false;
+                              clearTimeout(pressTimer);
+                          }
+                          row.addEventListener('contextmenu', (e) => {
+                              if(!e.target.closest('button')) e.preventDefault();
+                          });
+                          row.addEventListener('mousedown', startPress);
+                          row.addEventListener('mouseup', cancelPress);
+                          row.addEventListener('mouseleave', cancelPress);
+                          row.addEventListener('touchstart', startPress, {passive: true});
+                          row.addEventListener('touchend', cancelPress);
+                          row.addEventListener('touchmove', cancelPress, {passive: true});
 
                           row.querySelector('.edit-btn').addEventListener('click', (e) => { 
                               e.stopPropagation(); 
