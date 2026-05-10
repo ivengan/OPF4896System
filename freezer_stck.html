@@ -231,15 +231,102 @@
             return val.toFixed(2) + ' KG';
         }
 
+        window.freezerEdit = function(item) {
+            let menu = `Edit stock for ${item.name}:\n` +
+                       `1. OPENING\n` +
+                       `2. OUT (lama)\n` +
+                       `3. IN (lama)\n` +
+                       `4. OUT (new)\n` +
+                       `5. IN (new)\n` +
+                       `6. CLOSING\n` +
+                       `Enter 1-6:`;
+            let choice = prompt(menu);
+            if (!['1','2','3','4','5','6'].includes(choice)) {
+                if (choice !== null) alert('Invalid choice.');
+                return;
+            }
+
+            let currentVal;
+            let fieldName = '';
+            switch(choice) {
+                case '1': currentVal = item.opening; fieldName = 'OPENING'; break;
+                case '2': currentVal = item.outLama; fieldName = 'OUT (lama)'; break;
+                case '3': currentVal = item.inLama; fieldName = 'IN (lama)'; break;
+                case '4': currentVal = item.outNew; fieldName = 'OUT (new)'; break;
+                case '5': currentVal = item.inNew; fieldName = 'IN (new)'; break;
+                case '6': currentVal = item.closing; fieldName = 'CLOSING'; break;
+            }
+
+            let newValStr = prompt(`Enter new ${fieldName} value for ${item.name} (Current: ${currentVal.toFixed(2)} KG):`, currentVal.toFixed(2));
+            if (newValStr !== null) {
+                let newVal = parseFloat(newValStr);
+                if (!isNaN(newVal)) {
+                    let diff = newVal - currentVal;
+                    if (diff !== 0) {
+                        let adjDate = new Date();
+                        
+                        if (choice === '1' || choice === '3' || choice === '5' || choice === '6') {
+                            if (choice === '1') {
+                                adjDate.setDate(adjDate.getDate() - 1);
+                                adjDate.setHours(23, 59, 59, 999);
+                            }
+                            let remark = 'Manual Adjustment';
+                            if (choice === '3') remark += ' lama';
+
+                            db.collection('stock_entries').add({
+                                category: 'Parts',
+                                categoryDetails: {
+                                    partName: item.rawName,
+                                    packSize: item.pack,
+                                    type: 'Adjustment'
+                                },
+                                grossWeight: diff,
+                                netWeight: diff,
+                                tareWeight: 0,
+                                remark: remark,
+                                timestamp: firebase.firestore.Timestamp.fromDate(adjDate)
+                            }).then(() => alert('Adjustment saved successfully.'));
+
+                        } else if (choice === '2' || choice === '4') {
+                            let isLama = (choice === '2');
+                            let orderName = item.rawName;
+                            if (item.pack && !orderName.toLowerCase().includes(item.pack.toLowerCase())) {
+                                orderName += ' ' + item.pack;
+                            }
+                            
+                            db.collection('orders').add({
+                                productType: 'parts',
+                                customerName: 'System Adjustment',
+                                isAdjustment: true,
+                                timestamp: firebase.firestore.Timestamp.fromDate(adjDate),
+                                parts: [{
+                                    name: orderName,
+                                    history: [{
+                                        timestamp: adjDate.getTime(),
+                                        net: diff,
+                                        ayamLama: isLama
+                                    }]
+                                }]
+                            }).then(() => alert('Adjustment saved successfully.'));
+                        }
+                    } else {
+                        alert('No change in value.');
+                    }
+                } else {
+                    alert('Invalid value entered.');
+                }
+            }
+        };
+
         function processInventory() {
             let inventoryMap = {};
 
             const today = new Date();
             today.setHours(0, 0, 0, 0); 
 
-            function getOrInit(name) {
+            function getOrInit(name, rawName, pack) {
                 if (!inventoryMap[name]) {
-                    inventoryMap[name] = { name: name, opening: 0, inLama: 0, outLama: 0, inNew: 0, outNew: 0, closing: 0 };
+                    inventoryMap[name] = { name: name, rawName: rawName || name, pack: pack || '', opening: 0, inLama: 0, outLama: 0, inNew: 0, outNew: 0, closing: 0 };
                 }
                 return inventoryMap[name];
             }
@@ -249,7 +336,7 @@
                 let name = data.itemName || data.name || data.partName || data.description || '';
                 let pack = data.packSize || data.unit || data.pack || '';
                 if (name) {
-                    getOrInit(formatItemName(name, pack));
+                    getOrInit(formatItemName(name, pack), name, pack);
                 }
             });
 
@@ -268,7 +355,7 @@
                 let remark = (data.remark || '').toLowerCase();
                 let isLama = remark.includes('lama') || remark.includes('kopek') || remark.includes('sisa');
 
-                let item = getOrInit(itemName);
+                let item = getOrInit(itemName, rawName, pack);
 
                 if (!isToday) {
                     item.opening += qty; 
@@ -285,7 +372,8 @@
                         let rawName = p.name || 'Unknown Part';
                         let packMatch = rawName.match(/(\d+(?:\.\d+)?)\s*kg/i);
                         let packStr = packMatch ? `${packMatch[1]} KG` : '';
-                        let itemName = formatItemName(rawName.replace(packMatch ? packMatch[0] : '', '').trim(), packStr);
+                        let cleanName = rawName.replace(packMatch ? packMatch[0] : '', '').trim();
+                        let itemName = formatItemName(cleanName, packStr);
 
                         if (p.history && Array.isArray(p.history)) {
                             p.history.forEach(h => {
@@ -294,7 +382,7 @@
                                 let qty = parseFloat(h.net) || 0; 
                                 let isLama = h.ayamLama === true;
 
-                                let item = getOrInit(itemName);
+                                let item = getOrInit(itemName, cleanName, packStr);
 
                                 if (!isToday) {
                                     item.opening -= qty;
@@ -327,14 +415,39 @@
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="text-left font-extrabold text-gray-800 whitespace-nowrap">${item.name}</td>
-                    <td class="text-center text-gray-600 whitespace-nowrap">${formatVal(item.opening)}</td>
-                    <td class="text-center text-red-500 whitespace-nowrap">${formatVal(item.outLama)}</td>
-                    <td class="text-center text-green-600 whitespace-nowrap">${formatVal(item.inLama)}</td>
-                    <td class="text-center text-red-500 whitespace-nowrap">${formatVal(item.outNew)}</td>
-                    <td class="text-center text-green-600 whitespace-nowrap">${formatVal(item.inNew)}</td>
-                    <td class="text-center font-extrabold text-blue-700 bg-blue-50 border-l border-gray-200 whitespace-nowrap">${formatVal(item.closing)}</td>
+                    <td class="text-left font-extrabold text-gray-800 whitespace-nowrap pointer-events-none">${item.name}</td>
+                    <td class="text-center text-gray-600 whitespace-nowrap pointer-events-none">${formatVal(item.opening)}</td>
+                    <td class="text-center text-red-500 whitespace-nowrap pointer-events-none">${formatVal(item.outLama)}</td>
+                    <td class="text-center text-green-600 whitespace-nowrap pointer-events-none">${formatVal(item.inLama)}</td>
+                    <td class="text-center text-red-500 whitespace-nowrap pointer-events-none">${formatVal(item.outNew)}</td>
+                    <td class="text-center text-green-600 whitespace-nowrap pointer-events-none">${formatVal(item.inNew)}</td>
+                    <td class="text-center font-extrabold text-blue-700 bg-blue-50 border-l border-gray-200 whitespace-nowrap pointer-events-none">${formatVal(item.closing)}</td>
                 `;
+
+                // Long press to edit Opening / Closing Stock
+                let pressTimer;
+                let isPressing = false;
+                function startPress() {
+                    isPressing = true;
+                    pressTimer = setTimeout(() => {
+                        if(isPressing) {
+                            isPressing = false;
+                            window.freezerEdit(item);
+                        }
+                    }, 2000);
+                }
+                function cancelPress() {
+                    isPressing = false;
+                    clearTimeout(pressTimer);
+                }
+                tr.addEventListener('contextmenu', (e) => e.preventDefault());
+                tr.addEventListener('mousedown', startPress);
+                tr.addEventListener('mouseup', cancelPress);
+                tr.addEventListener('mouseleave', cancelPress);
+                tr.addEventListener('touchstart', startPress, {passive: true});
+                tr.addEventListener('touchend', cancelPress);
+                tr.addEventListener('touchmove', cancelPress, {passive: true});
+
                 tbody.appendChild(tr);
             });
         }
