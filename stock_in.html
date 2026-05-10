@@ -196,6 +196,18 @@
             </div>
             <div id="category-summary" class="text-right text-gray-500 font-semibold"></div>
 
+            <!-- Container -->
+            <div class="flex items-center justify-between">
+                <label id="container-label" class="text-lg font-semibold text-gray-700 transition">Container:</label>
+                <div id="container-buttons" class="flex rounded-lg shadow-sm transition">
+                    <button id="container-crate-btn" class="inactive-segment font-semibold py-2 px-4 rounded-l-lg">Crate</button>
+                    <button id="container-basket-btn" class="inactive-segment font-semibold py-2 px-4">Basket</button>
+                    <button id="container-barrel-btn" class="inactive-segment font-semibold py-2 px-4">Barrel</button>
+                    <button id="container-zero-btn" class="inactive-segment font-semibold py-2 px-4 rounded-r-lg">0</button>
+                </div>
+            </div>
+            <div id="container-summary" class="text-right text-gray-500 font-semibold"></div>
+
         </div>
         <div class="mt-8 flex gap-2">
             <button id="clear-btn" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold text-lg py-4 rounded-lg shadow-md transition">Clear</button>
@@ -232,28 +244,7 @@
         </div>
     </div>
 
-    <div id="final-details-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6 relative">
-            <button data-modal-id="final-details-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
-            <h3 class="text-xl font-bold">Final Details</h3>
 
-            <div>
-                <label class="text-lg font-semibold text-gray-700 transition block mb-2">Container:</label>
-                <div class="flex rounded-lg shadow-sm transition">
-                    <button id="container-crate-btn" class="inactive-segment font-semibold py-2 px-3 rounded-l-lg">Crate</button>
-                    <button id="container-basket-btn" class="inactive-segment font-semibold py-2 px-3">Basket</button>
-                    <button id="container-barrel-btn" class="inactive-segment font-semibold py-2 px-3">Barrel</button>
-                    <button id="container-zero-btn" class="inactive-segment font-semibold py-2 px-3 rounded-r-lg">0</button>
-                </div>
-                <div id="container-summary" class="text-right text-gray-500 font-semibold mt-1"></div>
-            </div>
-
-            <div class="flex gap-2 mt-4">
-                <button data-modal-id="final-details-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
-                <button id="final-save-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">Save</button>
-            </div>
-        </div>
-    </div>
 
     <div id="live-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
@@ -501,7 +492,6 @@
         const basketModal = document.getElementById('basket-modal');
         const barrelModal = document.getElementById('barrel-modal');
         const configWarningModal = document.getElementById('config-warning-modal');
-        const finalDetailsModal = document.getElementById('final-details-modal');
         
         function updateContainerSummary(text) {
             if (selectedCategory === 'Live') {
@@ -1057,7 +1047,9 @@
         });
 
         // --- STRICT CONFIG CHECK LOGIC ---
-        finalOkBtn.addEventListener('click', () => {
+        finalOkBtn.addEventListener('click', async () => {
+            if (finalOkBtn.disabled) return;
+
             if (!selectedCategory) {
                 showNotification('Please select a Category (Live, Broiler, etc.) first.', 'error');
                 return;
@@ -1066,31 +1058,21 @@
                 showNotification('Live entries are added directly via the Live modal.', 'error');
                 return;
             }
+
+            const grossWeight = parseFloat(weightInput.value) || 0;
             if (selectedCategory !== 'Eliminate') {
-                const w = parseFloat(weightInput.value);
-                if (isNaN(w) || w <= 0) {
+                if (isNaN(grossWeight) || grossWeight <= 0) {
                     showNotification('Please enter a valid Weight (KG) first.', 'error');
                     return;
                 }
-            }
-            showModal(finalDetailsModal);
-        });
-
-        const finalSaveBtn = document.getElementById('final-save-btn');
-        finalSaveBtn.addEventListener('click', async () => {
-            if (finalSaveBtn.disabled) return;
-            const grossWeight = parseFloat(weightInput.value) || 0;
-            if (selectedCategory !== 'Eliminate' && (isNaN(grossWeight) || grossWeight <= 0)) {
-                showNotification('Please enter a valid Weight (greater than 0).', 'error');
-                return;
-            }
-            if (!selectedContainer) {
-                showNotification('Please select a Container (Crate, Basket, Barrel, or 0 for Nett Weight).', 'error');
-                return;
+                if (!selectedContainer) {
+                    showNotification('Please select a Container (Crate, Basket, Barrel, or 0 for Nett Weight).', 'error');
+                    return;
+                }
             }
 
-            finalSaveBtn.disabled = true;
-            finalSaveBtn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Processing...</span>`;
+            finalOkBtn.disabled = true;
+            finalOkBtn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Processing...</span>`;
 
             try {
                 // Fetch pricing config
@@ -1182,8 +1164,8 @@
                     if (broilerBalance < netWeight) {
                         const proceed = confirm(`There are no old stock in the chiller! (Current estimated balance: ${broilerBalance.toFixed(2)}kg).\n\nWould you like to add stock and proceed?`);
                         if (!proceed) {
-                            finalSaveBtn.disabled = false;
-                            finalSaveBtn.innerHTML = "Save";
+                            finalOkBtn.disabled = false;
+                            finalOkBtn.innerHTML = "OK";
                             return;
                         }
                     }
@@ -1232,15 +1214,15 @@
                     timeout = 10000;
                 }
 
-                hideModal(finalDetailsModal);
+                showNotification(`Stock recorded successfully! Net weight: ${netWeight.toFixed(2)} KG${extraMessage}`, 'success', timeout);
                 resetPage();
                 
             } catch (error) {
                 console.error("Error saving stock entry: ", error);
                 showNotification('Failed to save stock entry.', 'error');
             } finally {
-                finalSaveBtn.disabled = false;
-                finalSaveBtn.textContent = "Save";
+                finalOkBtn.disabled = false;
+                finalOkBtn.textContent = "OK";
             }
         });
 
