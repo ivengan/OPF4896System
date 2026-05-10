@@ -165,15 +165,6 @@
     <main class="max-w-lg mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div id="notification-area" class="mb-6"></div>
         <div class="bg-white p-6 rounded-lg shadow space-y-6">
-            <!-- Weight -->
-            <div class="flex items-center justify-between">
-                <label class="text-lg font-semibold text-gray-700">Weight:</label>
-                <div class="flex items-center gap-2">
-                    <input type="number" id="weight-input" step="0.1" placeholder="0.0" class="w-32 border border-gray-300 rounded-lg p-2 text-center text-lg focus:ring-2 focus:ring-blue-500">
-                    <span class="text-lg font-semibold text-gray-500">KG</span>
-                </div>
-            </div>
-
             <!-- Category 1 -->
             <div class="flex items-center justify-between">
                 <label class="text-lg font-semibold text-gray-700">Category 1:</label>
@@ -196,17 +187,6 @@
             </div>
             <div id="category-summary" class="text-right text-gray-500 font-semibold"></div>
 
-            <!-- Container -->
-            <div class="flex items-center justify-between">
-                <label id="container-label" class="text-lg font-semibold text-gray-700 transition">Container:</label>
-                <div id="container-buttons" class="flex rounded-lg shadow-sm transition">
-                    <button id="container-crate-btn" class="inactive-segment font-semibold py-2 px-4 rounded-l-lg">Crate</button>
-                    <button id="container-basket-btn" class="inactive-segment font-semibold py-2 px-4">Basket</button>
-                    <button id="container-barrel-btn" class="inactive-segment font-semibold py-2 px-4">Barrel</button>
-                    <button id="container-zero-btn" class="inactive-segment font-semibold py-2 px-4 rounded-r-lg">0</button>
-                </div>
-            </div>
-            <div id="container-summary" class="text-right text-gray-500 font-semibold"></div>
         </div>
         <div class="mt-8 flex gap-2">
             <button id="clear-btn" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold text-lg py-4 rounded-lg shadow-md transition">Clear</button>
@@ -239,6 +219,37 @@
             <div class="flex gap-2 mt-4">
                 <button id="eliminate-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
                 <button id="eliminate-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="final-details-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6 relative">
+            <button data-modal-id="final-details-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
+            <h3 class="text-xl font-bold">Final Details</h3>
+            
+            <div class="flex items-center justify-between">
+                <label class="text-lg font-semibold text-gray-700">Weight:</label>
+                <div class="flex items-center gap-2">
+                    <input type="number" id="weight-input" step="0.1" placeholder="0.0" class="w-32 border border-gray-300 rounded-lg p-2 text-center text-lg focus:ring-2 focus:ring-blue-500">
+                    <span class="text-lg font-semibold text-gray-500">KG</span>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-lg font-semibold text-gray-700 transition block mb-2">Container:</label>
+                <div class="flex rounded-lg shadow-sm transition">
+                    <button id="container-crate-btn" class="inactive-segment font-semibold py-2 px-3 rounded-l-lg">Crate</button>
+                    <button id="container-basket-btn" class="inactive-segment font-semibold py-2 px-3">Basket</button>
+                    <button id="container-barrel-btn" class="inactive-segment font-semibold py-2 px-3">Barrel</button>
+                    <button id="container-zero-btn" class="inactive-segment font-semibold py-2 px-3 rounded-r-lg">0</button>
+                </div>
+                <div id="container-summary" class="text-right text-gray-500 font-semibold mt-1"></div>
+            </div>
+
+            <div class="flex gap-2 mt-4">
+                <button data-modal-id="final-details-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="final-save-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">Save</button>
             </div>
         </div>
     </div>
@@ -282,6 +293,17 @@
                     <input type="checkbox" id="live-crop" class="h-5 w-5 text-blue-600 rounded border-gray-300">
                     <label for="live-crop" class="ml-3 text-sm font-semibold text-gray-700">Crop (live chicken with crop)</label>
                 </div>
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Container:</label>
+                    <div class="flex rounded-lg shadow-sm transition mt-1">
+                        <button id="live-con-crate-btn" class="inactive-segment font-semibold py-2 px-3 rounded-l-lg text-sm">Crate</button>
+                        <button id="live-con-basket-btn" class="inactive-segment font-semibold py-2 px-3 text-sm">Basket</button>
+                        <button id="live-con-barrel-btn" class="inactive-segment font-semibold py-2 px-3 text-sm">Barrel</button>
+                        <button id="live-con-zero-btn" class="inactive-segment font-semibold py-2 px-3 rounded-r-lg text-sm">0</button>
+                    </div>
+                    <div id="live-container-summary" class="text-right text-gray-500 font-semibold mt-1 text-xs"></div>
+                </div>
+
             </div>
             <div class="flex gap-2 mt-4">
                 <button data-modal-id="live-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Close</button>
@@ -478,6 +500,16 @@
         const basketModal = document.getElementById('basket-modal');
         const barrelModal = document.getElementById('barrel-modal');
         const configWarningModal = document.getElementById('config-warning-modal');
+        const finalDetailsModal = document.getElementById('final-details-modal');
+        
+        function updateContainerSummary(text) {
+            if (selectedCategory === 'Live') {
+                const liveSum = document.getElementById('live-container-summary');
+                if (liveSum) liveSum.textContent = text;
+            } else {
+                containerSummary.textContent = text;
+            }
+        }
         
         function showModal(modal) { modal.classList.remove('hidden'); }
         function hideModal(modal) { modal.classList.add('hidden'); }
@@ -568,6 +600,10 @@
             if (entry.weightA > 0) parts.push(`Wt A: ${entry.weightA}KG`);
             if (entry.ayamB > 0) parts.push(`B: ${entry.ayamB}`);
             if (entry.weightB > 0) parts.push(`Wt B: ${entry.weightB}KG`);
+            if (entry.netWeight) parts.push(`Net: ${entry.netWeight.toFixed(2)}KG`);
+            else if (entry.weightA > 0 || entry.weightB > 0) parts.push(`Gross: ${(entry.weightA + entry.weightB).toFixed(2)}KG`);
+            
+            if (entry.container) parts.push(`[${entry.container}]`);
             if (entry.hasCrop) parts.push(`[CROP]`);
             const div = document.createElement('div');
             div.style.color = '#FF8C00';
@@ -736,38 +772,38 @@
             }
         });
 
-        conCrateBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(conCrateBtn, [conCrateBtn, conBasketBtn, conBarrelBtn, conZeroBtn], 'container', 'Crate');
-            if(value) {
-                selectedContainer = value;
-                showModal(crateModal);
-            }
-        });
+        function bindContainerButtons(crate, basket, barrel, zero) {
+            crate.addEventListener('click', () => {
+                const value = handleSegmentClick(crate, [crate, basket, barrel, zero], 'container', 'Crate');
+                if(value) { selectedContainer = value; showModal(crateModal); }
+            });
+            basket.addEventListener('click', () => {
+                const value = handleSegmentClick(basket, [crate, basket, barrel, zero], 'container', 'Basket');
+                if(value) { selectedContainer = value; showModal(basketModal); }
+            });
+            barrel.addEventListener('click', () => {
+                const value = handleSegmentClick(barrel, [crate, basket, barrel, zero], 'container', 'Barrel');
+                if(value) { selectedContainer = value; showModal(barrelModal); }
+            });
+            zero.addEventListener('click', () => {
+                const value = handleSegmentClick(zero, [crate, basket, barrel, zero], 'container', 'Zero');
+                if(value) { 
+                    selectedContainer = value; 
+                    selectedContainerDetails = { type: 'Zero' }; 
+                    updateContainerSummary('Nett Weight (no tare)');
+                }
+            });
+        }
 
-        conBasketBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(conBasketBtn, [conCrateBtn, conBasketBtn, conBarrelBtn, conZeroBtn], 'container', 'Basket');
-            if(value) {
-                selectedContainer = value;
-                showModal(basketModal);
-            }
-        });
+        bindContainerButtons(conCrateBtn, conBasketBtn, conBarrelBtn, conZeroBtn);
 
-        conBarrelBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(conBarrelBtn, [conCrateBtn, conBasketBtn, conBarrelBtn, conZeroBtn], 'container', 'Barrel');
-            if(value) {
-                selectedContainer = value;
-                showModal(barrelModal);
-            }
-        });
-
-        conZeroBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(conZeroBtn, [conCrateBtn, conBasketBtn, conBarrelBtn, conZeroBtn], 'container', 'Zero');
-            if(value) {
-                selectedContainer = value;
-                selectedContainerDetails = { type: 'Zero' };
-                containerSummary.textContent = 'Nett Weight (no tare)';
-            }
-        });
+        const liveConCrateBtn = document.getElementById('live-con-crate-btn');
+        const liveConBasketBtn = document.getElementById('live-con-basket-btn');
+        const liveConBarrelBtn = document.getElementById('live-con-barrel-btn');
+        const liveConZeroBtn = document.getElementById('live-con-zero-btn');
+        if (liveConCrateBtn) {
+            bindContainerButtons(liveConCrateBtn, liveConBasketBtn, liveConBarrelBtn, liveConZeroBtn);
+        }
 
         clearBtn.addEventListener('click', resetPage);
         
@@ -877,9 +913,12 @@
                 alert('Please enter at least one field.');
                 return;
             }
-            const grossWeight = parseFloat(weightInput.value);
+            let grossWeight = weightAVal + weightBVal;
+            if (grossWeight <= 0) {
+                grossWeight = parseFloat(weightInput.value) || 0;
+            }
             if (isNaN(grossWeight) || grossWeight <= 0) {
-                alert('Please enter a valid Weight (KG) on the main screen first.');
+                alert('Please enter a valid Weight (KG) in the modal (Ayam A/B) or on the main screen.');
                 return;
             }
             if (!selectedContainer || !selectedContainerDetails) {
@@ -924,7 +963,8 @@
                 const netWeight = grossWeight - tareWeight;
 
                 const entry = { date: dateVal, farm: farmVal, doSerial: doVal,
-                    ayamA: aVal, weightA: weightAVal, ayamB: bVal, weightB: weightBVal, hasCrop: cropVal };
+                    ayamA: aVal, weightA: weightAVal, ayamB: bVal, weightB: weightBVal, hasCrop: cropVal,
+                    grossWeight, tareWeight, netWeight, container: selectedContainer, containerDetails: selectedContainerDetails };
 
                 const stockEntry = {
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -961,6 +1001,7 @@
                 const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
                 liveInputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
                 document.getElementById('live-crop').checked = false;
+                resetContainerSelection();
                 editingLiveIndex = -1;
                 document.getElementById('live-del-btn').classList.add('hidden');
 
@@ -995,7 +1036,7 @@
             }
             const hasR = document.getElementById('crate-r').checked;
             selectedContainerDetails = { type: 'Crate', count, hasR };
-            containerSummary.textContent = `${count} Crate(s)${hasR ? ' with R' : ''}`;
+            updateContainerSummary(`${count} Crate(s)${hasR ? ' with R' : ''}`);
             hideModal(crateModal);
         });
 
@@ -1003,42 +1044,45 @@
             const hasBesi = document.getElementById('basket-besi').checked;
             const hasR = document.getElementById('basket-r').checked;
             selectedContainerDetails = { type: 'Basket', hasBesi, hasR };
-            containerSummary.textContent = `Basket${hasBesi ? ' with 1 Besi' : ''}${hasR ? ' with R' : ''}`;
+            updateContainerSummary(`Basket${hasBesi ? ' with 1 Besi' : ''}${hasR ? ' with R' : ''}`);
             hideModal(basketModal);
         });
 
         document.getElementById('barrel-ok-btn').addEventListener('click', () => {
             const hasR = document.getElementById('barrel-r').checked;
             selectedContainerDetails = { type: 'Barrel', hasR };
-            containerSummary.textContent = `Barrel${hasR ? ' with R' : ''}`;
+            updateContainerSummary(`Barrel${hasR ? ' with R' : ''}`);
             hideModal(barrelModal);
         });
 
         // --- STRICT CONFIG CHECK LOGIC ---
-        finalOkBtn.addEventListener('click', async () => {
-            if (finalOkBtn.disabled) return;
+        finalOkBtn.addEventListener('click', () => {
+            if (!selectedCategory) {
+                showNotification('Please select a Category (Live, Broiler, etc.) first.', 'error');
+                return;
+            }
+            if (selectedCategory === 'Live') {
+                showNotification('Live entries are added directly via the Live modal.', 'error');
+                return;
+            }
+            showModal(finalDetailsModal);
+        });
+
+        const finalSaveBtn = document.getElementById('final-save-btn');
+        finalSaveBtn.addEventListener('click', async () => {
+            if (finalSaveBtn.disabled) return;
             const grossWeight = parseFloat(weightInput.value);
             if (isNaN(grossWeight) || grossWeight <= 0) {
                 showNotification('Please enter a valid Weight (greater than 0).', 'error');
-                finalOkBtn.disabled = false;
-                finalOkBtn.textContent = "OK";
-                return;
-            }
-            if (!selectedCategory) {
-                showNotification('Please select a Category (Live, Broiler, etc.).', 'error');
-                finalOkBtn.disabled = false;
-                finalOkBtn.textContent = "OK";
                 return;
             }
             if (!selectedContainer) {
                 showNotification('Please select a Container (Crate, Basket, Barrel, or 0 for Nett Weight).', 'error');
-                finalOkBtn.disabled = false;
-                finalOkBtn.textContent = "OK";
                 return;
             }
 
-            finalOkBtn.disabled = true;
-            finalOkBtn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Processing...</span>`;
+            finalSaveBtn.disabled = true;
+            finalSaveBtn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Processing...</span>`;
 
             try {
                 // Fetch pricing config
@@ -1130,8 +1174,8 @@
                     if (broilerBalance < netWeight) {
                         const proceed = confirm(`There are no old stock in the chiller! (Current estimated balance: ${broilerBalance.toFixed(2)}kg).\n\nWould you like to add stock and proceed?`);
                         if (!proceed) {
-                            finalOkBtn.disabled = false;
-                            finalOkBtn.innerHTML = "OK";
+                            finalSaveBtn.disabled = false;
+                            finalSaveBtn.innerHTML = "Save";
                             return;
                         }
                     }
@@ -1180,15 +1224,15 @@
                     timeout = 10000;
                 }
 
-                showNotification(`Stock recorded successfully! Net weight: ${netWeight.toFixed(2)} KG${extraMessage}`, 'success', timeout);
+                hideModal(finalDetailsModal);
                 resetPage();
                 
             } catch (error) {
                 console.error("Error saving stock entry: ", error);
                 showNotification('Failed to save stock entry.', 'error');
             } finally {
-                finalOkBtn.disabled = false;
-                finalOkBtn.textContent = "OK";
+                finalSaveBtn.disabled = false;
+                finalSaveBtn.textContent = "Save";
             }
         });
 
