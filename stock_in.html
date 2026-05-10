@@ -165,6 +165,15 @@
     <main class="max-w-lg mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div id="notification-area" class="mb-6"></div>
         <div class="bg-white p-6 rounded-lg shadow space-y-6">
+            <!-- Weight -->
+            <div class="flex items-center justify-between">
+                <label class="text-lg font-semibold text-gray-700">Weight:</label>
+                <div class="flex items-center gap-2">
+                    <input type="number" id="weight-input" step="0.1" placeholder="0.0" class="w-32 border border-gray-300 rounded-lg p-2 text-center text-lg focus:ring-2 focus:ring-blue-500">
+                    <span class="text-lg font-semibold text-gray-500">KG</span>
+                </div>
+            </div>
+
             <!-- Category 1 -->
             <div class="flex items-center justify-between">
                 <label class="text-lg font-semibold text-gray-700">Category 1:</label>
@@ -227,14 +236,6 @@
         <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6 relative">
             <button data-modal-id="final-details-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
             <h3 class="text-xl font-bold">Final Details</h3>
-            
-            <div class="flex items-center justify-between">
-                <label class="text-lg font-semibold text-gray-700">Weight:</label>
-                <div class="flex items-center gap-2">
-                    <input type="number" id="weight-input" step="0.1" placeholder="0.0" class="w-32 border border-gray-300 rounded-lg p-2 text-center text-lg focus:ring-2 focus:ring-blue-500">
-                    <span class="text-lg font-semibold text-gray-500">KG</span>
-                </div>
-            </div>
 
             <div>
                 <label class="text-lg font-semibold text-gray-700 transition block mb-2">Container:</label>
@@ -1065,14 +1066,21 @@
                 showNotification('Live entries are added directly via the Live modal.', 'error');
                 return;
             }
+            if (selectedCategory !== 'Eliminate') {
+                const w = parseFloat(weightInput.value);
+                if (isNaN(w) || w <= 0) {
+                    showNotification('Please enter a valid Weight (KG) first.', 'error');
+                    return;
+                }
+            }
             showModal(finalDetailsModal);
         });
 
         const finalSaveBtn = document.getElementById('final-save-btn');
         finalSaveBtn.addEventListener('click', async () => {
             if (finalSaveBtn.disabled) return;
-            const grossWeight = parseFloat(weightInput.value);
-            if (isNaN(grossWeight) || grossWeight <= 0) {
+            const grossWeight = parseFloat(weightInput.value) || 0;
+            if (selectedCategory !== 'Eliminate' && (isNaN(grossWeight) || grossWeight <= 0)) {
                 showNotification('Please enter a valid Weight (greater than 0).', 'error');
                 return;
             }
