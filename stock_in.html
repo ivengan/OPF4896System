@@ -877,9 +877,12 @@
                 alert('Please enter at least one field.');
                 return;
             }
-            const grossWeight = parseFloat(weightInput.value);
+            let grossWeight = weightAVal + weightBVal;
+            if (grossWeight <= 0) {
+                grossWeight = parseFloat(weightInput.value) || 0;
+            }
             if (isNaN(grossWeight) || grossWeight <= 0) {
-                alert('Please enter a valid Weight (KG) on the main screen first.');
+                alert('Please enter a valid Weight (KG) in the modal (Ayam A/B) or on the main screen.');
                 return;
             }
             if (!selectedContainer || !selectedContainerDetails) {
