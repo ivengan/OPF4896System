@@ -322,7 +322,8 @@
     </div>
 
     <div id="broiler-count-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
+            <button data-modal-id="broiler-count-modal" class="modal-cancel-btn absolute top-2 left-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
             <h3 class="text-xl font-bold">How many broiler/slices?</h3>
             <input type="number" id="broiler-count-input" placeholder="e.g., 5" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg">
             <div class="flex gap-2 mt-4">
