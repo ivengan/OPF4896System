@@ -283,7 +283,7 @@
 
                   snapshot.forEach(doc => {
                       const data = doc.data();
-                      if (data.category === 'Live') return; // Do not show Live entries in Chiller
+                      if (data.category === 'Live' || data.category === 'Eliminate') return; // Do not show Live or Eliminate entries in Chiller
                       
                       const id = doc.id;
                       
