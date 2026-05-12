@@ -149,12 +149,7 @@
                         <h1 class="text-xl font-bold text-gray-900 tracking-tight">Submit Staff Order</h1>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button id="ai-scan-btn" disabled class="bg-gray-400 text-white font-semibold py-2 px-3 rounded-lg shadow-md transition flex items-center gap-2 cursor-not-allowed">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                        <span class="hidden sm:inline">Smart Order (AI)</span>
-                    </button>
-                </div>
+
             </div>
         </div>
     </header>
@@ -242,30 +237,7 @@
         </form>
     </main>
 
-    <div id="ai-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    Smart Order
-                </h2>
-                <button id="close-ai-modal" class="text-gray-500 hover:text-gray-700 font-bold text-2xl">&times;</button>
-            </div>
-            
-            <div id="ai-status-indicator" class="text-base font-mono p-2 bg-gray-100 rounded text-gray-600 mb-2">
-                Initializing AI connection...
-            </div>
 
-            <p class="text-[17px] text-gray-600">Paste the full WhatsApp message or text order below.</p>
-            <textarea id="ai-input-text" rows="5" class="w-full border border-gray-300 rounded-lg p-3 text-[17px] focus:ring-2 focus:ring-indigo-500" placeholder="e.g., Boss tomorrow Ah Seng want 10 chickens..."></textarea>
-            
-            <div id="ai-loading" class="hidden text-center py-2">
-                <p class="text-indigo-600 font-bold animate-pulse">AI is thinking...</p>
-            </div>
-
-            <button id="process-ai-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition shadow-md">Process Order</button>
-        </div>
-    </div>
 
     <div id="confirmation-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-6">
@@ -302,272 +274,11 @@
         const db = firebase.firestore();
         db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
 
-        // --- GEMINI API SETUP ---
-        // We load the key from localStorage to avoid exposing it in public GitHub repositories.
-        let GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY') || ""; 
-        
         let allCustomers = [];
         let allInventory = [];
-        let aiLibrary = []; // NEW: Store Known Aliases
         let currentPartsOrder = [];
         let selectedCustomer = null;
-        let pendingOrders = []; 
-        const preferredModels = [
-            'gemini-3.0-flash', 
-            'gemini-2.5-flash', 
-            'gemini-2.0-flash', 
-            'gemini-1.5-flash', 
-            'gemini-pro'
-        ];
-        let currentModelIndex = 0;
-        let availableModel = preferredModels[0]; 
-
-        // --- SELF-HEALING AI LOGIC ---
-        async function checkAPIStatus() {
-            const indicator = document.getElementById('ai-status-indicator');
-            
-            if (!GEMINI_API_KEY) {
-                indicator.innerHTML = `❌ Connection Error: API Key Missing.<br>Check API Key & Permissions.`;
-                indicator.className = "text-base font-mono p-2 bg-red-100 text-red-700 rounded mb-2";
-                
-                const newKey = prompt("API Key Missing or Invalid.\n\nPlease enter a valid Gemini API Key from Google AI Studio:");
-                if (newKey) {
-                    localStorage.setItem('GEMINI_API_KEY', newKey.trim());
-                    GEMINI_API_KEY = newKey.trim();
-                    setTimeout(checkAPIStatus, 500);
-                }
-            } else {
-                availableModel = preferredModels[currentModelIndex];
-                indicator.textContent = `✅ Ready. Using: ${availableModel}`;
-                indicator.className = "text-base font-mono p-2 bg-green-100 text-green-700 rounded mb-2";
-            }
-        }
-
-        async function processAIOrder(text) {
-            if (!availableModel || !GEMINI_API_KEY) {
-                // Try to reconnect if model isn't set
-                await checkAPIStatus();
-                if (!availableModel) return;
-            }
-
-            const customerListStr = allCustomers.map(c => c.searchName).join(', ');
-            const inventoryListStr = allInventory.join(', ');
-            const libraryStr = aiLibrary.join(', '); // Add Library to prompt
-
-            const prompt = `
-                You are a smart multi-order parser for a poultry business.
-                Customers: [${customerListStr}]
-                Inventory: [${inventoryListStr}]
-                KNOWN ALIASES: [${libraryStr}]
-                
-                Current Date: ${new Date().toISOString().split('T')[0]} (Reference this if they say "tomorrow" or "today")
-
-                Tasks:
-                1. Identify the delivery date if mentioned (return as YYYY-MM-DD). If no date is mentioned, use today.
-                2. Identify ALL distinct customers mentioned in the text. CRITICAL: Pay very close attention to "Area" or "Branch" numbers (e.g., "Tangkak 1", "Tangkak 2"). Do NOT merge them into one customer. Treat them as completely separate orders.
-                3. For each distinct customer/branch, extract their specific order items.
-                
-                Return ONLY JSON as an object containing an array:
-                {
-                  "deliveryDate": "YYYY-MM-DD",
-                  "orders": [
-                    {
-                      "customerName": "Exact match from Customers if possible",
-                      "customerRemark": "Delivery notes",
-                      "broiler": { "whole_qty": number, "whole_remark": "", "slices_qty": number, "slices_remark": "" },
-                      "parts": [ { "name": "Best match from Inventory", "qty": number, "unit": "KG/Pack/PCS", "remark": "" } ],
-                      "generalRemark": "Other notes"
-                    }
-                  ]
-                }
-                
-                USER INPUT:
-                ${text}
-            `;
-
-            let retries = 2; // For 503 errors only
-            let lastError = null;
-
-            while (currentModelIndex < preferredModels.length) {
-                availableModel = preferredModels[currentModelIndex];
-                
-                try {
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${availableModel}:generateContent?key=${GEMINI_API_KEY}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                    });
-
-                    if (!response.ok) {
-                        const errorMsg = `API Error: ${response.status}`;
-                        if (response.status === 503 && retries > 0) {
-                            console.warn("503 Service Unavailable, retrying...");
-                            retries--;
-                            await new Promise(r => setTimeout(r, 2000)); 
-                            continue;
-                        }
-                        if (response.status === 429 || response.status === 403) {
-                            console.warn(`429/403 Error on ${availableModel}. Hopping to next model...`);
-                            currentModelIndex++;
-                            const indicator = document.getElementById('ai-status-indicator');
-                            if (indicator && preferredModels[currentModelIndex]) {
-                                 indicator.textContent = `⚠️ Rate Limit. Switched to: ${preferredModels[currentModelIndex]}`;
-                                 indicator.className = "text-base font-mono p-2 bg-yellow-100 text-yellow-700 rounded mb-2";
-                            }
-                            continue; // Skip standard loop wait and instantly hop to the next model
-                        }
-                        throw new Error(errorMsg);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    // Optional Check: Did we get a token usage report?
-                    if (data.usageMetadata) {
-                         const tokens = data.usageMetadata.totalTokenCount;
-                         console.log(`Parsed using ${tokens} tokens on ${availableModel}`);
-                    }
-                    
-                    let jsonText = data.candidates[0].content.parts[0].text;
-                    jsonText = jsonText.replace(/```json|```/gi, '').trim();
-                    return JSON.parse(jsonText);
-                    
-                } catch (err) {
-                    lastError = err;
-                    if (err.message.includes("503") && retries > 0) {
-                        retries--;
-                        await new Promise(r => setTimeout(r, 2000));
-                        continue;
-                    }
-                    
-                    // If it's a generic failed fetch (could be CORS or completely disabled key), try next model
-                    currentModelIndex++;
-                }
-            }
-            throw new Error(`All models exhausted. Last error: ${lastError.message}`);
-        }
-
-        // --- DOM Elements & Event Listeners ---
-        const aiScanBtn = document.getElementById('ai-scan-btn');
-        const aiModal = document.getElementById('ai-modal');
-        const processAiBtn = document.getElementById('process-ai-btn');
-        const aiInputText = document.getElementById('ai-input-text');
-        const aiLoading = document.getElementById('ai-loading');
-
-        aiScanBtn.addEventListener('click', () => {
-            // Function disabled by hand as requested
-            // document.getElementById('ai-input-text').value = ''; // NEW: Clear input field every time
-            // aiModal.classList.remove('hidden');
-            // if(!availableModel) checkAPIStatus(); 
-        });
-
-        document.getElementById('close-ai-modal').addEventListener('click', () => aiModal.classList.add('hidden'));
-
-        processAiBtn.addEventListener('click', async () => {
-            const text = aiInputText.value.trim();
-            if (!text) return alert("Enter text.");
-            
-            aiLoading.classList.remove('hidden');
-            processAiBtn.disabled = true;
-
-            try {
-                const result = await processAIOrder(text);
-                const deliveryDate = result.deliveryDate || new Date().toISOString().split('T')[0];
-                
-                if (!result.orders || result.orders.length === 0) {
-                    throw new Error("No orders could be identified.");
-                }
-
-                pendingOrders = [];
-                
-                result.orders.forEach(order => {
-                    const custName = order.customerName;
-                    const custData = allCustomers.find(c => c.searchName === custName || c.displayName === custName);
-                    const finalCustName = custData ? custData.displayName : custName;
-
-                    // Handle Broilers
-                    if (order.broiler && (order.broiler.whole_qty > 0 || order.broiler.slices_qty > 0)) {
-                        let broilerItems = [];
-                        if (order.broiler.whole_qty > 0) broilerItems.push({ description: 'Broiler', qty: order.broiler.whole_qty, remark: order.broiler.whole_remark });
-                        if (order.broiler.slices_qty > 0) broilerItems.push({ description: 'Slices', qty: order.broiler.slices_qty, remark: order.broiler.slices_remark });
-                        
-                        pendingOrders.push({
-                            customerName: finalCustName,
-                            customerRemark: order.customerRemark || "",
-                            deliveryDate: deliveryDate,
-                            productType: 'broiler',
-                            status: 'pending',
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            broilers: broilerItems,
-                            processedText: `${finalCustName}: ` + broilerItems.map(b => `${b.qty} ${b.description}`).join(', ')
-                        });
-                    }
-
-                    // Handle Parts
-                    if (order.parts && order.parts.length > 0) {
-                        pendingOrders.push({
-                            customerName: finalCustName,
-                            customerRemark: order.customerRemark || "",
-                            deliveryDate: deliveryDate,
-                            productType: 'parts',
-                            status: 'pending',
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            parts: order.parts,
-                            processedText: `${finalCustName} Parts Order`
-                        });
-                    }
-                });
-
-                if (pendingOrders.length === 0) throw new Error("Parsed data was empty.");
-
-                // If only 1 customer was found, populate the form as usual
-                if (result.orders.length === 1) {
-                    const single = result.orders[0];
-                    document.getElementById('customer-search').value = single.customerName;
-                    document.getElementById('customer-search').dispatchEvent(new Event('input'));
-                    document.getElementById('customer-remark').value = single.customerRemark || "";
-                    document.getElementById('delivery-date').value = deliveryDate;
-                    document.getElementById('order-general-remark').value = single.generalRemark || "";
-                    
-                    if (single.broiler) {
-                        document.getElementById('broiler-main-qty').value = single.broiler.whole_qty || "";
-                        document.getElementById('broiler-main-remark').value = single.broiler.whole_remark || "";
-                        document.getElementById('broiler-slices-qty').value = single.broiler.slices_qty || "";
-                        document.getElementById('broiler-slices-remark').value = single.broiler.slices_remark || "";
-                    }
-                    
-                    currentPartsOrder = [];
-                    if (single.parts) {
-                        single.parts.forEach(p => currentPartsOrder.push({ ...p, qty: parseFloat(p.qty) || 0 }));
-                    }
-                    renderPartsList();
-                }
-
-                // Show confirmation modal (skipping manual submit for multiple orders as requested)
-                const listHtml = pendingOrders.map(o => `
-                    <div class="border-b pb-2">
-                        <div class="flex justify-between items-center text-xs text-blue-600 font-bold uppercase mb-1">
-                            <span>${o.productType}</span>
-                            <span>📅 ${o.deliveryDate}</span>
-                        </div>
-                        <strong>${o.customerName}</strong>: ${o.processedText}
-                    </div>
-                `).join('');
-                
-                document.getElementById('confirm-customer-text').textContent = result.orders.length > 1 ? "MULTIPLE ORDERS DETECTED" : pendingOrders[0].customerName;
-                document.getElementById('confirm-product-list').innerHTML = listHtml;
-                
-                aiModal.classList.add('hidden');
-                confirmationModal.classList.remove('hidden');
-                showNotification(`AI identified ${result.orders.length} customers for ${deliveryDate}.`, 'success');
-
-            } catch (e) {
-                console.error(e);
-                alert(`AI Parsing failed: ${e.message}`);
-            } finally {
-                aiLoading.classList.add('hidden');
-                processAiBtn.disabled = false;
-            }
-        });
+        let pendingOrders = [];
 
         const orderForm = document.getElementById('order-form');
         const notificationArea = document.getElementById('notification-area');
@@ -594,10 +305,6 @@
                 const il = document.getElementById('item-names-list');
                 il.innerHTML = '';
                 allInventory.forEach(n => il.innerHTML += `<option value="${n}"></option>`);
-
-                // NEW: Fetch AI Library
-                const libSnapshot = await db.collection('ai_library').get();
-                aiLibrary = libSnapshot.docs.map(doc => `"${doc.data().alias}"="${doc.data().correctName}"`);
 
                 // Set default delivery date to tomorrow
                 const tomorrow = new Date();
