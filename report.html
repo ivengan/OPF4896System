@@ -137,13 +137,7 @@
                     <span class="w-48">备注: 废弃的鸡肠 KG</span>
                     <span class="w-16 text-right font-bold ml-14" id="stg1-waste-kg"></span>
                 </div>
-                <div class="flex gap-4">
-                    <span class="w-12">备注: 死鸡</span>
-                    <span class="w-8 text-right font-bold" id="stg1-dead-count"></span>
-                    <span class="w-6 text-center">只</span>
-                    <span class="w-16 text-right font-bold" id="stg1-dead-kg-remark"></span>
-                    <span class="w-6 text-center">KG</span>
-                </div>
+                <div id="stg1-eliminate-container" class="space-y-1"></div>
                 <div class="flex gap-4">
                     <span class="w-48">备注: 损坏 KG</span>
                     <span class="w-16 text-right font-bold ml-14" id="stg1-damaged-kg"></span>
@@ -458,6 +452,8 @@
                 let processSlicesWeight = 0;
                 let processHeartGizzardWeight = 0;
                 let processWasteWeight = 0;
+                let elimA = { dead: 0, after: 0, net: 0 };
+                let elimB = { dead: 0, after: 0, net: 0 };
 
                 const startOfToday = new Date();
                 startOfToday.setHours(0, 0, 0, 0);
@@ -488,9 +484,9 @@
                     // Physical Balance Categorization
                     let cat = 'Others';
                     if (d.category === 'Live') cat = 'Live Broiler';
-                    else if (d.category === 'Broiler' || d.category === 'Kopek' || (d.categoryDetails && (d.categoryDetails.type === 'H/P' || d.categoryDetails.type === 'Kopek'))) {
+                    else if (d.category === 'Broiler' || (d.categoryDetails && d.categoryDetails.type === 'H/P')) {
                         cat = 'Whole Broiler (H/P, Kopek)';
-                    } else if (d.category === 'Slices' || (d.categoryDetails && d.categoryDetails.type === 'Slices')) {
+                    } else if (d.category === 'Slices' || d.category === 'Kopek' || (d.categoryDetails && (d.categoryDetails.type === 'Slices' || d.categoryDetails.type === 'Kopek'))) {
                         cat = 'Slices';
                     } else if (d.category === 'Parts') cat = 'Parts';
                     else if (d.category === 'Waste' || d.category === 'Intestinal') cat = 'Waste';
@@ -522,28 +518,44 @@
                         }
 
                         if (d.category === 'Eliminate' && d.categoryDetails) {
-                            let tDead = (parseInt(d.categoryDetails.ayamADead) || 0) + (parseInt(d.categoryDetails.ayamBDead) || 0);
-                            let tAfter = (parseInt(d.categoryDetails.ayamAAfter) || 0) + (parseInt(d.categoryDetails.ayamBAfter) || 0);
-                            if (tDead > 0 || tAfter > 0) {
-                                let totalCount = tDead + tAfter;
-                                let ratioDead = tDead / totalCount;
-                                deadCount += tDead;
-                                deadWeight += weight * ratioDead;
-                                damagedWeight += weight * (1 - ratioDead);
+                            let ad = parseInt(d.categoryDetails.ayamADead) || 0;
+                            let aa = parseInt(d.categoryDetails.ayamAAfter) || 0;
+                            let anet = parseFloat(d.categoryDetails.ayamANet) || 0;
+                            
+                            let bd = parseInt(d.categoryDetails.ayamBDead) || 0;
+                            let ba = parseInt(d.categoryDetails.ayamBAfter) || 0;
+                            let bnet = parseFloat(d.categoryDetails.ayamBNet) || 0;
+
+                            elimA.dead += ad; elimA.after += aa; elimA.net += anet;
+                            elimB.dead += bd; elimB.after += ba; elimB.net += bnet;
+
+                            if (ad > 0 || aa > 0) {
+                                let totalA = ad + aa;
+                                let ratioA = ad / totalA;
+                                deadCount += ad;
+                                deadWeight += anet * ratioA;
+                                damagedWeight += anet * (1 - ratioA);
+                            }
+                            if (bd > 0 || ba > 0) {
+                                let totalB = bd + ba;
+                                let ratioB = bd / totalB;
+                                deadCount += bd;
+                                deadWeight += bnet * ratioB;
+                                damagedWeight += bnet * (1 - ratioB);
                             }
                         }
 
                         if (d.category === 'Waste' || d.category === 'Intestinal') processWasteWeight += weight;
 
                         if (d.category === 'Broiler' && d.categoryDetails) {
-                            if (d.categoryDetails.type === 'H/P' || d.categoryDetails.type === 'Kopek') {
+                            if (d.categoryDetails.type === 'H/P') {
                                 processWholeCount += (parseInt(d.categoryDetails.count) || 0);
                                 processWholeWeight += weight;
-                            } else if (d.categoryDetails.type === 'Slices') {
+                            } else if (d.categoryDetails.type === 'Slices' || d.categoryDetails.type === 'Kopek') {
                                 processSlicesCount += (parseInt(d.categoryDetails.count) || 0);
                                 processSlicesWeight += weight;
                             }
-                        } else if (d.category === 'Slices' && d.categoryDetails) {
+                        } else if ((d.category === 'Slices' || d.category === 'Kopek') && d.categoryDetails) {
                             processSlicesCount += (parseInt(d.categoryDetails.count) || 0);
                             processSlicesWeight += weight;
                         } else if (d.category === 'Parts' && d.categoryDetails && d.categoryDetails.partName) {
@@ -691,8 +703,29 @@
                 let countDiff = (totalA_Live + totalB_Live) - deadCount - rightTotalCount;
                 setTxt('stg1-diff-count', Math.abs(countDiff));
                 setTxt('stg1-waste-kg', processWasteWeight.toFixed(2));
-                setTxt('stg1-dead-count', deadCount);
-                setTxt('stg1-dead-kg-remark', deadWeight.toFixed(2));
+                let elimHtml = '';
+                if (elimA.dead > 0 || elimA.after > 0) {
+                    elimHtml += `<div class="flex gap-4">
+                        <span class="w-12">备注: 死鸡</span>
+                        <span>A 鸡 ${elimA.dead + elimA.after} 只 (${elimA.dead} 只篮子, ${elimA.after} 只淘汰) <span class="font-bold ml-2">${elimA.net.toFixed(1)} KG</span></span>
+                    </div>`;
+                }
+                if (elimB.dead > 0 || elimB.after > 0) {
+                    elimHtml += `<div class="flex gap-4">
+                        <span class="w-12">备注: 死鸡</span>
+                        <span>B 鸡 ${elimB.dead + elimB.after} 只 (${elimB.dead} 只篮子, ${elimB.after} 只淘汰) <span class="font-bold ml-2">${elimB.net.toFixed(1)} KG</span></span>
+                    </div>`;
+                }
+                if (elimHtml === '') {
+                    elimHtml = `<div class="flex gap-4">
+                        <span class="w-12">备注: 死鸡</span>
+                        <span class="w-8 text-right font-bold">0</span>
+                        <span class="w-6 text-center">只</span>
+                        <span class="w-16 text-right font-bold">0.0</span>
+                        <span class="w-6 text-center">KG</span>
+                    </div>`;
+                }
+                document.getElementById('stg1-eliminate-container').innerHTML = elimHtml;
                 setTxt('stg1-damaged-kg', damagedWeight.toFixed(2));
 
                 // CATEGORY 1: YIELD & SHRINKAGE
