@@ -493,7 +493,7 @@
                     } else if (d.category === 'Slices' || (d.categoryDetails && d.categoryDetails.type === 'Slices')) {
                         cat = 'Slices';
                     } else if (d.category === 'Parts') cat = 'Parts';
-                    else if (d.category === 'Waste') cat = 'Waste';
+                    else if (d.category === 'Waste' || d.category === 'Intestinal') cat = 'Waste';
 
                     balanceMap[cat] += weight;
                     if (d.category === 'Slices' && d.categoryDetails && d.categoryDetails.ayamLama) {
@@ -533,7 +533,7 @@
                             }
                         }
 
-                        if (d.category === 'Waste') processWasteWeight += weight;
+                        if (d.category === 'Waste' || d.category === 'Intestinal') processWasteWeight += weight;
 
                         if (d.category === 'Broiler' && d.categoryDetails) {
                             if (d.categoryDetails.type === 'H/P' || d.categoryDetails.type === 'Kopek') {

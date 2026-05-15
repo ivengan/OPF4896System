@@ -180,7 +180,8 @@
                 <div class="flex rounded-lg shadow-sm">
                     <button id="category-live-btn" class="inactive-segment font-semibold py-2 px-4 rounded-l-lg">Live</button>
                     <button id="category-eliminate-btn" class="inactive-segment font-semibold py-2 px-4">Eliminate</button>
-                    <button id="category-waste-btn" class="inactive-segment font-semibold py-2 px-4 rounded-r-lg">Waste</button>
+                    <button id="category-waste-btn" class="inactive-segment font-semibold py-2 px-4">Waste</button>
+                    <button id="category-intestinal-btn" class="inactive-segment font-semibold py-2 px-4 rounded-r-lg">Intestine</button>
                 </div>
             </div>
 
@@ -240,6 +241,20 @@
             <div class="flex gap-2 mt-4">
                 <button id="eliminate-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
                 <button id="eliminate-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="intestinal-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
+            <button data-modal-id="intestinal-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
+            <h3 class="text-xl font-bold">Intestine weight input</h3>
+            <div class="space-y-3 max-h-96 overflow-y-auto pr-2" id="intestinal-inputs-container">
+                <!-- Inputs injected via JS -->
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button id="intestinal-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
+                <button id="intestinal-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
             </div>
         </div>
     </div>
@@ -472,6 +487,7 @@
         const catPartsBtn = document.getElementById('category-parts-btn');
         const catKopekBtn = document.getElementById('category-kopek-btn');
         const catWasteBtn = document.getElementById('category-waste-btn');
+        const catIntestinalBtn = document.getElementById('category-intestinal-btn');
         const conCrateBtn = document.getElementById('container-crate-btn');
         const conBasketBtn = document.getElementById('container-basket-btn');
         const conBarrelBtn = document.getElementById('container-barrel-btn');
@@ -485,6 +501,7 @@
         const liveModal = document.getElementById('live-modal');
         const broilerModal = document.getElementById('broiler-modal');
         const eliminateModal = document.getElementById('eliminate-modal');
+        const intestinalModal = document.getElementById('intestinal-modal');
         const broilerCountModal = document.getElementById('broiler-count-modal');
         const slicesModal = document.getElementById('slices-modal');
         const remarkModal = document.getElementById('remark-modal');
@@ -546,7 +563,7 @@
             selectedCategoryDetails = null;
             liveEntries = [];
             liveDocIds = [];
-            [catLiveBtn, catEliminateBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
+            [catLiveBtn, catEliminateBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn, catIntestinalBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
             categorySummary.textContent = '';
         }
 
@@ -581,7 +598,7 @@
             });
         });
         
-        const allCatBtns = [catLiveBtn, catEliminateBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn];
+        const allCatBtns = [catLiveBtn, catEliminateBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn, catIntestinalBtn];
 
         function buildEntryRow(entry, index, targetDiv, onLongPress) {
             const parts = [];
@@ -762,6 +779,56 @@
                 selectedCategoryDetails = { type: 'Waste' };
                 categorySummary.textContent = 'Selected: Waste';
             }
+        });
+
+        catIntestinalBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catIntestinalBtn, allCatBtns, 'category', 'Intestinal');
+            if(value) {
+                selectedCategory = value;
+                showModal(intestinalModal);
+            }
+        });
+
+        // Initialize Intestinal modal inputs
+        const intestinalContainer = document.getElementById('intestinal-inputs-container');
+        let intestinalHtml = '';
+        for (let i = 1; i <= 10; i++) {
+            intestinalHtml += `
+            <div class="flex gap-2 items-center bg-gray-50 p-2 rounded border border-gray-200">
+                <span class="text-gray-500 font-bold w-6">${i}.</span>
+                <input type="number" id="int-w-${i}" step="0.1" placeholder="Weight KG" class="w-1/2 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                <select id="int-c-${i}" class="w-1/2 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value="Crate">Crate</option>
+                    <option value="Zero">Zero (Nett)</option>
+                    <option value="Basket">Basket</option>
+                    <option value="Barrel">Barrel</option>
+                </select>
+            </div>`;
+        }
+        intestinalContainer.innerHTML = intestinalHtml;
+
+        document.getElementById('intestinal-clear-btn').addEventListener('click', () => {
+            for (let i = 1; i <= 10; i++) {
+                document.getElementById(`int-w-${i}`).value = '';
+                document.getElementById(`int-c-${i}`).value = 'Crate';
+            }
+            selectedCategoryDetails = null;
+        });
+
+        document.getElementById('intestinal-ok-btn').addEventListener('click', () => {
+            let inputs = [];
+            for (let i = 1; i <= 10; i++) {
+                const wInput = document.getElementById(`int-w-${i}`).value;
+                const cSelect = document.getElementById(`int-c-${i}`).value;
+                const weight = parseFloat(wInput);
+                if (!isNaN(weight) && weight > 0) {
+                    inputs.push({ weight: weight, container: cSelect });
+                }
+            }
+            
+            selectedCategoryDetails = { type: 'Intestinal', inputs: inputs };
+            categorySummary.textContent = `Selected: Intestine (${inputs.length} inputs)`;
+            hideModal(intestinalModal);
         });
 
         function bindContainerButtons(crate, basket, barrel, zero) {
@@ -1061,7 +1128,7 @@
             }
 
             const grossWeight = parseFloat(weightInput.value) || 0;
-            if (selectedCategory !== 'Eliminate') {
+            if (selectedCategory !== 'Eliminate' && selectedCategory !== 'Intestinal') {
                 if (isNaN(grossWeight) || grossWeight <= 0) {
                     showNotification('Please enter a valid Weight (KG) first.', 'error');
                     return;
@@ -1110,20 +1177,33 @@
 
                 // --- Calculate Net Weight ---
                 let tareWeight = 0;
-                if (selectedContainer === 'Crate') {
-                    const { count, hasR } = selectedContainerDetails;
-                    tareWeight = (count * tareCrate) + (hasR ? tareR : 0);
-                } else if (selectedContainer === 'Basket') {
-                    const { hasBesi, hasR } = selectedContainerDetails;
-                    tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0);
-                } else if (selectedContainer === 'Barrel') {
-                    const { hasR } = selectedContainerDetails;
-                    tareWeight = tareBarrel + (hasR ? tareR : 0);
-                } else if (selectedContainer === 'Zero') {
-                    tareWeight = 0; // Nett weight — no tare deduction
-                }
+                let netWeight = 0;
 
-                const netWeight = grossWeight - tareWeight;
+                if (selectedCategory === 'Intestinal') {
+                    selectedCategoryDetails.inputs.forEach(input => {
+                        let rowTare = 0;
+                        if (input.container === 'Crate') rowTare = tareCrate;
+                        else if (input.container === 'Basket') rowTare = tareBasket;
+                        else if (input.container === 'Barrel') rowTare = tareBarrel;
+                        netWeight += (input.weight - rowTare);
+                    });
+                } else if (selectedCategory === 'Eliminate') {
+                    netWeight = 0;
+                } else {
+                    if (selectedContainer === 'Crate') {
+                        const { count, hasR } = selectedContainerDetails;
+                        tareWeight = (count * tareCrate) + (hasR ? tareR : 0);
+                    } else if (selectedContainer === 'Basket') {
+                        const { hasBesi, hasR } = selectedContainerDetails;
+                        tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0);
+                    } else if (selectedContainer === 'Barrel') {
+                        const { hasR } = selectedContainerDetails;
+                        tareWeight = tareBarrel + (hasR ? tareR : 0);
+                    } else if (selectedContainer === 'Zero') {
+                        tareWeight = 0; // Nett weight — no tare deduction
+                    }
+                    netWeight = grossWeight - tareWeight;
+                }
                 
                 // --- CHILLER BALANCE VERIFICATION FOR AYAM LAMA SLICES ---
                 if (selectedCategory === 'Slices' && selectedCategoryDetails && selectedCategoryDetails.ayamLama) {
