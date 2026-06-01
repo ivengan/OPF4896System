@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Broiler record - Multi-Function System</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <style>
+        /*! modern-normalize v1.1.0 */
+        *, ::after, ::before { box-sizing: border-box; }
+        html { line-height: 1.15; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        body { margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'; }
+        hr { height: 0; color: inherit; }
+        b, strong { font-weight: bolder; }
+        small { font-size: 80%; }
+        sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+        sub { bottom: -0.25em; }
+        sup { top: -0.5em; }
+        button, input, optgroup, select, textarea { font-family: inherit; font-size: 100%; line-height: 1.15; margin: 0; }
+        button, select { text-transform: none; }
+        [type=button], [type=reset], [type=submit], button { -webkit-appearance: button; appearance: button; }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { opacity: 1; }
+        *, ::after, ::before { border-width: 0; border-style: solid; border-color: #e5e7eb; }
+        hr { border-top-width: 1px; }
+        textarea { resize: vertical; }
+        input::placeholder, textarea::placeholder { opacity: 1; color: #9ca3af; }
+        button, [role=button] { cursor: pointer; }
+        img, video { max-width: 100%; height: auto; }
+        [hidden] { display: none; }
+        .fixed { position: fixed; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .z-50 { z-index: 50; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .flex { display: flex; }
+        .h-4 { height: 1rem; }
+        .h-16 { height: 4rem; }
+        .w-4 { width: 1rem; }
+        .w-full { width: 100%; }
+        .max-w-lg { max-width: 32rem; }
+        .max-w-7xl { max-width: 80rem; }
+        .flex-col { flex-direction: column; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .border { border-width: 1px; }
+        .border-gray-300 { border-color: #d1d5db; }
+        .bg-white { background-color: #fff; }
+        .bg-gray-100 { background-color: #f3f4f6; }
+        .bg-gray-200 { background-color: #e5e7eb; }
+        .hover\:bg-gray-300:hover { background-color: #d1d5db; }
+        .bg-gray-500 { background-color: #6b7281; }
+        .hover\:bg-gray-600:hover { background-color: #4b5563; }
+        .bg-gray-900 { background-color: #111827; }
+        .bg-opacity-50 { --tw-bg-opacity: 0.5; background-color: rgba(17, 24, 39, var(--tw-bg-opacity)); }
+        .bg-green-100 { background-color: #d1fae5; }
+        .bg-green-500 { background-color: #10b981; }
+        .hover\:bg-green-600:hover { background-color: #059669; }
+        .bg-red-100 { background-color: #fee2e2; }
+        .bg-red-500 { background-color: #ef4444; }
+        .hover\:bg-red-600:hover { background-color: #dc2626; }
+        .bg-blue-500 { background-color: #3b82f6; }
+        .hover\:text-blue-700:hover { color: #1d4ed8; }
+        .bg-blue-100 { background-color: #dbeafe; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .text-white { color: #fff; }
+        .text-gray-500 { color: #6b7281; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-800 { color: #1f293d; }
+        .text-gray-900 { color: #111827; }
+        .text-green-700 { color: #047857; }
+        .text-red-700 { color: #b91c1c; }
+        .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+        .transition { transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 0.15s; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
+        .ml-3 { margin-left: 0.75rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+        .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 1.5rem; }
+        .focus\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
+        .focus\:ring-2:focus { box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000); }
+        .focus\:ring-offset-2:focus { --tw-ring-offset-width: 2px; }
+        .focus\:ring-red-500:focus { --tw-ring-color: #ef4444; }
+        .focus\:ring-blue-500:focus { --tw-ring-color: #3b82f6; }
+        @media (min-width: 640px) { .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; } }
+        @media (min-width: 1024px) { .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; } }
+        .hidden { display: none; }
+        .rounded-l-lg { border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; }
+        .rounded-r-lg { border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem; }
+        
+        .stock-card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .stock-card:hover { border-color: #3b82f6; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .stock-card h3 { font-size: 1.1rem; font-weight: 700; color: #374151; margin-bottom: 0.5rem; }
+        .stock-card p { font-size: 0.9rem; color: #6b7281; }
+        .icon-circle { width: 3rem; height: 3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; font-size: 1.5rem; color: white; }
+        .whitespace-nowrap { white-space: nowrap; }
+        .inline-flex { display: inline-flex; }
+        .min-h-16 { min-height: 4rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        .spinner-svg { width: 1.25rem; height: 1.25rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; }
+
+        .active-segment { background-color: #3b82f6 !important; color: white !important; border-color: #2563eb !important; }
+        .inactive-segment { background-color: #f3f4f6 !important; color: #4b5563 !important; border-color: #d1d5db !important; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
+    <script>
+        const loginExpiry = localStorage.getItem('loginExpiry');
+        if (!loginExpiry || Date.now() >= parseInt(loginExpiry)) {
+            localStorage.removeItem('loginExpiry');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center min-h-16 py-2">
+                <div class="flex items-center gap-4">
+                    <a href="dashboard.html" class="text-blue-600 font-bold whitespace-nowrap hover:text-blue-800 inline-flex items-center gap-1">&larr; back</a>
+                    <div class="flex flex-col">
+                        <h1 class="text-xl font-bold text-gray-900 tracking-tight">Live Broiler record (Production)</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Date Sub-Header -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 bg-gray-50 border-b border-gray-200">
+        <div id="header-today-date" style="font-weight: bold; font-size: 12px; color: #6b7281; text-transform: uppercase; letter-spacing: 0.05em;"></div>
+    </div>
+
+    <!-- Live Entries Outside Panel -->
+    <div id="live-panel" style="display:none; background:#fff8f0; border-bottom: 2px solid #FFD080; padding: 8px 16px;">
+        <div style="font-size: 11px; font-weight: 700; color: #b45309; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Today's Live Deliveries (long-press to edit)</div>
+        <div id="live-entries-outside"></div>
+    </div>
+
+    <main class="max-w-lg mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div id="notification-area" class="mb-6"></div>
+        <div class="bg-white p-6 rounded-lg shadow space-y-6">
+            <!-- Weight -->
+            <div class="flex items-center justify-between">
+                <label class="text-lg font-semibold text-gray-700">Weight:</label>
+                <div class="flex items-center gap-2">
+                    <input type="number" id="weight-input" step="0.1" placeholder="0.0" class="w-32 border border-gray-300 rounded-lg p-2 text-center text-lg focus:ring-2 focus:ring-blue-500">
+                    <span class="text-lg font-semibold text-gray-500">KG</span>
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="flex flex-col gap-2">
+                <label class="text-lg font-semibold text-gray-700">Category:</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="category-live-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Live</button>
+                    <button id="category-eliminate-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Eliminate</button>
+                    <button id="category-waste-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Waste</button>
+                    <button id="category-intestinal-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Intestine</button>
+                </div>
+            </div>
+            <div id="category-summary" class="text-right text-gray-500 font-semibold"></div>
+
+            <!-- Container -->
+            <div class="flex flex-col gap-2">
+                <label id="container-label" class="text-lg font-semibold text-gray-700 transition">Container:</label>
+                <div id="container-buttons" class="grid grid-cols-2 gap-3 transition">
+                    <button id="container-crate-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Crate</button>
+                    <button id="container-basket-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Basket</button>
+                    <button id="container-barrel-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Barrel</button>
+                    <button id="container-zero-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">0</button>
+                </div>
+            </div>
+            <div id="container-summary" class="text-right text-gray-500 font-semibold"></div>
+
+        </div>
+        <div class="mt-8 flex gap-2">
+            <button id="clear-btn" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold text-lg py-4 rounded-lg shadow-md transition">Clear</button>
+            <button id="final-ok-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-4 rounded-lg shadow-md transition">OK</button>
+        </div>
+    </main>
+    
+    <div id="eliminate-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
+            <button data-modal-id="eliminate-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
+            <h3 class="text-xl font-bold">Eliminate Details</h3>
+            <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                <!-- Card Ayam A -->
+                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm space-y-3">
+                    <h4 class="font-bold text-gray-800 border-b pb-1">Ayam A</h4>
+                    <div class="flex items-center justify-between">
+                        <label class="font-semibold text-gray-700 text-sm w-3/5">Dead (篮子):</label>
+                        <input type="number" id="elim-a-dead" class="w-2/5 border border-gray-300 rounded p-2 text-center" placeholder="0">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="font-semibold text-gray-700 text-sm w-3/5">Eliminate (淘汰):</label>
+                        <input type="number" id="elim-a-after" class="w-2/5 border border-gray-300 rounded p-2 text-center" placeholder="0">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="elim-a-weight" step="0.1" class="w-1/2 border border-gray-300 rounded p-2 text-center" placeholder="Weight KG">
+                        <select id="elim-a-con" class="w-1/2 border border-gray-300 rounded p-2">
+                            <option value="Crate">Crate</option>
+                            <option value="Basket">Basket</option>
+                            <option value="Barrel">Barrel</option>
+                            <option value="Zero">Zero</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Card Ayam B -->
+                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm space-y-3">
+                    <h4 class="font-bold text-gray-800 border-b pb-1">Ayam B</h4>
+                    <div class="flex items-center justify-between">
+                        <label class="font-semibold text-gray-700 text-sm w-3/5">Dead (篮子):</label>
+                        <input type="number" id="elim-b-dead" class="w-2/5 border border-gray-300 rounded p-2 text-center" placeholder="0">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="font-semibold text-gray-700 text-sm w-3/5">Eliminate (淘汰):</label>
+                        <input type="number" id="elim-b-after" class="w-2/5 border border-gray-300 rounded p-2 text-center" placeholder="0">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="elim-b-weight" step="0.1" class="w-1/2 border border-gray-300 rounded p-2 text-center" placeholder="Weight KG">
+                        <select id="elim-b-con" class="w-1/2 border border-gray-300 rounded p-2">
+                            <option value="Crate">Crate</option>
+                            <option value="Basket">Basket</option>
+                            <option value="Barrel">Barrel</option>
+                            <option value="Zero">Zero</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button id="eliminate-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
+                <button id="eliminate-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="intestinal-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
+            <button data-modal-id="intestinal-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
+            <h3 class="text-xl font-bold">Intestine weight input</h3>
+            <div class="space-y-3 max-h-96 overflow-y-auto pr-2" id="intestinal-inputs-container">
+                <!-- Inputs injected via JS -->
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button id="intestinal-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
+                <button id="intestinal-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="live-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
+            <button data-modal-id="live-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
+            <h3 class="text-xl font-bold">Live Broiler Details</h3>
+            <div id="live-entries-list" class="space-y-1 mb-2 max-h-32 overflow-y-auto"></div>
+            <div class="space-y-3">
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Date (dd/mm):</label>
+                    <input type="text" id="live-date" list="live-date-list" class="w-full border border-gray-300 rounded-lg p-2 mt-1" placeholder="dd/mm">
+                    <datalist id="live-date-list"></datalist>
+                </div>
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Farm:</label>
+                    <input type="text" id="live-farm" class="w-full border border-gray-300 rounded-lg p-2 mt-1" placeholder="Farm name">
+                </div>
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">D/O Serial no.:</label>
+                    <input type="text" id="live-do" class="w-full border border-gray-300 rounded-lg p-2 mt-1" placeholder="Serial no">
+                </div>
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Number of live broiler (A):</label>
+                    <input type="number" id="live-a" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0">
+                </div>
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Weight (A) in KG:</label>
+                    <input type="number" id="live-weight-a" step="0.1" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0.0">
+                </div>
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Number of live broiler (B):</label>
+                    <input type="number" id="live-b" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0">
+                </div>
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Weight (B) in KG:</label>
+                    <input type="number" id="live-weight-b" step="0.1" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0.0">
+                </div>
+                <div class="flex items-center mt-2 bg-gray-50 p-2 rounded-lg border border-gray-200">
+                    <input type="checkbox" id="live-crop" class="h-5 w-5 text-blue-600 rounded border-gray-300">
+                    <label for="live-crop" class="ml-3 text-sm font-semibold text-gray-700">Crop (live chicken with crop)</label>
+                </div>
+                <div>
+                    <label class="font-semibold text-gray-700 text-sm">Container:</label>
+                    <div class="flex rounded-lg shadow-sm transition mt-1">
+                        <button id="live-con-crate-btn" class="inactive-segment font-semibold py-2 px-3 rounded-l-lg text-sm">Crate</button>
+                        <button id="live-con-basket-btn" class="inactive-segment font-semibold py-2 px-3 text-sm">Basket</button>
+                        <button id="live-con-barrel-btn" class="inactive-segment font-semibold py-2 px-3 text-sm">Barrel</button>
+                        <button id="live-con-zero-btn" class="inactive-segment font-semibold py-2 px-3 rounded-r-lg text-sm">0</button>
+                    </div>
+                    <div id="live-container-summary" class="text-right text-gray-500 font-semibold mt-1 text-xs"></div>
+                </div>
+
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button data-modal-id="live-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Close</button>
+                <button id="live-del-btn" class="hidden w-full bg-red-500 text-white font-bold py-3 rounded-lg hover:bg-red-600">Del</button>
+                <button id="live-ok-btn" class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="crate-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6">
+            <h3 class="text-xl font-bold">Crate Details</h3>
+            <div>
+                <label class="font-semibold">Number of Crates:</label>
+                <input id="crate-count" type="number" min="1" max="15" value="1" class="w-full border border-gray-300 rounded-lg p-3 text-center mt-2">
+            </div>
+            <div>
+                <label class="font-semibold">Options:</label>
+                <div class="mt-2"><input type="checkbox" id="crate-r" class="mr-2"><label for="crate-r">"R"</label></div>
+            </div>
+             <div class="flex gap-2 mt-4">
+                <button data-modal-id="crate-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="crate-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+    <div id="basket-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6">
+            <h3 class="text-xl font-bold">Basket Details</h3>
+            <div>
+                <label class="font-semibold">"Besi":</label>
+                <div class="mt-2"><input type="checkbox" id="basket-besi" class="mr-2"><label for="basket-besi">1 Besi</label></div>
+            </div>
+            <div>
+                <label class="font-semibold">Options:</label>
+                <div class="mt-2"><input type="checkbox" id="basket-r" class="mr-2"><label for="basket-r">"R"</label></div>
+            </div>
+             <div class="flex gap-2 mt-4">
+                <button data-modal-id="basket-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="basket-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+     <div id="barrel-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-6">
+            <h3 class="text-xl font-bold">Barrel Details</h3>
+            <div>
+                <label class="font-semibold">Options:</label>
+                <div class="mt-2"><input type="checkbox" id="barrel-r" class="mr-2"><label for="barrel-r">"R"</label></div>
+            </div>
+             <div class="flex gap-2 mt-4">
+                <button data-modal-id="barrel-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Cancel</button>
+                <button id="barrel-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="config-warning-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center space-y-4">
+            <div class="mx-auto w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-2">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight">Settings Required</h2>
+            <p class="text-gray-600 text-[17px]">Your system is missing the container weights. Please go to the Settings page and save your container weights before continuing.</p>
+            
+            <div class="flex flex-col gap-3 mt-4">
+                <button onclick="window.location.href='setting.html'" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-md">Go to Settings</button>
+                <button onclick="hideModal(document.getElementById('config-warning-modal'))" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-xl transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.firebasestorage.app",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
+
+        let selectedCategory = null;
+        let selectedCategoryDetails = null;
+        let liveEntries = [];
+        let liveDocIds = [];
+        let editingLiveIndex = -1;
+        let selectedContainer = null;
+        let selectedContainerDetails = null;
+
+        const weightInput = document.getElementById('weight-input');
+        const catLiveBtn = document.getElementById('category-live-btn');
+        const catEliminateBtn = document.getElementById('category-eliminate-btn');
+        const catWasteBtn = document.getElementById('category-waste-btn');
+        const catIntestinalBtn = document.getElementById('category-intestinal-btn');
+        const conCrateBtn = document.getElementById('container-crate-btn');
+        const conBasketBtn = document.getElementById('container-basket-btn');
+        const conBarrelBtn = document.getElementById('container-barrel-btn');
+        const conZeroBtn = document.getElementById('container-zero-btn');
+        const categorySummary = document.getElementById('category-summary');
+        const containerSummary = document.getElementById('container-summary');
+        const finalOkBtn = document.getElementById('final-ok-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const notificationArea = document.getElementById('notification-area');
+        
+        const liveModal = document.getElementById('live-modal');
+        const eliminateModal = document.getElementById('eliminate-modal');
+        const intestinalModal = document.getElementById('intestinal-modal');
+        const crateModal = document.getElementById('crate-modal');
+        const basketModal = document.getElementById('basket-modal');
+        const barrelModal = document.getElementById('barrel-modal');
+        const configWarningModal = document.getElementById('config-warning-modal');
+        
+        function updateContainerSummary(text) {
+            if (selectedCategory === 'Live') {
+                const liveSum = document.getElementById('live-container-summary');
+                if (liveSum) liveSum.textContent = text;
+            } else {
+                containerSummary.textContent = text;
+            }
+        }
+        
+        function showModal(modal) { modal.classList.remove('hidden'); }
+        function hideModal(modal) { modal.classList.add('hidden'); }
+
+        function showNotification(message, type, timeout = 4000) {
+            notificationArea.innerHTML = `<div class="p-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${message}</div>`;
+            setTimeout(() => { notificationArea.innerHTML = ''; }, timeout);
+        }
+
+        function resetPage() {
+            weightInput.value = '';
+            resetCategorySelection();
+            resetContainerSelection();
+            document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
+            document.querySelectorAll('textarea, select').forEach(el => { if(el) el.value = ''; });
+            const crateCount = document.getElementById('crate-count');
+            if(crateCount) crateCount.value = 1;
+            
+            const elimInputs = ['elim-a-dead', 'elim-a-after', 'elim-a-weight', 'elim-b-dead', 'elim-b-after', 'elim-b-weight'];
+            elimInputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+
+            const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
+            liveInputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            const cropEl = document.getElementById('live-crop');
+            if (cropEl) cropEl.checked = false;
+        }
+
+        function resetCategorySelection() {
+            selectedCategory = null;
+            selectedCategoryDetails = null;
+            liveEntries = [];
+            liveDocIds = [];
+            [catLiveBtn, catEliminateBtn, catWasteBtn, catIntestinalBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
+            categorySummary.textContent = '';
+        }
+
+        function resetContainerSelection() {
+            selectedContainer = null;
+            selectedContainerDetails = null;
+            [conCrateBtn, conBasketBtn, conBarrelBtn, conZeroBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
+            containerSummary.textContent = '';
+        }
+
+        function handleSegmentClick(btn, group, stateVar, value) {
+            if (btn.classList.contains('active-segment')) {
+                return value;
+            } else {
+                group.forEach(b => b.classList.replace('active-segment', 'inactive-segment'));
+                btn.classList.replace('inactive-segment', 'active-segment');
+                return value;
+            }
+        }
+
+        document.querySelectorAll('.modal-cancel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modalId = btn.dataset.modalId;
+                if (['eliminate-modal', 'live-modal'].includes(modalId)) {
+                    if(!selectedCategoryDetails) resetCategorySelection();
+                }
+                if (['crate-modal', 'basket-modal', 'barrel-modal'].includes(modalId)) {
+                   if(!selectedContainerDetails) resetContainerSelection();
+                }
+                hideModal(document.getElementById(modalId));
+            });
+        });
+        
+        const allCatBtns = [catLiveBtn, catEliminateBtn, catWasteBtn, catIntestinalBtn];
+
+        function buildEntryRow(entry, index, targetDiv, onLongPress) {
+            const parts = [];
+            if (entry.date) parts.push(entry.date);
+            if (entry.farm) parts.push(entry.farm);
+            if (entry.doSerial) parts.push(`DO: ${entry.doSerial}`);
+            if (entry.ayamA > 0) parts.push(`A: ${entry.ayamA}`);
+            if (entry.weightA > 0) parts.push(`Wt A: ${entry.weightA}KG`);
+            if (entry.ayamB > 0) parts.push(`B: ${entry.ayamB}`);
+            if (entry.weightB > 0) parts.push(`Wt B: ${entry.weightB}KG`);
+            if (entry.netWeight) parts.push(`Net: ${entry.netWeight.toFixed(2)}KG`);
+            else if (entry.weightA > 0 || entry.weightB > 0) parts.push(`Gross: ${(entry.weightA + entry.weightB).toFixed(2)}KG`);
+            
+            if (entry.container) parts.push(`[${entry.container}]`);
+            if (entry.hasCrop) parts.push(`[CROP]`);
+            const div = document.createElement('div');
+            div.style.color = '#FF8C00';
+            div.style.fontSize = '0.875rem';
+            div.style.padding = '0.25rem 0';
+            div.style.borderBottom = '1px solid #ffe0b2';
+            div.style.cursor = 'pointer';
+            div.style.userSelect = 'none';
+            div.textContent = `- ` + parts.join(', ');
+            let pressTimer;
+            const startPress = () => { pressTimer = window.setTimeout(() => onLongPress(index), 2000); };
+            const cancelPress = () => clearTimeout(pressTimer);
+            div.addEventListener('mousedown', startPress);
+            div.addEventListener('touchstart', startPress);
+            div.addEventListener('mouseup', cancelPress);
+            div.addEventListener('mouseleave', cancelPress);
+            div.addEventListener('touchend', cancelPress);
+            targetDiv.appendChild(div);
+        }
+
+        function openModalForEdit(index) {
+            const entry = liveEntries[index];
+            editingLiveIndex = index;
+            document.getElementById('live-date').value = entry.date || '';
+            document.getElementById('live-farm').value = entry.farm || '';
+            document.getElementById('live-do').value = entry.doSerial || '';
+            document.getElementById('live-a').value = entry.ayamA || '';
+            document.getElementById('live-weight-a').value = entry.weightA || '';
+            document.getElementById('live-b').value = entry.ayamB || '';
+            document.getElementById('live-weight-b').value = entry.weightB || '';
+            document.getElementById('live-crop').checked = entry.hasCrop || false;
+            document.getElementById('live-ok-btn').textContent = 'Update';
+            document.getElementById('live-del-btn').classList.remove('hidden');
+            selectedCategory = 'Live';
+            catLiveBtn.classList.replace('inactive-segment', 'active-segment');
+            renderLiveEntries();
+            showModal(liveModal);
+        }
+
+        function renderLiveEntriesOutside() {
+            const panel = document.getElementById('live-panel');
+            const listDiv = document.getElementById('live-entries-outside');
+            listDiv.innerHTML = '';
+            if (liveEntries.length === 0) { panel.style.display = 'none'; return; }
+            panel.style.display = 'block';
+            liveEntries.forEach((entry, index) => buildEntryRow(entry, index, listDiv, openModalForEdit));
+        }
+
+        function renderLiveEntries() {
+            const listDiv = document.getElementById('live-entries-list');
+            listDiv.innerHTML = '';
+            liveEntries.forEach((entry, index) => buildEntryRow(entry, index, listDiv, (i) => {
+                editingLiveIndex = i;
+                document.getElementById('live-date').value = liveEntries[i].date || '';
+                document.getElementById('live-farm').value = liveEntries[i].farm || '';
+                document.getElementById('live-do').value = liveEntries[i].doSerial || '';
+                document.getElementById('live-a').value = liveEntries[i].ayamA || '';
+                document.getElementById('live-weight-a').value = liveEntries[i].weightA || '';
+                document.getElementById('live-b').value = liveEntries[i].ayamB || '';
+                document.getElementById('live-weight-b').value = liveEntries[i].weightB || '';
+                document.getElementById('live-crop').checked = liveEntries[i].hasCrop || false;
+                document.getElementById('live-ok-btn').textContent = 'Update';
+                document.getElementById('live-del-btn').classList.remove('hidden');
+            }));
+            categorySummary.textContent = `Selected: Live (${liveEntries.length} deliveries)`;
+        }
+
+        catLiveBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catLiveBtn, allCatBtns, 'category', 'Live');
+            if(value) {
+                if (selectedCategory !== 'Live') {
+                    selectedCategory = value;
+                    liveEntries = [];
+                    selectedCategoryDetails = null;
+                    editingLiveIndex = -1;
+                    document.getElementById('live-ok-btn').textContent = 'Add';
+                    document.getElementById('live-del-btn').classList.add('hidden');
+                    renderLiveEntries();
+                }
+                showModal(liveModal); 
+            }
+        });
+
+        document.getElementById('live-del-btn').addEventListener('click', async () => {
+            if (editingLiveIndex >= 0) {
+                if (confirm('Are you sure you want to delete this delivery entry?')) {
+                    const docId = liveDocIds[editingLiveIndex];
+                    if (docId) {
+                        try { await db.collection('stock_entries').doc(docId).delete(); }
+                        catch(e) { console.error('Delete from Firestore failed:', e); }
+                    }
+                    liveEntries.splice(editingLiveIndex, 1);
+                    liveDocIds.splice(editingLiveIndex, 1);
+                    editingLiveIndex = -1;
+                    document.getElementById('live-ok-btn').textContent = 'Add';
+                    document.getElementById('live-del-btn').classList.add('hidden');
+                    renderLiveEntries();
+                    renderLiveEntriesOutside();
+                    const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
+                    liveInputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+                    document.getElementById('live-crop').checked = false;
+                }
+            }
+        });
+
+        catEliminateBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catEliminateBtn, allCatBtns, 'category', 'Eliminate');
+            if(value) {
+                selectedCategory = value;
+                showModal(eliminateModal);
+            }
+        });
+
+        catWasteBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catWasteBtn, allCatBtns, 'category', 'Waste');
+            if(value) {
+                selectedCategory = value;
+                selectedCategoryDetails = { type: 'Waste' };
+                categorySummary.textContent = 'Selected: Waste';
+            }
+        });
+
+        catIntestinalBtn.addEventListener('click', () => {
+            const value = handleSegmentClick(catIntestinalBtn, allCatBtns, 'category', 'Intestinal');
+            if(value) {
+                selectedCategory = value;
+                showModal(intestinalModal);
+            }
+        });
+
+        // Initialize Intestinal modal inputs
+        const intestinalContainer = document.getElementById('intestinal-inputs-container');
+        let intestinalHtml = '';
+        for (let i = 1; i <= 10; i++) {
+            intestinalHtml += `
+            <div class="flex gap-2 items-center bg-gray-50 p-2 rounded border border-gray-200">
+                <span class="text-gray-500 font-bold w-6">${i}.</span>
+                <input type="number" id="int-w-${i}" step="0.1" placeholder="Weight KG" class="w-1/2 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                <select id="int-c-${i}" class="w-1/2 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value="Crate">Crate</option>
+                    <option value="Zero">Zero (Nett)</option>
+                    <option value="Basket">Basket</option>
+                    <option value="Barrel">Barrel</option>
+                </select>
+            </div>`;
+        }
+        intestinalContainer.innerHTML = intestinalHtml;
+
+        document.getElementById('intestinal-clear-btn').addEventListener('click', () => {
+            for (let i = 1; i <= 10; i++) {
+                document.getElementById(`int-w-${i}`).value = '';
+                document.getElementById(`int-c-${i}`).value = 'Crate';
+            }
+            selectedCategoryDetails = null;
+        });
+
+        document.getElementById('intestinal-ok-btn').addEventListener('click', () => {
+            let inputs = [];
+            for (let i = 1; i <= 10; i++) {
+                const wInput = document.getElementById(`int-w-${i}`).value;
+                const cSelect = document.getElementById(`int-c-${i}`).value;
+                const weight = parseFloat(wInput);
+                if (!isNaN(weight) && weight > 0) {
+                    inputs.push({ weight: weight, container: cSelect });
+                }
+            }
+            
+            selectedCategoryDetails = { type: 'Intestinal', inputs: inputs };
+            categorySummary.textContent = `Selected: Intestine (${inputs.length} inputs)`;
+            hideModal(intestinalModal);
+        });
+
+        function bindContainerButtons(crate, basket, barrel, zero) {
+            crate.addEventListener('click', () => {
+                const value = handleSegmentClick(crate, [crate, basket, barrel, zero], 'container', 'Crate');
+                if(value) { selectedContainer = value; showModal(crateModal); }
+            });
+            basket.addEventListener('click', () => {
+                const value = handleSegmentClick(basket, [crate, basket, barrel, zero], 'container', 'Basket');
+                if(value) { selectedContainer = value; showModal(basketModal); }
+            });
+            barrel.addEventListener('click', () => {
+                const value = handleSegmentClick(barrel, [crate, basket, barrel, zero], 'container', 'Barrel');
+                if(value) { selectedContainer = value; showModal(barrelModal); }
+            });
+            zero.addEventListener('click', () => {
+                const value = handleSegmentClick(zero, [crate, basket, barrel, zero], 'container', 'Zero');
+                if(value) { 
+                    selectedContainer = value; 
+                    selectedContainerDetails = { type: 'Zero' }; 
+                    updateContainerSummary('Nett Weight (no tare)');
+                }
+            });
+        }
+
+        bindContainerButtons(conCrateBtn, conBasketBtn, conBarrelBtn, conZeroBtn);
+
+        const liveConCrateBtn = document.getElementById('live-con-crate-btn');
+        const liveConBasketBtn = document.getElementById('live-con-basket-btn');
+        const liveConBarrelBtn = document.getElementById('live-con-barrel-btn');
+        const liveConZeroBtn = document.getElementById('live-con-zero-btn');
+        if (liveConCrateBtn) {
+            bindContainerButtons(liveConCrateBtn, liveConBasketBtn, liveConBarrelBtn, liveConZeroBtn);
+        }
+
+        clearBtn.addEventListener('click', resetPage);
+
+        document.getElementById('eliminate-clear-btn').addEventListener('click', () => {
+            document.getElementById('elim-a-dead').value = '';
+            document.getElementById('elim-a-after').value = '';
+            document.getElementById('elim-a-weight').value = '';
+            document.getElementById('elim-a-con').value = 'Crate';
+            document.getElementById('elim-b-dead').value = '';
+            document.getElementById('elim-b-after').value = '';
+            document.getElementById('elim-b-weight').value = '';
+            document.getElementById('elim-b-con').value = 'Crate';
+        });
+
+        document.getElementById('eliminate-ok-btn').addEventListener('click', () => {
+            const aDead = parseInt(document.getElementById('elim-a-dead').value) || 0;
+            const aAfter = parseInt(document.getElementById('elim-a-after').value) || 0;
+            const aWeight = parseFloat(document.getElementById('elim-a-weight').value) || 0;
+            const aCon = document.getElementById('elim-a-con').value;
+
+            const bDead = parseInt(document.getElementById('elim-b-dead').value) || 0;
+            const bAfter = parseInt(document.getElementById('elim-b-after').value) || 0;
+            const bWeight = parseFloat(document.getElementById('elim-b-weight').value) || 0;
+            const bCon = document.getElementById('elim-b-con').value;
+
+            if (aDead === 0 && aAfter === 0 && bDead === 0 && bAfter === 0) {
+                alert('Please enter at least one eliminate quantity.');
+                return;
+            }
+
+            selectedCategoryDetails = {
+                type: 'Eliminate',
+                ayamADead: aDead,
+                ayamAAfter: aAfter,
+                ayamAWeight: aWeight,
+                ayamACon: aCon,
+                ayamBDead: bDead,
+                ayamBAfter: bAfter,
+                ayamBWeight: bWeight,
+                ayamBCon: bCon
+            };
+            
+            let summaryText = `Eliminate (A:${aDead+aAfter}, B:${bDead+bAfter})`;
+            categorySummary.textContent = summaryText;
+            hideModal(eliminateModal);
+        });
+
+        document.getElementById('live-ok-btn').addEventListener('click', async () => {
+            const dateVal = document.getElementById('live-date').value.trim();
+            const farmVal = document.getElementById('live-farm').value.trim();
+            const doVal = document.getElementById('live-do').value.trim();
+            const aVal = parseInt(document.getElementById('live-a').value) || 0;
+            const weightAVal = parseFloat(document.getElementById('live-weight-a').value) || 0;
+            const bVal = parseInt(document.getElementById('live-b').value) || 0;
+            const weightBVal = parseFloat(document.getElementById('live-weight-b').value) || 0;
+            const cropVal = document.getElementById('live-crop').checked;
+
+            if (!dateVal && !farmVal && !doVal && aVal === 0 && weightAVal === 0 && bVal === 0 && weightBVal === 0) {
+                alert('Please enter at least one field.');
+                return;
+            }
+            let grossWeight = weightAVal + weightBVal;
+            if (grossWeight <= 0) {
+                grossWeight = parseFloat(weightInput.value) || 0;
+            }
+            if (isNaN(grossWeight) || grossWeight <= 0) {
+                alert('Please enter a valid Weight (KG) in the modal (Ayam A/B) or on the main screen.');
+                return;
+            }
+            if (!selectedContainer || !selectedContainerDetails) {
+                alert('Please select a Container (Crate, Basket, or Barrel) on the main screen first.');
+                return;
+            }
+
+            const liveOkBtn = document.getElementById('live-ok-btn');
+            liveOkBtn.disabled = true;
+            liveOkBtn.textContent = 'Saving...';
+
+            try {
+                const configSnap = await db.collection('config').doc('pricing').get();
+                if (!configSnap.exists) { showModal(configWarningModal); return; }
+                const config = configSnap.data();
+                if (config.tare_crate === undefined || config.tare_basket === undefined ||
+                    config.tare_barrel === undefined || config.tare_r === undefined ||
+                    config.tare_crate === '' || config.tare_basket === '') {
+                    showModal(configWarningModal); return;
+                }
+                const tareCrate = parseFloat(config.tare_crate);
+                const tareBasket = parseFloat(config.tare_basket);
+                const tareBarrel = parseFloat(config.tare_barrel);
+                const tareR = parseFloat(config.tare_r);
+                if (isNaN(tareCrate) || isNaN(tareBasket) || isNaN(tareBarrel) || isNaN(tareR)) {
+                    showModal(configWarningModal); return;
+                }
+
+                let tareWeight = 0;
+                if (selectedContainer === 'Crate') {
+                    const { count, hasR } = selectedContainerDetails;
+                    tareWeight = (count * tareCrate) + (hasR ? tareR : 0);
+                } else if (selectedContainer === 'Basket') {
+                    const { hasBesi, hasR } = selectedContainerDetails;
+                    tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0);
+                } else if (selectedContainer === 'Barrel') {
+                    const { hasR } = selectedContainerDetails;
+                    tareWeight = tareBarrel + (hasR ? tareR : 0);
+                } else if (selectedContainer === 'Zero') {
+                    tareWeight = 0;
+                }
+                const netWeight = grossWeight - tareWeight;
+
+                const entry = { date: dateVal, farm: farmVal, doSerial: doVal,
+                    ayamA: aVal, weightA: weightAVal, ayamB: bVal, weightB: weightBVal, hasCrop: cropVal,
+                    grossWeight, tareWeight, netWeight, container: selectedContainer, containerDetails: selectedContainerDetails };
+
+                const stockEntry = {
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    grossWeight, tareWeight, netWeight,
+                    category: 'Live',
+                    categoryDetails: { type: 'Live', entries: [entry] },
+                    container: selectedContainer,
+                    containerDetails: selectedContainerDetails
+                };
+
+                if (editingLiveIndex >= 0) {
+                    const existingDocId = liveDocIds[editingLiveIndex];
+                    await db.collection('stock_entries').doc(existingDocId).update({
+                        grossWeight, tareWeight, netWeight,
+                        categoryDetails: { type: 'Live', entries: [entry] },
+                        container: selectedContainer,
+                        containerDetails: selectedContainerDetails
+                    });
+                    liveEntries[editingLiveIndex] = entry;
+                    showNotification(`Updated! Net: ${netWeight.toFixed(2)} KG`, 'success');
+                } else {
+                    const docRef = await db.collection('stock_entries').add(stockEntry);
+                    liveDocIds.push(docRef.id);
+                    liveEntries.push(entry);
+                    showNotification(`Saved! Net: ${netWeight.toFixed(2)} KG`, 'success');
+                }
+
+                selectedCategoryDetails = { type: 'Live', entries: liveEntries };
+                renderLiveEntries();
+                renderLiveEntriesOutside();
+
+                const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
+                liveInputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+                document.getElementById('live-crop').checked = false;
+                resetContainerSelection();
+                editingLiveIndex = -1;
+                document.getElementById('live-del-btn').classList.add('hidden');
+
+            } catch(error) {
+                console.error('Error saving live entry:', error);
+                showNotification('Failed to save: ' + error.message, 'error');
+            } finally {
+                liveOkBtn.disabled = false;
+                liveOkBtn.textContent = 'Add';
+            }
+        });
+
+        document.getElementById('crate-ok-btn').addEventListener('click', () => {
+            const count = parseInt(document.getElementById('crate-count').value);
+            if (isNaN(count) || count <= 0) {
+                alert('Please enter a valid amount greater than 0.');
+                return;
+            }
+            const hasR = document.getElementById('crate-r').checked;
+            selectedContainerDetails = { type: 'Crate', count, hasR };
+            updateContainerSummary(`${count} Crate(s)${hasR ? ' with R' : ''}`);
+            hideModal(crateModal);
+        });
+
+        document.getElementById('basket-ok-btn').addEventListener('click', () => {
+            const hasBesi = document.getElementById('basket-besi').checked;
+            const hasR = document.getElementById('basket-r').checked;
+            selectedContainerDetails = { type: 'Basket', hasBesi, hasR };
+            updateContainerSummary(`Basket${hasBesi ? ' with 1 Besi' : ''}${hasR ? ' with R' : ''}`);
+            hideModal(basketModal);
+        });
+
+        document.getElementById('barrel-ok-btn').addEventListener('click', () => {
+            const hasR = document.getElementById('barrel-r').checked;
+            selectedContainerDetails = { type: 'Barrel', hasR };
+            updateContainerSummary(`Barrel${hasR ? ' with R' : ''}`);
+            hideModal(barrelModal);
+        });
+
+        // --- STRICT CONFIG CHECK LOGIC ---
+        finalOkBtn.addEventListener('click', async () => {
+            if (finalOkBtn.disabled) return;
+
+            if (!selectedCategory) {
+                showNotification('Please select a Category (Live, Eliminate, etc.) first.', 'error');
+                return;
+            }
+            if (selectedCategory === 'Live') {
+                showNotification('Live entries are added directly via the Live modal.', 'error');
+                return;
+            }
+
+            const grossWeight = parseFloat(weightInput.value) || 0;
+            if (selectedCategory !== 'Eliminate' && selectedCategory !== 'Intestinal') {
+                if (isNaN(grossWeight) || grossWeight <= 0) {
+                    showNotification('Please enter a valid Weight (KG) first.', 'error');
+                    return;
+                }
+                if (!selectedContainer) {
+                    showNotification('Please select a Container (Crate, Basket, Barrel, or 0 for Nett Weight).', 'error');
+                    return;
+                }
+            }
+
+            finalOkBtn.disabled = true;
+            finalOkBtn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Processing...</span>`;
+
+            try {
+                const configSnap = await db.collection('config').doc('pricing').get();
+                if (!configSnap.exists) { showModal(configWarningModal); return; }
+                const config = configSnap.data();
+
+                if (config.tare_crate === undefined || config.tare_basket === undefined || 
+                    config.tare_barrel === undefined || config.tare_r === undefined ||
+                    config.tare_crate === "" || config.tare_basket === "") {
+                    showModal(configWarningModal);
+                    return;
+                }
+
+                const tareCrate = parseFloat(config.tare_crate);
+                const tareBasket = parseFloat(config.tare_basket);
+                const tareBarrel = parseFloat(config.tare_barrel);
+                const tareR = parseFloat(config.tare_r);
+
+                if (isNaN(tareCrate) || isNaN(tareBasket) || isNaN(tareBarrel) || isNaN(tareR)) {
+                    showModal(configWarningModal);
+                    return;
+                }
+
+                let tareWeight = 0;
+                let netWeight = 0;
+
+                if (selectedCategory === 'Intestinal') {
+                    selectedCategoryDetails.inputs.forEach(input => {
+                        let rowTare = 0;
+                        if (input.container === 'Crate') rowTare = tareCrate;
+                        else if (input.container === 'Basket') rowTare = tareBasket;
+                        else if (input.container === 'Barrel') rowTare = tareBarrel;
+                        netWeight += (input.weight - rowTare);
+                    });
+                } else if (selectedCategory === 'Eliminate') {
+                    let aTare = 0;
+                    if (selectedCategoryDetails.ayamAWeight > 0) {
+                        if (selectedCategoryDetails.ayamACon === 'Crate') aTare = tareCrate;
+                        else if (selectedCategoryDetails.ayamACon === 'Basket') aTare = tareBasket;
+                        else if (selectedCategoryDetails.ayamACon === 'Barrel') aTare = tareBarrel;
+                    }
+                    let bTare = 0;
+                    if (selectedCategoryDetails.ayamBWeight > 0) {
+                        if (selectedCategoryDetails.ayamBCon === 'Crate') bTare = tareCrate;
+                        else if (selectedCategoryDetails.ayamBCon === 'Basket') bTare = tareBasket;
+                        else if (selectedCategoryDetails.ayamBCon === 'Barrel') bTare = tareBarrel;
+                    }
+                    selectedCategoryDetails.ayamANet = Math.max(0, selectedCategoryDetails.ayamAWeight - aTare);
+                    selectedCategoryDetails.ayamBNet = Math.max(0, selectedCategoryDetails.ayamBWeight - bTare);
+                    
+                    netWeight = selectedCategoryDetails.ayamANet + selectedCategoryDetails.ayamBNet;
+                } else {
+                    if (selectedContainer === 'Crate') {
+                        const { count, hasR } = selectedContainerDetails;
+                        tareWeight = (count * tareCrate) + (hasR ? tareR : 0);
+                    } else if (selectedContainer === 'Basket') {
+                        const { hasBesi, hasR } = selectedContainerDetails;
+                        tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0);
+                    } else if (selectedContainer === 'Barrel') {
+                        const { hasR } = selectedContainerDetails;
+                        tareWeight = tareBarrel + (hasR ? tareR : 0);
+                    } else if (selectedContainer === 'Zero') {
+                        tareWeight = 0;
+                    }
+                    netWeight = grossWeight - tareWeight;
+                }
+
+                const stockEntry = {
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    grossWeight: grossWeight,
+                    tareWeight: tareWeight,
+                    netWeight: netWeight,
+                    category: selectedCategory,
+                    categoryDetails: selectedCategoryDetails,
+                    container: selectedContainer,
+                    containerDetails: selectedContainerDetails
+                };
+
+                await db.collection('stock_entries').add(stockEntry);
+                showNotification(`Stock recorded successfully! Net weight: ${netWeight.toFixed(2)} KG`, 'success');
+                resetPage();
+                
+            } catch (error) {
+                console.error("Error saving stock entry: ", error);
+                showNotification('Failed to save stock entry.', 'error');
+            } finally {
+                finalOkBtn.disabled = false;
+                finalOkBtn.textContent = "OK";
+            }
+        });
+
+        function populateDateList() {
+            const datalist = document.getElementById('live-date-list');
+            if (datalist) {
+                const now = new Date();
+                let html = '';
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(now);
+                    d.setDate(d.getDate() - i);
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    html += `<option value="${dd}/${mm}">`;
+                }
+                datalist.innerHTML = html;
+            }
+        }
+        async function loadTodayLiveEntries() {
+            const startOfDay = new Date();
+            startOfDay.setHours(0, 0, 0, 0);
+            try {
+                const snapshot = await db.collection('stock_entries')
+                    .where('timestamp', '>=', startOfDay)
+                    .orderBy('timestamp', 'asc')
+                    .get();
+                liveEntries = [];
+                liveDocIds = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.category === 'Live' && data.categoryDetails && data.categoryDetails.entries && data.categoryDetails.entries.length > 0) {
+                        liveEntries.push(data.categoryDetails.entries[0]);
+                        liveDocIds.push(doc.id);
+                    }
+                });
+                renderLiveEntriesOutside();
+            } catch(e) { console.log('Could not load today live entries:', e); }
+        }
+
+        function scheduleMidnightReset() {
+            const now = new Date();
+            const next = new Date(now);
+            next.setDate(now.getDate() + 1);
+            next.setHours(0, 1, 0, 0);
+            setTimeout(() => {
+                liveEntries = [];
+                liveDocIds = [];
+                renderLiveEntriesOutside();
+                renderLiveEntries();
+                categorySummary.textContent = '';
+                scheduleMidnightReset();
+            }, next - now);
+        }
+
+        document.addEventListener('DOMContentLoaded', populateDateList);
+        document.addEventListener('DOMContentLoaded', updateHeaderDate);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTodayLiveEntries();
+            scheduleMidnightReset();
+        });
+
+        function updateHeaderDate() {
+            const dateEl = document.getElementById('header-today-date');
+            if (dateEl) {
+                const now = new Date();
+                const d = String(now.getDate()).padStart(2, '0');
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const y = now.getFullYear();
+                dateEl.textContent = `${d}/${m}/${y}`;
+            }
+        }
+
+        document.querySelectorAll('input[type="number"], input[type="text"], textarea').forEach(el => {
+            el.addEventListener('focus', function() {
+                if (this.value === '0' || this.value === '0.0') {
+                    this.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

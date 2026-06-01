@@ -6,10 +6,11 @@
     <title>Stock In - Multi-Function System</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <style>
         /*! modern-normalize v1.1.0 */
         *, ::after, ::before { box-sizing: border-box; }
-        html { line-height: 1.15; -webkit-text-size-adjust: 100%; }
+        html { line-height: 1.15; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
         body { margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'; }
         hr { height: 0; color: inherit; }
         b, strong { font-weight: bolder; }
@@ -159,12 +160,6 @@
         <div id="header-today-date" style="font-weight: bold; font-size: 12px; color: #6b7281; text-transform: uppercase; letter-spacing: 0.05em;"></div>
     </div>
 
-    <!-- Live Entries Outside Panel -->
-    <div id="live-panel" style="display:none; background:#fff8f0; border-bottom: 2px solid #FFD080; padding: 8px 16px;">
-        <div style="font-size: 11px; font-weight: 700; color: #b45309; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Today's Live Deliveries (long-press to edit)</div>
-        <div id="live-entries-outside"></div>
-    </div>
-
     <main class="max-w-lg mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div id="notification-area" class="mb-6"></div>
         <div class="bg-white p-6 rounded-lg shadow space-y-6">
@@ -177,20 +172,9 @@
                 </div>
             </div>
 
-            <!-- Category 1 -->
+            <!-- Category -->
             <div class="flex flex-col gap-2">
-                <label class="text-lg font-semibold text-gray-700">Category 1:</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <button id="category-live-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Live</button>
-                    <button id="category-eliminate-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Eliminate</button>
-                    <button id="category-waste-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Waste</button>
-                    <button id="category-intestinal-btn" class="inactive-segment font-semibold py-2 px-4 rounded-lg border">Intestine</button>
-                </div>
-            </div>
-
-            <!-- Category 2 -->
-            <div class="flex flex-col gap-2">
-                <label class="text-lg font-semibold text-gray-700">Category 2:</label>
+                <label class="text-lg font-semibold text-gray-700">Category:</label>
                 <div class="grid grid-cols-2 gap-3">
                     <button id="category-broiler-btn" class="inactive-segment font-semibold py-2 px-3 rounded-lg border">Broiler</button>
                     <button id="category-slices-btn" class="inactive-segment font-semibold py-2 px-3 rounded-lg border">Slices</button>
@@ -218,137 +202,6 @@
             <button id="final-ok-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-4 rounded-lg shadow-md transition">OK</button>
         </div>
     </main>
-    
-    <div id="eliminate-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
-            <button data-modal-id="eliminate-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
-            <h3 class="text-xl font-bold">Eliminate Details</h3>
-            <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                <!-- Card Ayam A -->
-                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm space-y-3">
-                    <h4 class="font-bold text-gray-800 border-b pb-1">Ayam A</h4>
-                    <div class="flex items-center justify-between">
-                        <label class="font-semibold text-gray-700 text-sm w-3/5">Dead (篮子):</label>
-                        <input type="number" id="elim-a-dead" class="w-2/5 border border-gray-300 rounded p-2 text-center" placeholder="0">
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <label class="font-semibold text-gray-700 text-sm w-3/5">Eliminate (淘汰):</label>
-                        <input type="number" id="elim-a-after" class="w-2/5 border border-gray-300 rounded p-2 text-center" placeholder="0">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <input type="number" id="elim-a-weight" step="0.1" class="w-1/2 border border-gray-300 rounded p-2 text-center" placeholder="Weight KG">
-                        <select id="elim-a-con" class="w-1/2 border border-gray-300 rounded p-2">
-                            <option value="Crate">Crate</option>
-                            <option value="Basket">Basket</option>
-                            <option value="Barrel">Barrel</option>
-                            <option value="Zero">Zero</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Card Ayam B -->
-                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm space-y-3">
-                    <h4 class="font-bold text-gray-800 border-b pb-1">Ayam B</h4>
-                    <div class="flex items-center justify-between">
-                        <label class="font-semibold text-gray-700 text-sm w-3/5">Dead (篮子):</label>
-                        <input type="number" id="elim-b-dead" class="w-2/5 border border-gray-300 rounded p-2 text-center" placeholder="0">
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <label class="font-semibold text-gray-700 text-sm w-3/5">Eliminate (淘汰):</label>
-                        <input type="number" id="elim-b-after" class="w-2/5 border border-gray-300 rounded p-2 text-center" placeholder="0">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <input type="number" id="elim-b-weight" step="0.1" class="w-1/2 border border-gray-300 rounded p-2 text-center" placeholder="Weight KG">
-                        <select id="elim-b-con" class="w-1/2 border border-gray-300 rounded p-2">
-                            <option value="Crate">Crate</option>
-                            <option value="Basket">Basket</option>
-                            <option value="Barrel">Barrel</option>
-                            <option value="Zero">Zero</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-2 mt-4">
-                <button id="eliminate-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
-                <button id="eliminate-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="intestinal-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
-            <button data-modal-id="intestinal-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
-            <h3 class="text-xl font-bold">Intestine weight input</h3>
-            <div class="space-y-3 max-h-96 overflow-y-auto pr-2" id="intestinal-inputs-container">
-                <!-- Inputs injected via JS -->
-            </div>
-            <div class="flex gap-2 mt-4">
-                <button id="intestinal-clear-btn" class="w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Clear</button>
-                <button id="intestinal-ok-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">OK</button>
-            </div>
-        </div>
-    </div>
-
-
-
-    <div id="live-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4 relative">
-            <button data-modal-id="live-modal" class="modal-cancel-btn absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
-            <h3 class="text-xl font-bold">Live Broiler Details</h3>
-            <div id="live-entries-list" class="space-y-1 mb-2 max-h-32 overflow-y-auto"></div>
-            <div class="space-y-3">
-                <div>
-                    <label class="font-semibold text-gray-700 text-sm">Date (dd/mm):</label>
-                    <input type="text" id="live-date" list="live-date-list" class="w-full border border-gray-300 rounded-lg p-2 mt-1" placeholder="dd/mm">
-                    <datalist id="live-date-list"></datalist>
-                </div>
-                <div>
-                    <label class="font-semibold text-gray-700 text-sm">Farm:</label>
-                    <input type="text" id="live-farm" class="w-full border border-gray-300 rounded-lg p-2 mt-1" placeholder="Farm name">
-                </div>
-                <div>
-                    <label class="font-semibold text-gray-700 text-sm">D/O Serial no.:</label>
-                    <input type="text" id="live-do" class="w-full border border-gray-300 rounded-lg p-2 mt-1" placeholder="Serial no">
-                </div>
-                <div>
-                    <label class="font-semibold text-gray-700 text-sm">Number of live broiler (A):</label>
-                    <input type="number" id="live-a" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0">
-                </div>
-                <div>
-                    <label class="font-semibold text-gray-700 text-sm">Weight (A) in KG:</label>
-                    <input type="number" id="live-weight-a" step="0.1" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0.0">
-                </div>
-                <div>
-                    <label class="font-semibold text-gray-700 text-sm">Number of live broiler (B):</label>
-                    <input type="number" id="live-b" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0">
-                </div>
-                <div>
-                    <label class="font-semibold text-gray-700 text-sm">Weight (B) in KG:</label>
-                    <input type="number" id="live-weight-b" step="0.1" class="w-full border border-gray-300 rounded-lg p-2 text-center mt-1" placeholder="0.0">
-                </div>
-                <div class="flex items-center mt-2 bg-gray-50 p-2 rounded-lg border border-gray-200">
-                    <input type="checkbox" id="live-crop" class="h-5 w-5 text-blue-600 rounded border-gray-300">
-                    <label for="live-crop" class="ml-3 text-sm font-semibold text-gray-700">Crop (live chicken with crop)</label>
-                </div>
-                <div>
-                    <label class="font-semibold text-gray-700 text-sm">Container:</label>
-                    <div class="flex rounded-lg shadow-sm transition mt-1">
-                        <button id="live-con-crate-btn" class="inactive-segment font-semibold py-2 px-3 rounded-l-lg text-sm">Crate</button>
-                        <button id="live-con-basket-btn" class="inactive-segment font-semibold py-2 px-3 text-sm">Basket</button>
-                        <button id="live-con-barrel-btn" class="inactive-segment font-semibold py-2 px-3 text-sm">Barrel</button>
-                        <button id="live-con-zero-btn" class="inactive-segment font-semibold py-2 px-3 rounded-r-lg text-sm">0</button>
-                    </div>
-                    <div id="live-container-summary" class="text-right text-gray-500 font-semibold mt-1 text-xs"></div>
-                </div>
-
-            </div>
-            <div class="flex gap-2 mt-4">
-                <button data-modal-id="live-modal" class="modal-cancel-btn w-full bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg">Close</button>
-                <button id="live-del-btn" class="hidden w-full bg-red-500 text-white font-bold py-3 rounded-lg hover:bg-red-600">Del</button>
-                <button id="live-ok-btn" class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600">Add</button>
-            </div>
-        </div>
-    </div>
 
     <div id="broiler-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 space-y-4">
@@ -501,23 +354,16 @@
 
         let selectedCategory = null;
         let selectedCategoryDetails = null;
-        let liveEntries = [];
-        let liveDocIds = [];
-        let editingLiveIndex = -1;
         let selectedContainer = null;
         let selectedContainerDetails = null;
         let tempBroilerType = null;
         let tempRemarkText = null;
 
         const weightInput = document.getElementById('weight-input');
-        const catLiveBtn = document.getElementById('category-live-btn');
-        const catEliminateBtn = document.getElementById('category-eliminate-btn');
         const catBroilerBtn = document.getElementById('category-broiler-btn');
         const catSlicesBtn = document.getElementById('category-slices-btn');
         const catPartsBtn = document.getElementById('category-parts-btn');
         const catKopekBtn = document.getElementById('category-kopek-btn');
-        const catWasteBtn = document.getElementById('category-waste-btn');
-        const catIntestinalBtn = document.getElementById('category-intestinal-btn');
         const conCrateBtn = document.getElementById('container-crate-btn');
         const conBasketBtn = document.getElementById('container-basket-btn');
         const conBarrelBtn = document.getElementById('container-barrel-btn');
@@ -528,10 +374,7 @@
         const clearBtn = document.getElementById('clear-btn');
         const notificationArea = document.getElementById('notification-area');
         
-        const liveModal = document.getElementById('live-modal');
         const broilerModal = document.getElementById('broiler-modal');
-        const eliminateModal = document.getElementById('eliminate-modal');
-        const intestinalModal = document.getElementById('intestinal-modal');
         const broilerCountModal = document.getElementById('broiler-count-modal');
         const slicesModal = document.getElementById('slices-modal');
         const remarkModal = document.getElementById('remark-modal');
@@ -542,12 +385,7 @@
         const configWarningModal = document.getElementById('config-warning-modal');
         
         function updateContainerSummary(text) {
-            if (selectedCategory === 'Live') {
-                const liveSum = document.getElementById('live-container-summary');
-                if (liveSum) liveSum.textContent = text;
-            } else {
-                containerSummary.textContent = text;
-            }
+            containerSummary.textContent = text;
         }
         
         function showModal(modal) { modal.classList.remove('hidden'); }
@@ -572,28 +410,12 @@
             if(slicesCount) slicesCount.value = '';
             const slicesAL = document.getElementById('slices-ayam-lama');
             if(slicesAL) slicesAL.checked = false;
-            
-            const elimInputs = ['elim-a-dead', 'elim-a-after', 'elim-b-dead', 'elim-b-after'];
-            elimInputs.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
-            });
-
-            const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
-            liveInputs.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
-            });
-            const cropEl = document.getElementById('live-crop');
-            if (cropEl) cropEl.checked = false;
         }
 
         function resetCategorySelection() {
             selectedCategory = null;
             selectedCategoryDetails = null;
-            liveEntries = [];
-            liveDocIds = [];
-            [catLiveBtn, catEliminateBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn, catIntestinalBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
+            [catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn].forEach(btn => btn.classList.replace('active-segment', 'inactive-segment'));
             categorySummary.textContent = '';
         }
 
@@ -618,7 +440,7 @@
         document.querySelectorAll('.modal-cancel-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const modalId = btn.dataset.modalId;
-                if (['broiler-modal', 'remark-modal', 'parts-modal', 'slices-modal', 'eliminate-modal', 'live-modal'].includes(modalId)) {
+                if (['broiler-modal', 'remark-modal', 'parts-modal', 'slices-modal'].includes(modalId)) {
                     if(!selectedCategoryDetails) resetCategorySelection();
                 }
                 if (['crate-modal', 'basket-modal', 'barrel-modal'].includes(modalId)) {
@@ -628,134 +450,7 @@
             });
         });
         
-        const allCatBtns = [catLiveBtn, catEliminateBtn, catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn, catWasteBtn, catIntestinalBtn];
-
-        function buildEntryRow(entry, index, targetDiv, onLongPress) {
-            const parts = [];
-            if (entry.date) parts.push(entry.date);
-            if (entry.farm) parts.push(entry.farm);
-            if (entry.doSerial) parts.push(`DO: ${entry.doSerial}`);
-            if (entry.ayamA > 0) parts.push(`A: ${entry.ayamA}`);
-            if (entry.weightA > 0) parts.push(`Wt A: ${entry.weightA}KG`);
-            if (entry.ayamB > 0) parts.push(`B: ${entry.ayamB}`);
-            if (entry.weightB > 0) parts.push(`Wt B: ${entry.weightB}KG`);
-            if (entry.netWeight) parts.push(`Net: ${entry.netWeight.toFixed(2)}KG`);
-            else if (entry.weightA > 0 || entry.weightB > 0) parts.push(`Gross: ${(entry.weightA + entry.weightB).toFixed(2)}KG`);
-            
-            if (entry.container) parts.push(`[${entry.container}]`);
-            if (entry.hasCrop) parts.push(`[CROP]`);
-            const div = document.createElement('div');
-            div.style.color = '#FF8C00';
-            div.style.fontSize = '0.875rem';
-            div.style.padding = '0.25rem 0';
-            div.style.borderBottom = '1px solid #ffe0b2';
-            div.style.cursor = 'pointer';
-            div.style.userSelect = 'none';
-            div.textContent = `- ` + parts.join(', ');
-            let pressTimer;
-            const startPress = () => { pressTimer = window.setTimeout(() => onLongPress(index), 2000); };
-            const cancelPress = () => clearTimeout(pressTimer);
-            div.addEventListener('mousedown', startPress);
-            div.addEventListener('touchstart', startPress);
-            div.addEventListener('mouseup', cancelPress);
-            div.addEventListener('mouseleave', cancelPress);
-            div.addEventListener('touchend', cancelPress);
-            targetDiv.appendChild(div);
-        }
-
-        function openModalForEdit(index) {
-            const entry = liveEntries[index];
-            editingLiveIndex = index;
-            document.getElementById('live-date').value = entry.date || '';
-            document.getElementById('live-farm').value = entry.farm || '';
-            document.getElementById('live-do').value = entry.doSerial || '';
-            document.getElementById('live-a').value = entry.ayamA || '';
-            document.getElementById('live-weight-a').value = entry.weightA || '';
-            document.getElementById('live-b').value = entry.ayamB || '';
-            document.getElementById('live-weight-b').value = entry.weightB || '';
-            document.getElementById('live-crop').checked = entry.hasCrop || false;
-            document.getElementById('live-ok-btn').textContent = 'Update';
-            document.getElementById('live-del-btn').classList.remove('hidden');
-            selectedCategory = 'Live';
-            catLiveBtn.classList.replace('inactive-segment', 'active-segment');
-            renderLiveEntries();
-            showModal(liveModal);
-        }
-
-        function renderLiveEntriesOutside() {
-            const panel = document.getElementById('live-panel');
-            const listDiv = document.getElementById('live-entries-outside');
-            listDiv.innerHTML = '';
-            if (liveEntries.length === 0) { panel.style.display = 'none'; return; }
-            panel.style.display = 'block';
-            liveEntries.forEach((entry, index) => buildEntryRow(entry, index, listDiv, openModalForEdit));
-        }
-
-        function renderLiveEntries() {
-            const listDiv = document.getElementById('live-entries-list');
-            listDiv.innerHTML = '';
-            liveEntries.forEach((entry, index) => buildEntryRow(entry, index, listDiv, (i) => {
-                editingLiveIndex = i;
-                document.getElementById('live-date').value = liveEntries[i].date || '';
-                document.getElementById('live-farm').value = liveEntries[i].farm || '';
-                document.getElementById('live-do').value = liveEntries[i].doSerial || '';
-                document.getElementById('live-a').value = liveEntries[i].ayamA || '';
-                document.getElementById('live-weight-a').value = liveEntries[i].weightA || '';
-                document.getElementById('live-b').value = liveEntries[i].ayamB || '';
-                document.getElementById('live-weight-b').value = liveEntries[i].weightB || '';
-                document.getElementById('live-crop').checked = liveEntries[i].hasCrop || false;
-                document.getElementById('live-ok-btn').textContent = 'Update';
-                document.getElementById('live-del-btn').classList.remove('hidden');
-            }));
-            categorySummary.textContent = `Selected: Live (${liveEntries.length} deliveries)`;
-        }
-
-        catLiveBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(catLiveBtn, allCatBtns, 'category', 'Live');
-            if(value) {
-                // Only reset data if switching FROM a different category to Live
-                if (selectedCategory !== 'Live') {
-                    selectedCategory = value;
-                    liveEntries = [];
-                    selectedCategoryDetails = null;
-                    editingLiveIndex = -1;
-                    document.getElementById('live-ok-btn').textContent = 'Add';
-                    document.getElementById('live-del-btn').classList.add('hidden');
-                    renderLiveEntries();
-                }
-                showModal(liveModal); 
-            }
-        });
-
-        document.getElementById('live-del-btn').addEventListener('click', async () => {
-            if (editingLiveIndex >= 0) {
-                if (confirm('Are you sure you want to delete this delivery entry?')) {
-                    const docId = liveDocIds[editingLiveIndex];
-                    if (docId) {
-                        try { await db.collection('stock_entries').doc(docId).delete(); }
-                        catch(e) { console.error('Delete from Firestore failed:', e); }
-                    }
-                    liveEntries.splice(editingLiveIndex, 1);
-                    liveDocIds.splice(editingLiveIndex, 1);
-                    editingLiveIndex = -1;
-                    document.getElementById('live-ok-btn').textContent = 'Add';
-                    document.getElementById('live-del-btn').classList.add('hidden');
-                    renderLiveEntries();
-                    renderLiveEntriesOutside();
-                    const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
-                    liveInputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-                    document.getElementById('live-crop').checked = false;
-                }
-            }
-        });
-
-        catEliminateBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(catEliminateBtn, allCatBtns, 'category', 'Eliminate');
-            if(value) {
-                selectedCategory = value;
-                showModal(eliminateModal);
-            }
-        });
+        const allCatBtns = [catBroilerBtn, catSlicesBtn, catPartsBtn, catKopekBtn];
 
         catBroilerBtn.addEventListener('click', () => {
             const value = handleSegmentClick(catBroilerBtn, allCatBtns, 'category', 'Broiler');
@@ -950,165 +645,6 @@
             hideModal(slicesModal);
         });
 
-        document.getElementById('eliminate-clear-btn').addEventListener('click', () => {
-            document.getElementById('elim-a-dead').value = '';
-            document.getElementById('elim-a-after').value = '';
-            document.getElementById('elim-a-weight').value = '';
-            document.getElementById('elim-a-con').value = 'Crate';
-            document.getElementById('elim-b-dead').value = '';
-            document.getElementById('elim-b-after').value = '';
-            document.getElementById('elim-b-weight').value = '';
-            document.getElementById('elim-b-con').value = 'Crate';
-        });
-
-        document.getElementById('eliminate-ok-btn').addEventListener('click', () => {
-            const aDead = parseInt(document.getElementById('elim-a-dead').value) || 0;
-            const aAfter = parseInt(document.getElementById('elim-a-after').value) || 0;
-            const aWeight = parseFloat(document.getElementById('elim-a-weight').value) || 0;
-            const aCon = document.getElementById('elim-a-con').value;
-
-            const bDead = parseInt(document.getElementById('elim-b-dead').value) || 0;
-            const bAfter = parseInt(document.getElementById('elim-b-after').value) || 0;
-            const bWeight = parseFloat(document.getElementById('elim-b-weight').value) || 0;
-            const bCon = document.getElementById('elim-b-con').value;
-
-            if (aDead === 0 && aAfter === 0 && bDead === 0 && bAfter === 0) {
-                alert('Please enter at least one eliminate quantity.');
-                return;
-            }
-
-            selectedCategoryDetails = {
-                type: 'Eliminate',
-                ayamADead: aDead,
-                ayamAAfter: aAfter,
-                ayamAWeight: aWeight,
-                ayamACon: aCon,
-                ayamBDead: bDead,
-                ayamBAfter: bAfter,
-                ayamBWeight: bWeight,
-                ayamBCon: bCon
-            };
-            
-            let summaryText = `Eliminate (A:${aDead+aAfter}, B:${bDead+bAfter})`;
-            categorySummary.textContent = summaryText;
-            hideModal(eliminateModal);
-        });
-
-        document.getElementById('live-ok-btn').addEventListener('click', async () => {
-            const dateVal = document.getElementById('live-date').value.trim();
-            const farmVal = document.getElementById('live-farm').value.trim();
-            const doVal = document.getElementById('live-do').value.trim();
-            const aVal = parseInt(document.getElementById('live-a').value) || 0;
-            const weightAVal = parseFloat(document.getElementById('live-weight-a').value) || 0;
-            const bVal = parseInt(document.getElementById('live-b').value) || 0;
-            const weightBVal = parseFloat(document.getElementById('live-weight-b').value) || 0;
-            const cropVal = document.getElementById('live-crop').checked;
-
-            if (!dateVal && !farmVal && !doVal && aVal === 0 && weightAVal === 0 && bVal === 0 && weightBVal === 0) {
-                alert('Please enter at least one field.');
-                return;
-            }
-            let grossWeight = weightAVal + weightBVal;
-            if (grossWeight <= 0) {
-                grossWeight = parseFloat(weightInput.value) || 0;
-            }
-            if (isNaN(grossWeight) || grossWeight <= 0) {
-                alert('Please enter a valid Weight (KG) in the modal (Ayam A/B) or on the main screen.');
-                return;
-            }
-            if (!selectedContainer || !selectedContainerDetails) {
-                alert('Please select a Container (Crate, Basket, or Barrel) on the main screen first.');
-                return;
-            }
-
-            const liveOkBtn = document.getElementById('live-ok-btn');
-            liveOkBtn.disabled = true;
-            liveOkBtn.textContent = 'Saving...';
-
-            try {
-                const configSnap = await db.collection('config').doc('pricing').get();
-                if (!configSnap.exists) { showModal(configWarningModal); return; }
-                const config = configSnap.data();
-                if (config.tare_crate === undefined || config.tare_basket === undefined ||
-                    config.tare_barrel === undefined || config.tare_r === undefined ||
-                    config.tare_crate === '' || config.tare_basket === '') {
-                    showModal(configWarningModal); return;
-                }
-                const tareCrate = parseFloat(config.tare_crate);
-                const tareBasket = parseFloat(config.tare_basket);
-                const tareBarrel = parseFloat(config.tare_barrel);
-                const tareR = parseFloat(config.tare_r);
-                if (isNaN(tareCrate) || isNaN(tareBasket) || isNaN(tareBarrel) || isNaN(tareR)) {
-                    showModal(configWarningModal); return;
-                }
-
-                let tareWeight = 0;
-                if (selectedContainer === 'Crate') {
-                    const { count, hasR } = selectedContainerDetails;
-                    tareWeight = (count * tareCrate) + (hasR ? tareR : 0);
-                } else if (selectedContainer === 'Basket') {
-                    const { hasBesi, hasR } = selectedContainerDetails;
-                    tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0);
-                } else if (selectedContainer === 'Barrel') {
-                    const { hasR } = selectedContainerDetails;
-                    tareWeight = tareBarrel + (hasR ? tareR : 0);
-                } else if (selectedContainer === 'Zero') {
-                    tareWeight = 0; // Nett weight — no tare deduction
-                }
-                const netWeight = grossWeight - tareWeight;
-
-                const entry = { date: dateVal, farm: farmVal, doSerial: doVal,
-                    ayamA: aVal, weightA: weightAVal, ayamB: bVal, weightB: weightBVal, hasCrop: cropVal,
-                    grossWeight, tareWeight, netWeight, container: selectedContainer, containerDetails: selectedContainerDetails };
-
-                const stockEntry = {
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    grossWeight, tareWeight, netWeight,
-                    category: 'Live',
-                    categoryDetails: { type: 'Live', entries: [entry] },
-                    container: selectedContainer,
-                    containerDetails: selectedContainerDetails
-                };
-
-                if (editingLiveIndex >= 0) {
-                    // --- EDIT: update the existing Firestore document ---
-                    const existingDocId = liveDocIds[editingLiveIndex];
-                    await db.collection('stock_entries').doc(existingDocId).update({
-                        grossWeight, tareWeight, netWeight,
-                        categoryDetails: { type: 'Live', entries: [entry] },
-                        container: selectedContainer,
-                        containerDetails: selectedContainerDetails
-                    });
-                    liveEntries[editingLiveIndex] = entry;
-                    showNotification(`Updated! Net: ${netWeight.toFixed(2)} KG`, 'success');
-                } else {
-                    // --- NEW: add a fresh Firestore document ---
-                    const docRef = await db.collection('stock_entries').add(stockEntry);
-                    liveDocIds.push(docRef.id);
-                    liveEntries.push(entry);
-                    showNotification(`Saved! Net: ${netWeight.toFixed(2)} KG`, 'success');
-                }
-
-                selectedCategoryDetails = { type: 'Live', entries: liveEntries };
-                renderLiveEntries();
-                renderLiveEntriesOutside();
-
-                const liveInputs = ['live-date', 'live-farm', 'live-do', 'live-a', 'live-weight-a', 'live-b', 'live-weight-b'];
-                liveInputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-                document.getElementById('live-crop').checked = false;
-                resetContainerSelection();
-                editingLiveIndex = -1;
-                document.getElementById('live-del-btn').classList.add('hidden');
-
-            } catch(error) {
-                console.error('Error saving live entry:', error);
-                showNotification('Failed to save: ' + error.message, 'error');
-            } finally {
-                liveOkBtn.disabled = false;
-                liveOkBtn.textContent = 'Add';
-            }
-        });
-
         document.getElementById('remark-ok-btn').addEventListener('click', () => {
             tempRemarkText = document.getElementById('remark-text').value;
             hideModal(remarkModal);
@@ -1155,24 +691,18 @@
             if (finalOkBtn.disabled) return;
 
             if (!selectedCategory) {
-                showNotification('Please select a Category (Live, Broiler, etc.) first.', 'error');
-                return;
-            }
-            if (selectedCategory === 'Live') {
-                showNotification('Live entries are added directly via the Live modal.', 'error');
+                showNotification('Please select a Category first.', 'error');
                 return;
             }
 
             const grossWeight = parseFloat(weightInput.value) || 0;
-            if (selectedCategory !== 'Eliminate' && selectedCategory !== 'Intestinal') {
-                if (isNaN(grossWeight) || grossWeight <= 0) {
-                    showNotification('Please enter a valid Weight (KG) first.', 'error');
-                    return;
-                }
-                if (!selectedContainer) {
-                    showNotification('Please select a Container (Crate, Basket, Barrel, or 0 for Nett Weight).', 'error');
-                    return;
-                }
+            if (isNaN(grossWeight) || grossWeight <= 0) {
+                showNotification('Please enter a valid Weight (KG) first.', 'error');
+                return;
+            }
+            if (!selectedContainer) {
+                showNotification('Please select a Container (Crate, Basket, Barrel, or 0 for Nett Weight).', 'error');
+                return;
             }
 
             finalOkBtn.disabled = true;
@@ -1215,46 +745,19 @@
                 let tareWeight = 0;
                 let netWeight = 0;
 
-                if (selectedCategory === 'Intestinal') {
-                    selectedCategoryDetails.inputs.forEach(input => {
-                        let rowTare = 0;
-                        if (input.container === 'Crate') rowTare = tareCrate;
-                        else if (input.container === 'Basket') rowTare = tareBasket;
-                        else if (input.container === 'Barrel') rowTare = tareBarrel;
-                        netWeight += (input.weight - rowTare);
-                    });
-                } else if (selectedCategory === 'Eliminate') {
-                    let aTare = 0;
-                    if (selectedCategoryDetails.ayamAWeight > 0) {
-                        if (selectedCategoryDetails.ayamACon === 'Crate') aTare = tareCrate;
-                        else if (selectedCategoryDetails.ayamACon === 'Basket') aTare = tareBasket;
-                        else if (selectedCategoryDetails.ayamACon === 'Barrel') aTare = tareBarrel;
-                    }
-                    let bTare = 0;
-                    if (selectedCategoryDetails.ayamBWeight > 0) {
-                        if (selectedCategoryDetails.ayamBCon === 'Crate') bTare = tareCrate;
-                        else if (selectedCategoryDetails.ayamBCon === 'Basket') bTare = tareBasket;
-                        else if (selectedCategoryDetails.ayamBCon === 'Barrel') bTare = tareBarrel;
-                    }
-                    selectedCategoryDetails.ayamANet = Math.max(0, selectedCategoryDetails.ayamAWeight - aTare);
-                    selectedCategoryDetails.ayamBNet = Math.max(0, selectedCategoryDetails.ayamBWeight - bTare);
-                    
-                    netWeight = selectedCategoryDetails.ayamANet + selectedCategoryDetails.ayamBNet;
-                } else {
-                    if (selectedContainer === 'Crate') {
-                        const { count, hasR } = selectedContainerDetails;
-                        tareWeight = (count * tareCrate) + (hasR ? tareR : 0);
-                    } else if (selectedContainer === 'Basket') {
-                        const { hasBesi, hasR } = selectedContainerDetails;
-                        tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0);
-                    } else if (selectedContainer === 'Barrel') {
-                        const { hasR } = selectedContainerDetails;
-                        tareWeight = tareBarrel + (hasR ? tareR : 0);
-                    } else if (selectedContainer === 'Zero') {
-                        tareWeight = 0; // Nett weight — no tare deduction
-                    }
-                    netWeight = grossWeight - tareWeight;
+                if (selectedContainer === 'Crate') {
+                    const { count, hasR } = selectedContainerDetails;
+                    tareWeight = (count * tareCrate) + (hasR ? tareR : 0);
+                } else if (selectedContainer === 'Basket') {
+                    const { hasBesi, hasR } = selectedContainerDetails;
+                    tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0);
+                } else if (selectedContainer === 'Barrel') {
+                    const { hasR } = selectedContainerDetails;
+                    tareWeight = tareBarrel + (hasR ? tareR : 0);
+                } else if (selectedContainer === 'Zero') {
+                    tareWeight = 0; // Nett weight — no tare deduction
                 }
+                netWeight = grossWeight - tareWeight;
                 
                 // --- CHILLER BALANCE VERIFICATION FOR AYAM LAMA SLICES ---
                 if (selectedCategory === 'Slices' && selectedCategoryDetails && selectedCategoryDetails.ayamLama) {
@@ -1356,64 +859,6 @@
                 finalOkBtn.disabled = false;
                 finalOkBtn.textContent = "OK";
             }
-        });
-
-        function populateDateList() {
-            const datalist = document.getElementById('live-date-list');
-            if (datalist) {
-                const now = new Date();
-                let html = '';
-                for (let i = 0; i < 7; i++) {
-                    const d = new Date(now);
-                    d.setDate(d.getDate() - i);
-                    const dd = String(d.getDate()).padStart(2, '0');
-                    const mm = String(d.getMonth() + 1).padStart(2, '0');
-                    html += `<option value="${dd}/${mm}">`;
-                }
-                datalist.innerHTML = html;
-            }
-        }
-        async function loadTodayLiveEntries() {
-            const startOfDay = new Date();
-            startOfDay.setHours(0, 0, 0, 0);
-            try {
-                const snapshot = await db.collection('stock_entries')
-                    .where('timestamp', '>=', startOfDay)
-                    .orderBy('timestamp', 'asc')
-                    .get();
-                liveEntries = [];
-                liveDocIds = [];
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.category === 'Live' && data.categoryDetails && data.categoryDetails.entries && data.categoryDetails.entries.length > 0) {
-                        liveEntries.push(data.categoryDetails.entries[0]);
-                        liveDocIds.push(doc.id);
-                    }
-                });
-                renderLiveEntriesOutside();
-            } catch(e) { console.log('Could not load today live entries:', e); }
-        }
-
-        function scheduleMidnightReset() {
-            const now = new Date();
-            const next = new Date(now);
-            next.setDate(now.getDate() + 1);
-            next.setHours(0, 1, 0, 0); // 12:01 AM
-            setTimeout(() => {
-                liveEntries = [];
-                liveDocIds = [];
-                renderLiveEntriesOutside();
-                renderLiveEntries();
-                categorySummary.textContent = '';
-                scheduleMidnightReset();
-            }, next - now);
-        }
-
-        document.addEventListener('DOMContentLoaded', populateDateList);
-        document.addEventListener('DOMContentLoaded', updateHeaderDate);
-        document.addEventListener('DOMContentLoaded', () => {
-            loadTodayLiveEntries();
-            scheduleMidnightReset();
         });
 
         function updateHeaderDate() {
