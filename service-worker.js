@@ -1,6 +1,6 @@
 // D:\OPF4896System\service-worker.js
 
-const CACHE_NAME = 'opf-system-v12';
+const CACHE_NAME = 'opf-system-v13';
 // List all files you want to work offline
 const ASSETS = [
   '.',
@@ -20,7 +20,29 @@ const ASSETS = [
   'icons/icon-512.png',
   'https://cdn.tailwindcss.com', 
   'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
-  'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js'
+  'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js',
+  
+  // Unified Attendance System Assets
+  'attendance.html',
+  'attendance_dashboard.html',
+  'attendance_admin.html',
+  'leave.html',
+  'approve_leave.html',
+  'extra_job.html',
+  'approve_job.html',
+  'firebase-init-attendance.js',
+  'admin.js',
+  'app.js',
+  'extra_job.js',
+  'approve_job.js',
+  'leave.js',
+  'i18n-init.js',
+  'main.js',
+  'locales/en/common.json',
+  'locales/ms/common.json',
+  'locales/ne/common.json',
+  'locales/ta/common.json',
+  'locales/zh/common.json'
 ];
 
 // Install Event: Cache files
