@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Approve Leave Requests</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#4A90E2"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Approve Leave Requests</h1>
+    <div class="bg-white rounded shadow p-4 mb-4 flex flex-col sm:flex-row items-center gap-3">
+      <select id="statusFilter" class="border rounded p-2 w-full sm:w-auto">
+        <option value="All">All</option>
+        <option value="Pending" selected>Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+      <input id="phoneFilter" type="text" placeholder="Filter by phone..." class="border rounded p-2 flex-1 w-full"/>
+      <button id="refreshBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto">Refresh</button>
+    </div>
+    <div id="list" class="space-y-3"></div>
+  </div>
+
+  <script src="firebase-init.js"></script>
+  <script>
+    // Admin Guard
+    (async function guard(){
+        const phone = localStorage.getItem("phone");
+        if (!phone) { alert("Access denied."); window.location.href = "index.html"; return; }
+        try {
+            const snap = await db.collection("staffs").where("phone","==",phone).limit(1).get();
+            if (snap.empty) { alert("Access denied."); window.location.href = "index.html"; return; }
+            if (!snap.docs[0].data().admin) { alert("Access denied."); window.location.href = "index.html"; return; }
+        } catch (e) { console.error(e); alert("Access check failed."); window.location.href = "index.html"; }
+    })();
+  </script>
+  <script>
+    const listEl = document.getElementById("list");
+    const statusFilterEl = document.getElementById("statusFilter");
+    const phoneFilterEl = document.getElementById("phoneFilter");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    async function loadRequests() {
+      listEl.innerHTML = '<p class="text-center text-gray-500">Loading requests...</p>';
+      try {
+        // MODIFIED: Query is simplified by removing the orderBy clause
+        let q = db.collection("leave_requests");
+        
+        const status = statusFilterEl.value;
+        const phone = phoneFilterEl.value.trim();
+
+        if (status !== "All") {
+          q = q.where("status", "==", status);
+        }
+        if (phone) {
+          q = q.where("phone", "==", phone);
+        }
+        
+        const snap = await q.get();
+
+        if (snap.empty) {
+          listEl.innerHTML = '<p class="text-center text-gray-500">No requests found.</p>';
+          return;
+        }
+
+        listEl.innerHTML = "";
+        // Sort the results in JavaScript instead of the database query
+        const requests = snap.docs.sort((a, b) => b.data().timestamp - a.data().timestamp);
+
+        requests.forEach(doc => {
+          const d = doc.data();
+          const card = document.createElement("div");
+          card.className = "bg-white rounded shadow-md p-4";
+          
+          let statusColor = "bg-gray-200 text-gray-800";
+          if (d.status === "Pending") statusColor = "bg-yellow-200 text-yellow-800";
+          if (d.status === "Approved") statusColor = "bg-green-200 text-green-800";
+          if (d.status === "Rejected") statusColor = "bg-red-200 text-red-800";
+
+          card.innerHTML = `
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center">
+              <div>
+                <p class="font-bold text-lg">${d.name} <span class="text-gray-500 font-normal text-sm">(${d.phone})</span></p>
+                <p><span class="font-semibold">${d.type}</span> for ${d.days} day(s)</p>
+                <p class="text-sm text-gray-600">From: ${d.fromDate} To: ${d.toDate}</p>
+                ${d.reason ? `<p class="text-sm text-gray-500 mt-1">Reason: ${d.reason}</p>` : ''}
+                ${d.mcSerial ? `<p class="text-sm text-gray-500 mt-1">MC Serial: ${d.mcSerial} (${d.medicalInstitution})</p>` : ''}
+              </div>
+              <div class="flex flex-col items-stretch sm:items-end mt-4 sm:mt-0">
+                <span class="px-2 py-1 text-sm font-semibold rounded-full ${statusColor} text-center mb-2">${d.status}</span>
+                <div class="flex gap-2">
+                  <button onclick="updateStatus('${doc.id}', 'Approved', '${d.phone}', '${d.name}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">Approve</button>
+                  <button onclick="updateStatus('${doc.id}', 'Rejected', '${d.phone}', '${d.name}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Reject</button>
+                  <button onclick="deleteRequest('${doc.id}')" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded">Delete</button>
+                </div>
+              </div>
+            </div>
+          `;
+          listEl.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        listEl.innerHTML = `<div class="text-red-500 text-center p-4 bg-red-100 rounded">Error loading requests: ${err.message}</div>`;
+      }
+    }
+
+    function sendWhatsAppMessage(phone, message) {
+      let formattedPhone = phone.trim();
+      if (formattedPhone.startsWith('0')) formattedPhone = '6' + formattedPhone;
+      const encodedMessage = encodeURIComponent(message);
+      window.open(`https://wa.me/${formattedPhone}?text=${encodedMessage}`, '_blank');
+    }
+
+    async function updateStatus(id, newStatus, phone, name) {
+      try {
+        await db.collection("leave_requests").doc(id).update({ status: newStatus });
+        await Swal.fire("Updated", "The request status has been changed to " + newStatus, "success");
+        let message = `Hi ${name}, your leave request has been ${newStatus.toLowerCase()}.`;
+        if (newStatus === 'Rejected') message += " Please contact your manager for more details.";
+        sendWhatsAppMessage(phone, message);
+        loadRequests();
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Update failed: " + err.message, "error");
+      }
+    }
+
+    async function deleteRequest(id) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+        });
+        if (result.isConfirmed) {
+            try {
+                await db.collection("leave_requests").doc(id).delete();
+                Swal.fire('Deleted!', 'The leave request has been deleted.', 'success');
+                loadRequests();
+            } catch (err) {
+                console.error("Delete failed:", err);
+                Swal.fire('Error', 'Failed to delete the request.', 'error');
+            }
+        }
+    }
+    
+    window.updateStatus = updateStatus;
+    window.deleteRequest = deleteRequest;
+    refreshBtn.addEventListener("click", loadRequests);
+    statusFilterEl.addEventListener("change", loadRequests);
+    phoneFilterEl.addEventListener("input", loadRequests);
+    loadRequests();
+  </script>
+  <script src="main.js"></script>
+</body>
+</html>
