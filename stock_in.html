@@ -902,6 +902,30 @@
                 }
             });
         });
+
+        // Make Enter key (including Numpad Enter) trigger the OK button
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                // Ignore if typing inside a textarea to allow newlines
+                if (e.target.tagName === 'TEXTAREA') return;
+                
+                // If a modal is currently open, trigger its OK button
+                const activeModal = document.querySelector('.fixed.inset-0:not(.hidden)');
+                if (activeModal) {
+                    const okBtn = activeModal.querySelector('button[id$="-ok-btn"]');
+                    if (okBtn) {
+                        e.preventDefault();
+                        okBtn.click();
+                    }
+                } else {
+                    // Otherwise, trigger the main final OK button
+                    e.preventDefault();
+                    if (!finalOkBtn.disabled) {
+                        finalOkBtn.click();
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
