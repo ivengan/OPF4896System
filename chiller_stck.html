@@ -220,7 +220,59 @@
 
             <div class="flex gap-3 pt-4">
                 <button id="edit-clear-btn" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition shadow-md">Clear</button>
-                <button id="edit-confirm-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-md">Confirm & Update</button>
+                <button id="transfer-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-md">Transfer</button>
+                <button id="edit-confirm-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-md">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transfer-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Transfer to Freezer</h2>
+                <button id="transfer-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[17px] font-bold text-gray-700">1. Destination Category (Part)</label>
+                    <select id="transfer-part" class="w-full border border-gray-300 rounded-lg p-3 mt-1">
+                        <option value="Loading...">Loading parts...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[17px] font-bold text-gray-700">2. Pack Size</label>
+                    <select id="transfer-pack-size" class="w-full border border-gray-300 rounded-lg p-3 mt-1">
+                        <option value="1 KG">1 KG</option>
+                        <option value="2 KG">2 KG</option>
+                        <option value="5 KG">5 KG</option>
+                        <option value="10 KG">10 KG</option>
+                        <option value="10 pcs">10 pcs</option>
+                        <option value="Custom">Custom...</option>
+                    </select>
+                    <input type="text" id="transfer-custom-pack" class="hidden w-full border border-gray-300 rounded-lg p-3 mt-2" placeholder="e.g., 20 pcs">
+                </div>
+                
+                <div>
+                    <label class="block text-[17px] font-bold text-gray-700">3. New Weight (Gross KG)</label>
+                    <input type="number" step="0.01" id="transfer-weight" class="w-full border border-gray-300 rounded-lg p-3 mt-1" placeholder="0.0">
+                </div>
+                
+                <div>
+                    <label class="block text-[17px] font-bold text-gray-700">4. Container type</label>
+                    <select id="transfer-container" class="w-full border border-gray-300 rounded-lg p-3 mt-1">
+                        <option value="Crate">Crate</option>
+                        <option value="Basket">Basket</option>
+                        <option value="Barrel">Barrel</option>
+                        <option value="None">None</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button id="transfer-confirm-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-md">Confirm Transfer</button>
             </div>
         </div>
     </div>
@@ -278,12 +330,21 @@
                       "H/P": [],
                       "KOPEK": [],
                       "SLICES": [],
+                      "PARTS": [],
                       "OTHERS": []
                   };
 
                   snapshot.forEach(doc => {
                       const data = doc.data();
-                      if (data.category !== 'Broiler' && data.category !== 'Slices') return; // Only 'Broiler' and 'Slices' categories are shown in Chiller
+                      
+                      let isChillerItem = false;
+                      if (data.category === 'Broiler' || data.category === 'Slices') {
+                          isChillerItem = true;
+                      } else if (data.category === 'Parts' && data.categoryDetails && data.categoryDetails.packSize === 'No pack = 0KG') {
+                          isChillerItem = true;
+                      }
+                      
+                      if (!isChillerItem) return;
                       
                       const id = doc.id;
                       
@@ -311,6 +372,8 @@
                           type = "KOPEK";
                       } else if (data.category === "Slices" || (data.category === "Broiler" && data.categoryDetails && data.categoryDetails.type === "Slices")) {
                           type = "SLICES";
+                      } else if (data.category === "Parts") {
+                          type = "PARTS";
                       }
 
                       groups[type].push(data);
@@ -321,7 +384,7 @@
                       return;
                   }
 
-                  const orderConfig = ["H/P", "KOPEK", "SLICES", "OTHERS"];
+                  const orderConfig = ["H/P", "KOPEK", "SLICES", "PARTS", "OTHERS"];
                   
                   orderConfig.forEach(catName => {
                       
@@ -551,6 +614,117 @@
                 alert("Failed to update entry.");
             } finally {
                 btn.disabled = false; btn.textContent = 'Confirm & Update';
+            }
+        });
+
+        // --- Transfer Logic ---
+        const transferModal = document.getElementById('transfer-modal');
+        let partsLoaded = false;
+
+        document.getElementById('transfer-btn').addEventListener('click', async () => {
+            if (!currentEditItem) return;
+            
+            // Hide edit modal
+            editModal.classList.add('hidden');
+            
+            // Populate parts if not done yet
+            if (!partsLoaded) {
+                try {
+                    const docSnap = await db.collection('config').doc('pricing').get();
+                    const partSelect = document.getElementById('transfer-part');
+                    partSelect.innerHTML = '';
+                    if (docSnap.exists && docSnap.data().parts) {
+                        Object.keys(docSnap.data().parts).sort().forEach(p => {
+                            partSelect.innerHTML += `<option value="${p}">${p}</option>`;
+                        });
+                    }
+                    partsLoaded = true;
+                } catch (e) {
+                    console.error("Error loading parts for transfer:", e);
+                }
+            }
+
+            document.getElementById('transfer-weight').value = currentEditItem.grossWeight || '';
+            document.getElementById('transfer-container').value = currentEditItem.container || 'Crate';
+            
+            transferModal.classList.remove('hidden');
+        });
+
+        document.getElementById('transfer-close-x').addEventListener('click', () => {
+            transferModal.classList.add('hidden');
+            // Re-open edit modal if they cancel transfer
+            editModal.classList.remove('hidden');
+        });
+
+        document.getElementById('transfer-pack-size').addEventListener('change', (e) => {
+            const customInput = document.getElementById('transfer-custom-pack');
+            if (e.target.value === 'Custom') {
+                customInput.classList.remove('hidden');
+            } else {
+                customInput.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('transfer-confirm-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('transfer-confirm-btn');
+            if (btn.disabled) return;
+            
+            const partInput = document.getElementById('transfer-part').value;
+            let packSizeInput = document.getElementById('transfer-pack-size').value;
+            if (packSizeInput === 'Custom') {
+                packSizeInput = document.getElementById('transfer-custom-pack').value.trim();
+                if (!packSizeInput) return alert("Please specify a custom pack size.");
+            }
+            
+            const weightInput = parseFloat(document.getElementById('transfer-weight').value);
+            const containerInput = document.getElementById('transfer-container').value;
+
+            if (isNaN(weightInput) || weightInput <= 0) return alert("Please enter a valid new gross weight > 0.");
+
+            btn.disabled = true; 
+            btn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Transferring...</span>`;
+
+            try {
+                const configSnap = await db.collection('config').doc('pricing').get();
+                const config = configSnap.exists ? configSnap.data() : {};
+                
+                const tareCrate = parseFloat(config.tare_crate) || 1.8;
+                const tareBasket = parseFloat(config.tare_basket) || 8.7;
+                const tareBarrel = parseFloat(config.tare_barrel) || 5.0;
+                const tareR = parseFloat(config.tare_r) || 4.7;
+
+                let cCount = (currentEditItem && currentEditItem.containerDetails && currentEditItem.containerDetails.count) ? currentEditItem.containerDetails.count : 1;
+                let hasR = (currentEditItem && currentEditItem.containerDetails && currentEditItem.containerDetails.hasR) ? currentEditItem.containerDetails.hasR : false;
+                let hasBesi = (currentEditItem && currentEditItem.containerDetails && currentEditItem.containerDetails.hasBesi) ? currentEditItem.containerDetails.hasBesi : false;
+
+                let tareWeight = 0;
+                if (containerInput === 'Crate') tareWeight = (cCount * tareCrate) + (hasR ? tareR : 0);
+                else if (containerInput === 'Basket') tareWeight = tareBasket + (hasBesi ? 0.5 : 0) + (hasR ? tareR : 0);
+                else if (containerInput === 'Barrel') tareWeight = tareBarrel + (hasR ? tareR : 0);
+
+                const netWeight = weightInput - tareWeight;
+
+                // Update the existing record to 'Parts' category with the new details (moving it to Freezer)
+                await db.collection('stock_entries').doc(currentEditId).update({
+                    category: 'Parts',
+                    categoryDetails: {
+                        partName: partInput,
+                        packSize: packSizeInput
+                    },
+                    grossWeight: weightInput,
+                    tareWeight: tareWeight,
+                    netWeight: netWeight,
+                    container: containerInput
+                });
+
+                showNotification("Successfully transferred to Freezer stock.", "success");
+                transferModal.classList.add('hidden');
+
+            } catch (error) {
+                console.error("Transfer failed:", error);
+                alert("Failed to transfer entry.");
+            } finally {
+                btn.disabled = false; btn.textContent = 'Confirm Transfer';
             }
         });
 
