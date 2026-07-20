@@ -660,6 +660,7 @@
             const customInput = document.getElementById('transfer-custom-pack');
             if (e.target.value === 'Custom') {
                 customInput.classList.remove('hidden');
+                customInput.focus();
             } else {
                 customInput.classList.add('hidden');
             }
@@ -671,8 +672,11 @@
             
             const partInput = document.getElementById('transfer-part').value;
             let packSizeInput = document.getElementById('transfer-pack-size').value;
+            let isCustomPack = false;
+            
             if (packSizeInput === 'Custom') {
                 packSizeInput = document.getElementById('transfer-custom-pack').value.trim();
+                isCustomPack = true;
                 if (!packSizeInput) return alert("Please specify a custom pack size.");
             }
             
@@ -714,8 +718,26 @@
                     grossWeight: weightInput,
                     tareWeight: tareWeight,
                     netWeight: netWeight,
-                    container: containerInput
+                    container: containerInput,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Update timestamp to now so it shows as IN today
                 });
+
+                // --- SYNC NEW CUSTOM CATEGORY TO DATABASE ---
+                if (isCustomPack) {
+                    let combinedName = `${partInput} ${packSizeInput}`;
+                    
+                    // Add to Inventory
+                    await db.collection('inventory').add({
+                        name: combinedName.toLowerCase(),
+                        displayName: combinedName,
+                        description: packSizeInput
+                    });
+                    
+                    // Add to Pricing config
+                    await db.collection('config').doc('pricing').set({
+                        parts: { [combinedName]: 0 }
+                    }, { merge: true });
+                }
 
                 showNotification("Successfully transferred to Freezer stock.", "success");
                 transferModal.classList.add('hidden');
@@ -725,6 +747,17 @@
                 alert("Failed to transfer entry.");
             } finally {
                 btn.disabled = false; btn.textContent = 'Confirm Transfer';
+            }
+        });
+
+        // Global Enter key support for modals
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (!editModal.classList.contains('hidden') && !document.getElementById('edit-submit-btn').disabled) {
+                    document.getElementById('edit-submit-btn').click();
+                } else if (!transferModal.classList.contains('hidden') && !document.getElementById('transfer-confirm-btn').disabled) {
+                    document.getElementById('transfer-confirm-btn').click();
+                }
             }
         });
 
