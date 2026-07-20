@@ -497,64 +497,84 @@
             }
         });
         
-        catWasteBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(catWasteBtn, allCatBtns, 'category', 'Waste');
-            if(value) {
-                selectedCategory = value;
-                selectedCategoryDetails = { type: 'Waste' };
-                categorySummary.textContent = 'Selected: Waste';
-            }
-        });
+        const catWasteBtn = document.getElementById('category-waste-btn');
+        const catIntestinalBtn = document.getElementById('category-intestinal-btn');
+        const intestinalModal = document.getElementById('intestinal-modal');
 
-        catIntestinalBtn.addEventListener('click', () => {
-            const value = handleSegmentClick(catIntestinalBtn, allCatBtns, 'category', 'Intestinal');
-            if(value) {
-                selectedCategory = value;
-                showModal(intestinalModal);
-            }
-        });
+        if (catWasteBtn) {
+            catWasteBtn.addEventListener('click', () => {
+                const value = handleSegmentClick(catWasteBtn, allCatBtns, 'category', 'Waste');
+                if(value) {
+                    selectedCategory = value;
+                    selectedCategoryDetails = { type: 'Waste' };
+                    categorySummary.textContent = 'Selected: Waste';
+                }
+            });
+        }
+
+        if (catIntestinalBtn && intestinalModal) {
+            catIntestinalBtn.addEventListener('click', () => {
+                const value = handleSegmentClick(catIntestinalBtn, allCatBtns, 'category', 'Intestinal');
+                if(value) {
+                    selectedCategory = value;
+                    showModal(intestinalModal);
+                }
+            });
+        }
 
         // Initialize Intestinal modal inputs
         const intestinalContainer = document.getElementById('intestinal-inputs-container');
-        let intestinalHtml = '';
-        for (let i = 1; i <= 10; i++) {
-            intestinalHtml += `
-            <div class="flex gap-2 items-center bg-gray-50 p-2 rounded border border-gray-200">
-                <span class="text-gray-500 font-bold w-6">${i}.</span>
-                <input type="number" id="int-w-${i}" step="0.1" placeholder="Weight KG" class="w-1/2 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500">
-                <select id="int-c-${i}" class="w-1/2 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500">
-                    <option value="Crate">Crate</option>
-                    <option value="Zero">Zero (Nett)</option>
-                    <option value="Basket">Basket</option>
-                    <option value="Barrel">Barrel</option>
-                </select>
-            </div>`;
+        if (intestinalContainer) {
+            let intestinalHtml = '';
+            for (let i = 1; i <= 10; i++) {
+                intestinalHtml += `
+                <div class="flex gap-2 items-center bg-gray-50 p-2 rounded border border-gray-200">
+                    <span class="text-gray-500 font-bold w-6">${i}.</span>
+                    <input type="number" id="int-w-${i}" step="0.1" placeholder="Weight KG" class="w-1/2 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                    <select id="int-c-${i}" class="w-1/2 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                        <option value="Crate">Crate</option>
+                        <option value="Zero">Zero (Nett)</option>
+                        <option value="Basket">Basket</option>
+                        <option value="Barrel">Barrel</option>
+                    </select>
+                </div>`;
+            }
+            intestinalContainer.innerHTML = intestinalHtml;
         }
-        intestinalContainer.innerHTML = intestinalHtml;
 
-        document.getElementById('intestinal-clear-btn').addEventListener('click', () => {
-            for (let i = 1; i <= 10; i++) {
-                document.getElementById(`int-w-${i}`).value = '';
-                document.getElementById(`int-c-${i}`).value = 'Crate';
-            }
-            selectedCategoryDetails = null;
-        });
-
-        document.getElementById('intestinal-ok-btn').addEventListener('click', () => {
-            let inputs = [];
-            for (let i = 1; i <= 10; i++) {
-                const wInput = document.getElementById(`int-w-${i}`).value;
-                const cSelect = document.getElementById(`int-c-${i}`).value;
-                const weight = parseFloat(wInput);
-                if (!isNaN(weight) && weight > 0) {
-                    inputs.push({ weight: weight, container: cSelect });
+        const intestinalClearBtn = document.getElementById('intestinal-clear-btn');
+        if (intestinalClearBtn) {
+            intestinalClearBtn.addEventListener('click', () => {
+                for (let i = 1; i <= 10; i++) {
+                    const wInput = document.getElementById(`int-w-${i}`);
+                    const cSelect = document.getElementById(`int-c-${i}`);
+                    if (wInput) wInput.value = '';
+                    if (cSelect) cSelect.value = 'Crate';
                 }
-            }
-            
-            selectedCategoryDetails = { type: 'Intestinal', inputs: inputs };
-            categorySummary.textContent = `Selected: Intestine (${inputs.length} inputs)`;
-            hideModal(intestinalModal);
-        });
+                selectedCategoryDetails = null;
+            });
+        }
+
+        const intestinalOkBtn = document.getElementById('intestinal-ok-btn');
+        if (intestinalOkBtn && intestinalModal) {
+            intestinalOkBtn.addEventListener('click', () => {
+                let inputs = [];
+                for (let i = 1; i <= 10; i++) {
+                    const wInput = document.getElementById(`int-w-${i}`);
+                    const cSelect = document.getElementById(`int-c-${i}`);
+                    if (wInput && cSelect) {
+                        const weight = parseFloat(wInput.value);
+                        if (!isNaN(weight) && weight > 0) {
+                            inputs.push({ weight: weight, container: cSelect.value });
+                        }
+                    }
+                }
+                
+                selectedCategoryDetails = { type: 'Intestinal', inputs: inputs };
+                categorySummary.textContent = `Selected: Intestine (${inputs.length} inputs)`;
+                hideModal(intestinalModal);
+            });
+        }
 
         function bindContainerButtons(crate, basket, barrel, zero) {
             crate.addEventListener('click', () => {
