@@ -468,6 +468,10 @@
             openModal('modal-enable-bio');
         };
 
+        document.getElementById('btn-reg-clear').onclick = () => {
+            document.getElementById('reg-password').value = '';
+        };
+
         document.getElementById('btn-bio-no').onclick = async () => { await finalizeRegistration(false, 'none'); };
         document.getElementById('btn-bio-face').onclick = async () => { await finalizeRegistration(true, 'face'); };
         document.getElementById('btn-bio-finger').onclick = async () => { await finalizeRegistration(true, 'finger'); };

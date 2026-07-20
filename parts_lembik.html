@@ -587,6 +587,15 @@
             document.getElementById('edit-item-modal').classList.add('hidden');
         });
 
+        document.getElementById('edit-close-x').addEventListener('click', () => {
+            document.getElementById('edit-modal').classList.add('hidden');
+        });
+
+        document.getElementById('edit-submit-btn').addEventListener('click', () => {
+            // Edit dispatch deduction logic placeholder (modal is unused in UI)
+            document.getElementById('edit-modal').classList.add('hidden');
+        });
+
         document.getElementById('edit-item-save-btn').addEventListener('click', async () => {
             const btn = document.getElementById('edit-item-save-btn');
             if (btn.disabled) return;
@@ -645,6 +654,64 @@
 
         function initiateDelete(item) { itemToDelete = item; isDeletingAll = false; verifyModal.classList.remove('hidden'); }
         document.getElementById('del-all-btn').onclick = () => { isDeletingAll = true; verifyModal.classList.remove('hidden'); };
+        
+        document.getElementById('confirm-delete-btn').onclick = async () => {
+            const phone = document.getElementById('verify-phone').value.trim();
+            const pass = document.getElementById('verify-password').value.trim();
+            const btn = document.getElementById('confirm-delete-btn');
+            if (!phone || !pass) return alert("Enter phone number and password.");
+
+            btn.disabled = true;
+            btn.textContent = "Verifying...";
+            
+            try {
+                const staffQuery = await db.collection('staff').where('phoneNumber', '==', phone).limit(1).get();
+                if (staffQuery.empty) {
+                    alert("Unauthorized or user not found.");
+                    btn.disabled = false;
+                    btn.textContent = "Verify & Delete";
+                    return;
+                }
+                
+                const data = staffQuery.docs[0].data();
+                const dbPassword = data.password !== undefined ? String(data.password).trim() : 
+                                   data.Password !== undefined ? String(data.Password).trim() : null;
+                
+                if (dbPassword === pass) {
+                    if (isDeletingAll) { /* Batch delete if implemented */ } 
+                    else { await performDelete(itemToDelete); }
+                    document.getElementById('verify-phone').value = '';
+                    document.getElementById('verify-password').value = '';
+                    verifyModal.classList.add('hidden');
+                } else {
+                    alert("Incorrect Password.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Verification failed.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Verify & Delete";
+            }
+        };
+
+        async function performDelete(item) {
+            try {
+                const orderRef = db.collection('orders').doc(item.orderId);
+                const doc = await orderRef.get();
+                if (!doc.exists) return;
+                const data = doc.data();
+                const updatedParts = data.parts.filter((_, i) => i !== item.partIndex);
+                if (updatedParts.length === 0 && (!data.broilers || data.broilers.length === 0)) {
+                    await orderRef.delete();
+                } else {
+                    await orderRef.update({ parts: updatedParts });
+                }
+                showNotification("Item deleted.", "success");
+            } catch (e) { showNotification("Failed.", "error"); }
+        }
+        
+        document.getElementById('cancel-verify-btn').onclick = () => verifyModal.classList.add('hidden');
         document.getElementById('modal-close-x').onclick = () => dispatchModal.classList.add('hidden');
         sortSelect.onchange = renderDispatchList;
         function updateHeaderDate() {
