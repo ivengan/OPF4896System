@@ -287,7 +287,18 @@
                       
                       const id = doc.id;
                       
-                      let dateObj = data.timestamp ? data.timestamp.toDate() : new Date();
+                      let dateObj;
+                      if (data.timestamp) {
+                          if (typeof data.timestamp.toDate === 'function') {
+                              dateObj = data.timestamp.toDate();
+                          } else if (data.timestamp.seconds !== undefined) {
+                              dateObj = new Date(data.timestamp.seconds * 1000);
+                          } else {
+                              dateObj = new Date(data.timestamp);
+                          }
+                      } else {
+                          dateObj = new Date();
+                      }
                       if (dateObj.toDateString() !== todayStr) return; 
 
                       todayItemCount++;
@@ -484,11 +495,11 @@
             if (btn.disabled) return;
             const weightInput = parseFloat(document.getElementById('edit-weight').value);
             const typeInput = document.getElementById('edit-category').value;
-            const qtyInput = parseInt(document.getElementById('edit-qty').value);
+            const qtyInput = parseInt(document.getElementById('edit-qty').value) || 0;
             const containerInput = document.getElementById('edit-container').value;
 
             if (isNaN(weightInput) || weightInput <= 0) return alert("Please enter a valid gross weight > 0.");
-            if (isNaN(qtyInput) || qtyInput < 0) return alert("Please enter a valid quantity.");
+            if (qtyInput < 0) return alert("Please enter a valid quantity.");
 
             btn.disabled = true; btn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Updating...</span>`;
 
@@ -501,9 +512,9 @@
                 const tareBarrel = parseFloat(config.tare_barrel) || 5.0;
                 const tareR = parseFloat(config.tare_r) || 4.7;
 
-                let cCount = (currentEditItem.containerDetails && currentEditItem.containerDetails.count) ? currentEditItem.containerDetails.count : 1;
-                let hasR = (currentEditItem.containerDetails && currentEditItem.containerDetails.hasR) ? currentEditItem.containerDetails.hasR : false;
-                let hasBesi = (currentEditItem.containerDetails && currentEditItem.containerDetails.hasBesi) ? currentEditItem.containerDetails.hasBesi : false;
+                let cCount = (currentEditItem && currentEditItem.containerDetails && currentEditItem.containerDetails.count) ? currentEditItem.containerDetails.count : 1;
+                let hasR = (currentEditItem && currentEditItem.containerDetails && currentEditItem.containerDetails.hasR) ? currentEditItem.containerDetails.hasR : false;
+                let hasBesi = (currentEditItem && currentEditItem.containerDetails && currentEditItem.containerDetails.hasBesi) ? currentEditItem.containerDetails.hasBesi : false;
 
                 let tareWeight = 0;
                 if (containerInput === 'Crate') tareWeight = (cCount * tareCrate) + (hasR ? tareR : 0);
