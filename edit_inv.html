@@ -283,11 +283,20 @@
                     displayName: name,
                     description: description
                 });
+
+                // Sync to config/pricing parts
+                await db.collection('config').doc('pricing').set({
+                    parts: {
+                        [name]: 0
+                    }
+                }, { merge: true });
+
                 showNotification('Item added successfully!', 'success');
                 itemNameInput.value = '';
                 itemDescInput.value = '';
                 fetchAndDisplayInventory();
             } catch (error) {
+                console.error(error);
                 showNotification('Error adding item.', 'error');
             }
         });
@@ -302,14 +311,37 @@
                 return;
             }
             try {
+                const oldDoc = allItems.find(i => i.id === selectedItemId);
+                const oldName = oldDoc ? oldDoc.displayName : null;
+
                 await db.collection('inventory').doc(selectedItemId).update({
                     name: name.toLowerCase(),
                     displayName: name,
                     description: description
                 });
+
+                // Sync to config/pricing parts
+                const configSnap = await db.collection('config').doc('pricing').get();
+                let oldPrice = 0;
+                if (configSnap.exists && configSnap.data().parts && oldName && configSnap.data().parts[oldName] !== undefined) {
+                    oldPrice = configSnap.data().parts[oldName];
+                }
+
+                if (oldName && oldName !== name) {
+                    await db.collection('config').doc('pricing').update({
+                        [`parts.${oldName}`]: firebase.firestore.FieldValue.delete(),
+                        [`parts.${name}`]: oldPrice
+                    });
+                } else {
+                    await db.collection('config').doc('pricing').set({
+                        parts: { [name]: oldPrice }
+                    }, { merge: true });
+                }
+
                 showNotification('Item updated successfully!', 'success');
                 fetchAndDisplayInventory();
             } catch (error) {
+                console.error(error);
                 showNotification('Error updating item.', 'error');
             }
         });
@@ -318,10 +350,25 @@
             if (!selectedItemId) return;
             if (confirm(`Are you sure you want to delete "${itemNameInput.value}"?`)) {
                 try {
+                    const oldDoc = allItems.find(i => i.id === selectedItemId);
+                    const oldName = oldDoc ? oldDoc.displayName : null;
+
                     await db.collection('inventory').doc(selectedItemId).delete();
+                    
+                    // Sync to config/pricing parts
+                    if (oldName) {
+                        const configSnap = await db.collection('config').doc('pricing').get();
+                        if (configSnap.exists && configSnap.data().parts && configSnap.data().parts[oldName] !== undefined) {
+                            await db.collection('config').doc('pricing').update({
+                                [`parts.${oldName}`]: firebase.firestore.FieldValue.delete()
+                            });
+                        }
+                    }
+
                     showNotification('Item deleted successfully!', 'success');
                     fetchAndDisplayInventory();
                 } catch (error) {
+                    console.error(error);
                     showNotification('Error deleting item.', 'error');
                 }
             }
