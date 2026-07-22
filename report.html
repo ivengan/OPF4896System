@@ -247,6 +247,134 @@
     </div>
 </section>
 
+<!-- AYAM B, GOLEK AND SLICES RECORD LAYOUT -->
+<section class="bg-white p-4 mb-6 shadow-md print:shadow-none print:p-0 print:mb-0 text-black mx-auto" style="max-width: 900px; font-family: 'Inter', sans-serif;">
+    <div class="mb-4 flex justify-between items-center border-b-2 border-black pb-1">
+        <h2 class="text-xl font-bold">Ayam B, Golek and Slices Record</h2>
+        <span class="text-sm font-bold" id="ab-golek-slices-date"></span>
+    </div>
+
+    <!-- 1. Ayam B Subsection -->
+    <div class="mb-6">
+        <h3 class="text-base font-bold mb-2 border-l-4 border-black pl-2">1. Ayam B</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border-2 border-black text-center text-sm">
+                <thead>
+                    <tr class="bg-gray-100 font-bold">
+                        <th class="border-2 border-black p-2 text-left">Sub-Category (子类别)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Previous Day Stocks (昨日存货)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Today Storing (今日入库)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Total Stocks (总存货)</th>
+                    </tr>
+                    <tr class="bg-gray-50 text-xs font-bold">
+                        <th class="border-2 border-black p-1 text-left"></th>
+                        <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                        <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                        <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl-ayamb-body">
+                    <!-- Dynamic Rows / Fallback empty state -->
+                </tbody>
+                <tfoot>
+                    <tr class="font-bold bg-gray-100">
+                        <td class="border-2 border-black p-2 text-left">Ayam B Total</td>
+                        <td class="border-2 border-black p-2 text-right" id="ayamb-tot-prev-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="ayamb-tot-prev-kg">0.00</td>
+                        <td class="border-2 border-black p-2 text-right" id="ayamb-tot-today-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="ayamb-tot-today-kg">0.00</td>
+                        <td class="border-2 border-black p-2 text-right" id="ayamb-tot-total-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="ayamb-tot-total-kg">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. Ayam Golek Subsection -->
+    <div class="mb-6">
+        <h3 class="text-base font-bold mb-2 border-l-4 border-black pl-2">2. Ayam Golek</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border-2 border-black text-center text-sm">
+                <thead>
+                    <tr class="bg-gray-100 font-bold">
+                        <th class="border-2 border-black p-2 text-left">Sub-Category (子类别)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Previous Day Stocks (昨日存货)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Today Storing (今日入库)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Total Stocks (总存货)</th>
+                    </tr>
+                    <tr class="bg-gray-50 text-xs font-bold">
+                        <th class="border-2 border-black p-1 text-left"></th>
+                        <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                        <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                        <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl-golek-body">
+                    <!-- Dynamic Rows / Fallback empty state -->
+                </tbody>
+                <tfoot>
+                    <tr class="font-bold bg-gray-100">
+                        <td class="border-2 border-black p-2 text-left">Ayam Golek Total</td>
+                        <td class="border-2 border-black p-2 text-right" id="golek-tot-prev-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="golek-tot-prev-kg">0.00</td>
+                        <td class="border-2 border-black p-2 text-right" id="golek-tot-today-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="golek-tot-today-kg">0.00</td>
+                        <td class="border-2 border-black p-2 text-right" id="golek-tot-total-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="golek-tot-total-kg">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- 3. Chicken Slices Subsection -->
+    <div>
+        <h3 class="text-base font-bold mb-2 border-l-4 border-black pl-2">3. Chicken Slices</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border-2 border-black text-center text-sm">
+                <thead>
+                    <tr class="bg-gray-100 font-bold">
+                        <th class="border-2 border-black p-2 text-left">Sub-Category (子类别)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Previous Day Stocks (昨日存货)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Today Storing (今日入库)</th>
+                        <th class="border-2 border-black p-2" colspan="2">Total Stocks (总存货)</th>
+                    </tr>
+                    <tr class="bg-gray-50 text-xs font-bold">
+                        <th class="border-2 border-black p-1 text-left"></th>
+                        <th class="border-2 border-black p-1 w-20">包数/只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                        <th class="border-2 border-black p-1 w-20">包数/只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                        <th class="border-2 border-black p-1 w-20">包数/只数 (Qty)</th>
+                        <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl-chickenslices-body">
+                    <!-- Dynamic Rows / Fallback empty state -->
+                </tbody>
+                <tfoot>
+                    <tr class="font-bold bg-gray-100">
+                        <td class="border-2 border-black p-2 text-left">Chicken Slices Total</td>
+                        <td class="border-2 border-black p-2 text-right" id="cslices-tot-prev-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="cslices-tot-prev-kg">0.00</td>
+                        <td class="border-2 border-black p-2 text-right" id="cslices-tot-today-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="cslices-tot-today-kg">0.00</td>
+                        <td class="border-2 border-black p-2 text-right" id="cslices-tot-total-qty">0</td>
+                        <td class="border-2 border-black p-2 text-right" id="cslices-tot-total-kg">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</section>
+
 <!-- CATEGORY 1: PRODUCTION & YIELD -->
         <section class="space-y-6 print-break-inside">
             <div class="flex items-center gap-3 mb-2 border-b-2 border-indigo-200 pb-2">
@@ -508,6 +636,13 @@
                     'OTHERS': { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 }
                 };
 
+                // Ayam B, Golek and Slices Accumulators
+                let specialRecordsData = {
+                    ayamb: {},
+                    golek: {},
+                    chickenslices: {}
+                };
+
                 const startOfToday = new Date();
                 startOfToday.setHours(0, 0, 0, 0);
 
@@ -576,6 +711,40 @@
                         } else if (docDate.getTime() < startOfToday.getTime()) {
                             chillerStockData[catType].prevQty += count;
                             chillerStockData[catType].prevKg += weight;
+                        }
+                    }
+
+                    // Ayam B, Ayam Golek, and Chicken Slices Categorization
+                    let catName = (d.category || '').toString().toLowerCase();
+                    let typeName = (d.categoryDetails?.type || '').toString().toLowerCase();
+                    let remarkName = (d.remark || '').toString().toLowerCase();
+                    let subCatName = (d.categoryDetails?.subCategory || d.categoryDetails?.partName || '').toString().toLowerCase();
+                    let countVal = parseInt(d.categoryDetails?.count) || 0;
+
+                    let targetGroup = null;
+                    let subKey = 'Standard / Main';
+
+                    if (catName.includes('golek') || typeName.includes('golek') || remarkName.includes('golek') || subCatName.includes('golek')) {
+                        targetGroup = 'golek';
+                        if (d.categoryDetails?.subCategory) subKey = d.categoryDetails.subCategory;
+                    } else if (catName === 'chicken slices' || typeName === 'chicken slices' || d.categoryDetails?.isChickenSlices) {
+                        targetGroup = 'chickenslices';
+                        if (d.categoryDetails?.subCategory) subKey = d.categoryDetails.subCategory;
+                    } else if (catName.includes('ayam b') || typeName.includes('ayam b') || remarkName.includes('ayam b') || (catName === 'broiler' && typeName === 'b')) {
+                        targetGroup = 'ayamb';
+                        if (d.categoryDetails?.subCategory) subKey = d.categoryDetails.subCategory;
+                    }
+
+                    if (targetGroup) {
+                        if (!specialRecordsData[targetGroup][subKey]) {
+                            specialRecordsData[targetGroup][subKey] = { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 };
+                        }
+                        if (isToday) {
+                            specialRecordsData[targetGroup][subKey].todayQty += countVal;
+                            specialRecordsData[targetGroup][subKey].todayKg += weight;
+                        } else if (docDate.getTime() < startOfToday.getTime()) {
+                            specialRecordsData[targetGroup][subKey].prevQty += countVal;
+                            specialRecordsData[targetGroup][subKey].prevKg += weight;
                         }
                     }
 
@@ -859,6 +1028,63 @@
                 setTxt('chiller-tot-today-kg', totTodayKg.toFixed(2));
                 setTxt('chiller-tot-total-qty', totTotalQty);
                 setTxt('chiller-tot-total-kg', totTotalKg.toFixed(2));
+
+                // Ayam B, Golek and Slices Record DOM Injection
+                setTxt('ab-golek-slices-date', todayStr);
+
+                const renderSubSection = (tbodyId, groupKey, defaultSubCategories, prefixId) => {
+                    let tbody = document.getElementById(tbodyId);
+                    if (!tbody) return;
+                    let dataMap = specialRecordsData[groupKey];
+                    let keys = Object.keys(dataMap);
+
+                    if (keys.length === 0) {
+                        defaultSubCategories.forEach(sub => {
+                            dataMap[sub] = { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 };
+                        });
+                        keys = defaultSubCategories;
+                    }
+
+                    let totPrevQty = 0, totPrevKg = 0;
+                    let totTodayQty = 0, totTodayKg = 0;
+                    let totTotalQty = 0, totTotalKg = 0;
+                    let html = '';
+
+                    keys.forEach(sub => {
+                        let item = dataMap[sub];
+                        let totalQty = item.prevQty + item.todayQty;
+                        let totalKg = item.prevKg + item.todayKg;
+
+                        totPrevQty += item.prevQty;
+                        totPrevKg += item.prevKg;
+                        totTodayQty += item.todayQty;
+                        totTodayKg += item.todayKg;
+                        totTotalQty += totalQty;
+                        totTotalKg += totalKg;
+
+                        html += `<tr>
+                            <td class="border-2 border-black p-2 text-left font-semibold">${sub}</td>
+                            <td class="border-2 border-black p-2 text-right">${item.prevQty || '-'}</td>
+                            <td class="border-2 border-black p-2 text-right">${item.prevKg ? item.prevKg.toFixed(2) : '0.00'}</td>
+                            <td class="border-2 border-black p-2 text-right">${item.todayQty || '-'}</td>
+                            <td class="border-2 border-black p-2 text-right">${item.todayKg ? item.todayKg.toFixed(2) : '0.00'}</td>
+                            <td class="border-2 border-black p-2 text-right font-bold">${totalQty || '-'}</td>
+                            <td class="border-2 border-black p-2 text-right font-bold">${totalKg ? totalKg.toFixed(2) : '0.00'}</td>
+                        </tr>`;
+                    });
+
+                    tbody.innerHTML = html;
+                    setTxt(`${prefixId}-tot-prev-qty`, totPrevQty);
+                    setTxt(`${prefixId}-tot-prev-kg`, totPrevKg.toFixed(2));
+                    setTxt(`${prefixId}-tot-today-qty`, totTodayQty);
+                    setTxt(`${prefixId}-tot-today-kg`, totTodayKg.toFixed(2));
+                    setTxt(`${prefixId}-tot-total-qty`, totTotalQty);
+                    setTxt(`${prefixId}-tot-total-kg`, totTotalKg.toFixed(2));
+                };
+
+                renderSubSection('tbl-ayamb-body', 'ayamb', ['Standard / Main', 'Others'], 'ayamb');
+                renderSubSection('tbl-golek-body', 'golek', ['Standard / Main', 'Others'], 'golek');
+                renderSubSection('tbl-chickenslices-body', 'chickenslices', ['Standard / Main', 'Others'], 'cslices');
 
                 // CATEGORY 1: YIELD & SHRINKAGE
                 setTxt('val-live-in', `${todayLiveIn.toFixed(2)} kg`);
