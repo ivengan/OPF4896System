@@ -717,25 +717,31 @@
                     // Ayam B, Ayam Golek, and Chicken Slices Categorization
                     let catName = (d.category || '').toString().toLowerCase();
                     let typeName = (d.categoryDetails?.type || '').toString().toLowerCase();
-                    let remarkName = (d.remark || '').toString().toLowerCase();
-                    let subCatName = (d.categoryDetails?.subCategory || d.categoryDetails?.partName || '').toString().toLowerCase();
+                    let textName = (d.categoryDetails?.text || d.remark || '').toString();
+                    let textNameLower = textName.toLowerCase();
+                    let remarkGroup = d.categoryDetails?.remarkGroup || '';
+                    let subCatName = d.categoryDetails?.subCategory || '';
                     let countVal = parseInt(d.categoryDetails?.count) || 0;
 
                     let targetGroup = null;
-                    let subKey = 'Standard / Main';
+                    let subKey = subCatName || 'Standard / Main';
 
-                    if (catName.includes('golek') || typeName.includes('golek') || remarkName.includes('golek') || subCatName.includes('golek')) {
+                    if (remarkGroup === 'Ayam Golek' || catName.includes('golek') || typeName.includes('golek') || textNameLower.includes('golek')) {
                         targetGroup = 'golek';
-                        if (d.categoryDetails?.subCategory) subKey = d.categoryDetails.subCategory;
+                        if (!subCatName && textName.includes('-')) {
+                            subKey = textName.split('-').slice(1).join('-').trim();
+                        }
                     } else if (catName === 'chicken slices' || typeName === 'chicken slices' || d.categoryDetails?.isChickenSlices) {
                         targetGroup = 'chickenslices';
-                        if (d.categoryDetails?.subCategory) subKey = d.categoryDetails.subCategory;
-                    } else if (catName.includes('ayam b') || typeName.includes('ayam b') || remarkName.includes('ayam b') || (catName === 'broiler' && typeName === 'b')) {
+                    } else if (remarkGroup === 'Ayam B' || catName.includes('ayam b') || typeName.includes('ayam b') || textNameLower.includes('ayam b') || (catName === 'broiler' && typeName === 'b')) {
                         targetGroup = 'ayamb';
-                        if (d.categoryDetails?.subCategory) subKey = d.categoryDetails.subCategory;
+                        if (!subCatName && textName.includes('-')) {
+                            subKey = textName.split('-').slice(1).join('-').trim();
+                        }
                     }
 
                     if (targetGroup) {
+                        if (!subKey) subKey = 'Standard / Main';
                         if (!specialRecordsData[targetGroup][subKey]) {
                             specialRecordsData[targetGroup][subKey] = { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 };
                         }
