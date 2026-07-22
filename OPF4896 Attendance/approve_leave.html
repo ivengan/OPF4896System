@@ -61,19 +61,19 @@
             const snap = await db.collection("staffs").where("phone","==",userPhone).limit(1).get();
             if (snap.empty) {
                 alert("Access denied. Admin account not found in attendance database.");
-                window.location.href = "dashboard2.html";
+                window.location.href = "../dashboard2.html";
                 return;
             }
             const user = snap.docs[0].data();
             if (!user.admin) {
                 alert("Access denied. Admins only.");
-                window.location.href = "dashboard2.html";
+                window.location.href = "../dashboard2.html";
                 return;
             }
         } catch (e) {
             console.error(e);
             alert("Access check failed.");
-            window.location.href = "dashboard2.html";
+            window.location.href = "../dashboard2.html";
         }
     })();
   </script>
