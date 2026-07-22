@@ -203,6 +203,50 @@
     </div>
 </section>
 
+<!-- CHILLER STOCK RECORD LAYOUT -->
+<section class="bg-white p-4 mb-6 shadow-md print:shadow-none print:p-0 print:mb-0 text-black mx-auto" style="max-width: 900px; font-family: 'Inter', sans-serif;">
+    <div class="mb-3 flex justify-between items-center border-b-2 border-black pb-1">
+        <h2 class="text-xl font-bold">Chiller Stock Record (冷风库存记录)</h2>
+        <span class="text-sm font-bold" id="chiller-record-date"></span>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse border-2 border-black text-center text-sm">
+            <thead>
+                <tr class="bg-gray-100 font-bold">
+                    <th class="border-2 border-black p-2 text-left">Category (类别)</th>
+                    <th class="border-2 border-black p-2" colspan="2">Previous Day Stocks (昨日存货)</th>
+                    <th class="border-2 border-black p-2" colspan="2">Today Storing (今日入库)</th>
+                    <th class="border-2 border-black p-2" colspan="2">Total Stocks (总存货)</th>
+                </tr>
+                <tr class="bg-gray-50 text-xs font-bold">
+                    <th class="border-2 border-black p-1 text-left"></th>
+                    <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                    <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                    <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                    <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                    <th class="border-2 border-black p-1 w-20">只数 (Qty)</th>
+                    <th class="border-2 border-black p-1 w-24">重量 (KG)</th>
+                </tr>
+            </thead>
+            <tbody id="chiller-stock-tbl">
+                <!-- Dynamic Rows -->
+            </tbody>
+            <tfoot>
+                <tr class="font-bold bg-gray-100">
+                    <td class="border-2 border-black p-2 text-left">Total (总计)</td>
+                    <td class="border-2 border-black p-2 text-right" id="chiller-tot-prev-qty">0</td>
+                    <td class="border-2 border-black p-2 text-right" id="chiller-tot-prev-kg">0.00</td>
+                    <td class="border-2 border-black p-2 text-right" id="chiller-tot-today-qty">0</td>
+                    <td class="border-2 border-black p-2 text-right" id="chiller-tot-today-kg">0.00</td>
+                    <td class="border-2 border-black p-2 text-right" id="chiller-tot-total-qty">0</td>
+                    <td class="border-2 border-black p-2 text-right" id="chiller-tot-total-kg">0.00</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</section>
+
 <!-- CATEGORY 1: PRODUCTION & YIELD -->
         <section class="space-y-6 print-break-inside">
             <div class="flex items-center gap-3 mb-2 border-b-2 border-indigo-200 pb-2">
@@ -455,6 +499,15 @@
                 let elimA = { dead: 0, after: 0, net: 0 };
                 let elimB = { dead: 0, after: 0, net: 0 };
 
+                // Chiller Stock Accumulators
+                let chillerStockData = {
+                    'H/P': { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 },
+                    'KOPEK': { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 },
+                    'SLICES': { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 },
+                    'PARTS': { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 },
+                    'OTHERS': { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 }
+                };
+
                 const startOfToday = new Date();
                 startOfToday.setHours(0, 0, 0, 0);
 
@@ -494,6 +547,36 @@
                     balanceMap[cat] += weight;
                     if (d.category === 'Slices' && d.categoryDetails && d.categoryDetails.ayamLama) {
                         balanceMap['Whole Broiler (H/P, Kopek)'] -= weight;
+                    }
+
+                    // Chiller Stock Categorization & Aggregation
+                    let isChillerItem = false;
+                    if (d.category === 'Broiler' || d.category === 'Slices' || d.category === 'Kopek') {
+                        isChillerItem = true;
+                    } else if (d.category === 'Parts' && d.categoryDetails && d.categoryDetails.packSize === 'No pack = 0KG') {
+                        isChillerItem = true;
+                    }
+
+                    if (isChillerItem) {
+                        let catType = "OTHERS";
+                        if (d.category === "Broiler" && d.categoryDetails && d.categoryDetails.type === "H/P") {
+                            catType = "H/P";
+                        } else if (d.category === "Kopek" || (d.category === "Broiler" && d.categoryDetails && d.categoryDetails.type === "Kopek")) {
+                            catType = "KOPEK";
+                        } else if (d.category === "Slices" || (d.category === "Broiler" && d.categoryDetails && d.categoryDetails.type === "Slices")) {
+                            catType = "SLICES";
+                        } else if (d.category === "Parts") {
+                            catType = "PARTS";
+                        }
+
+                        let count = parseInt(d.categoryDetails?.count) || 0;
+                        if (isToday) {
+                            chillerStockData[catType].todayQty += count;
+                            chillerStockData[catType].todayKg += weight;
+                        } else if (docDate.getTime() < startOfToday.getTime()) {
+                            chillerStockData[catType].prevQty += count;
+                            chillerStockData[catType].prevKg += weight;
+                        }
                     }
 
                     // STAGE 1 LOGIC (Today Only)
@@ -727,6 +810,55 @@
                 }
                 document.getElementById('stg1-eliminate-container').innerHTML = elimHtml;
                 setTxt('stg1-damaged-kg', damagedWeight.toFixed(2));
+
+                // Chiller Stock Record DOM Injection
+                setTxt('chiller-record-date', todayStr);
+                let chillerCategories = ['H/P', 'KOPEK', 'SLICES', 'PARTS', 'OTHERS'];
+                let chillerLabels = {
+                    'H/P': 'H/P (全鸡)',
+                    'KOPEK': 'KOPEK (光鸡)',
+                    'SLICES': 'SLICES (切片)',
+                    'PARTS': 'PARTS (零拆)',
+                    'OTHERS': 'OTHERS (其他)'
+                };
+
+                let totPrevQty = 0, totPrevKg = 0;
+                let totTodayQty = 0, totTodayKg = 0;
+                let totTotalQty = 0, totTotalKg = 0;
+
+                let chillerHtml = '';
+                chillerCategories.forEach(catKey => {
+                    let item = chillerStockData[catKey];
+                    let totalQty = item.prevQty + item.todayQty;
+                    let totalKg = item.prevKg + item.todayKg;
+
+                    totPrevQty += item.prevQty;
+                    totPrevKg += item.prevKg;
+                    totTodayQty += item.todayQty;
+                    totTodayKg += item.todayKg;
+                    totTotalQty += totalQty;
+                    totTotalKg += totalKg;
+
+                    chillerHtml += `<tr>
+                        <td class="border-2 border-black p-2 text-left font-semibold">${chillerLabels[catKey]}</td>
+                        <td class="border-2 border-black p-2 text-right">${item.prevQty || '-'}</td>
+                        <td class="border-2 border-black p-2 text-right">${item.prevKg ? item.prevKg.toFixed(2) : '0.00'}</td>
+                        <td class="border-2 border-black p-2 text-right">${item.todayQty || '-'}</td>
+                        <td class="border-2 border-black p-2 text-right">${item.todayKg ? item.todayKg.toFixed(2) : '0.00'}</td>
+                        <td class="border-2 border-black p-2 text-right font-bold">${totalQty || '-'}</td>
+                        <td class="border-2 border-black p-2 text-right font-bold">${totalKg ? totalKg.toFixed(2) : '0.00'}</td>
+                    </tr>`;
+                });
+
+                let chillerTbl = document.getElementById('chiller-stock-tbl');
+                if (chillerTbl) chillerTbl.innerHTML = chillerHtml;
+
+                setTxt('chiller-tot-prev-qty', totPrevQty);
+                setTxt('chiller-tot-prev-kg', totPrevKg.toFixed(2));
+                setTxt('chiller-tot-today-qty', totTodayQty);
+                setTxt('chiller-tot-today-kg', totTodayKg.toFixed(2));
+                setTxt('chiller-tot-total-qty', totTotalQty);
+                setTxt('chiller-tot-total-kg', totTotalKg.toFixed(2));
 
                 // CATEGORY 1: YIELD & SHRINKAGE
                 setTxt('val-live-in', `${todayLiveIn.toFixed(2)} kg`);
