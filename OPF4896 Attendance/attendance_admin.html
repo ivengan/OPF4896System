@@ -19,7 +19,7 @@
 <body class="bg-gray-100 text-gray-900 p-6">
   <!-- Back to Admin Panel -->
   <div class="max-w-4xl mx-auto mb-4">
-    <button onclick="window.location.href='dashboard2.html'" class="text-indigo-600 font-bold flex items-center gap-1 bg-white px-3 py-2 rounded-lg shadow-sm border border-gray-200">
+    <button onclick="window.location.href='../dashboard2.html'" class="text-indigo-600 font-bold flex items-center gap-1 bg-white px-3 py-2 rounded-lg shadow-sm border border-gray-200">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
       Back to Admin Panel
     </button>
@@ -98,19 +98,19 @@
             const snap = await db.collection("staffs").where("phone","==",userPhone).limit(1).get();
             if (snap.empty) {
                 alert("Access denied. Admin account not found in attendance database.");
-                window.location.href = "dashboard2.html";
+                window.location.href = "../dashboard2.html";
                 return;
             }
             const user = snap.docs[0].data();
             if (!user.admin) {
                 alert("Access denied. Admins only.");
-                window.location.href = "dashboard2.html";
+                window.location.href = "../dashboard2.html";
                 return;
             }
         } catch (e) {
             console.error(e);
             alert("Access check failed.");
-            window.location.href = "dashboard2.html";
+            window.location.href = "../dashboard2.html";
         }
     })();
   </script>
