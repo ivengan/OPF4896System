@@ -334,9 +334,9 @@
         </div>
     </div>
 
-    <!-- 3. Chicken Slices Subsection -->
+    <!-- 3. Slices Subsection -->
     <div>
-        <h3 class="text-base font-bold mb-2 border-l-4 border-black pl-2">3. Chicken Slices</h3>
+        <h3 class="text-base font-bold mb-2 border-l-4 border-black pl-2">3. Slices</h3>
         <div class="overflow-x-auto">
             <table class="w-full border-collapse border-2 border-black text-center text-sm">
                 <thead>
@@ -361,7 +361,7 @@
                 </tbody>
                 <tfoot>
                     <tr class="font-bold bg-gray-100">
-                        <td class="border-2 border-black p-2 text-left">Chicken Slices Total</td>
+                        <td class="border-2 border-black p-2 text-left">Slices Total</td>
                         <td class="border-2 border-black p-2 text-right" id="cslices-tot-prev-qty">0</td>
                         <td class="border-2 border-black p-2 text-right" id="cslices-tot-prev-kg">0.00</td>
                         <td class="border-2 border-black p-2 text-right" id="cslices-tot-today-qty">0</td>
@@ -714,7 +714,7 @@
                         }
                     }
 
-                    // Ayam B, Ayam Golek, and Chicken Slices Categorization
+                    // Ayam B, Ayam Golek, and Slices Categorization
                     let catName = (d.category || '').toString().toLowerCase();
                     let typeName = (d.categoryDetails?.type || '').toString().toLowerCase();
                     let textName = (d.categoryDetails?.text || d.remark || '').toString();
@@ -731,8 +731,19 @@
                         if (!subCatName && textName.includes('-')) {
                             subKey = textName.split('-').slice(1).join('-').trim();
                         }
-                    } else if (catName === 'chicken slices' || typeName === 'chicken slices' || d.categoryDetails?.isChickenSlices) {
+                    } else if (catName === 'slices' || catName === 'chicken slices' || typeName === 'slices' || typeName === 'chicken slices' || d.categoryDetails?.isChickenSlices) {
                         targetGroup = 'chickenslices';
+                        if (!subKey) {
+                            let pieceCount = countVal || parseInt(d.categoryDetails?.pieces) || 0;
+                            let remText = (d.categoryDetails?.remark || d.remark || textName || '').trim();
+                            if (pieceCount > 0 && remText !== '') {
+                                subKey = `${pieceCount} pieces - ${remText}`;
+                            } else if (pieceCount > 0) {
+                                subKey = `${pieceCount} pieces`;
+                            } else if (remText !== '') {
+                                subKey = remText;
+                            }
+                        }
                     } else if (remarkGroup === 'Ayam B' || catName.includes('ayam b') || typeName.includes('ayam b') || textNameLower.includes('ayam b') || (catName === 'broiler' && typeName === 'b')) {
                         targetGroup = 'ayamb';
                         if (!subCatName && textName.includes('-')) {
@@ -741,7 +752,12 @@
                     }
 
                     if (targetGroup) {
-                        if (!subKey) subKey = 'Standard';
+                        if (!subKey) {
+                            subKey = 'Standard';
+                        }
+                        if (d.categoryDetails && d.categoryDetails.ayamLama && !subKey.includes('Ayam Lama')) {
+                            subKey += ' [Ayam Lama]';
+                        }
                         if (!specialRecordsData[targetGroup][subKey]) {
                             specialRecordsData[targetGroup][subKey] = { prevQty: 0, prevKg: 0, todayQty: 0, todayKg: 0 };
                         }
