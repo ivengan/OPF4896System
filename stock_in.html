@@ -238,7 +238,7 @@
 
             <!-- 1. Radio Quick Buttons for Slices / Pieces -->
             <div class="space-y-2">
-                <label class="block text-sm font-bold text-gray-700">1. Select Slices / Pieces Count</label>
+                <label class="block text-sm font-bold text-gray-700">1. Select Slices / Pieces Count <span class="text-xs font-normal text-red-500 ml-1">(Long-press to delete)</span></label>
                 <div id="slices-pieces-radio-group" class="grid grid-cols-2 gap-2">
                     <!-- Dynamic radio options injected via JS: 4 pieces, 8 pieces, 9 pieces, 10 pieces, Custom -->
                 </div>
@@ -429,9 +429,10 @@
             'Ayam Golek': JSON.parse(localStorage.getItem('subcategories_golek')) || ['Standard / Main', 'Seasoned']
         };
 
-        // Stored Slices Pieces list & Remarks map
+        // Stored Slices Pieces list, Remarks map & Deleted pieces list
         let storedSlicesPieces = JSON.parse(localStorage.getItem('slices_pieces_list')) || [4, 8, 9, 10];
         let storedSlicesRemarksMap = JSON.parse(localStorage.getItem('slices_remarks_map')) || {};
+        let deletedSlicesPieces = JSON.parse(localStorage.getItem('deleted_slices_pieces')) || [];
 
         const weightInput = document.getElementById('weight-input');
         const catBroilerBtn = document.getElementById('category-broiler-btn');
@@ -742,25 +743,78 @@
         
 
 
+        function addLongPressListener(element, callback) {
+            let timer = null;
+            let isLongPress = false;
+
+            const start = (e) => {
+                isLongPress = false;
+                timer = setTimeout(() => {
+                    isLongPress = true;
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    callback(e);
+                }, 600);
+            };
+
+            const cancel = () => {
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+            };
+
+            element.addEventListener('mousedown', start);
+            element.addEventListener('touchstart', start, { passive: true });
+
+            element.addEventListener('mouseup', cancel);
+            element.addEventListener('mouseleave', cancel);
+            element.addEventListener('touchend', cancel);
+            element.addEventListener('touchmove', cancel);
+
+            element.addEventListener('click', (e) => {
+                if (isLongPress) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isLongPress = false;
+                }
+            });
+        }
+
         function renderSlicesPiecesRadioGroup() {
             const groupEl = document.getElementById('slices-pieces-radio-group');
             if (!groupEl) return;
             groupEl.innerHTML = '';
 
-            const piecesList = [...storedSlicesPieces].sort((a, b) => a - b);
+            const activePieces = storedSlicesPieces.filter(num => !deletedSlicesPieces.includes(num));
+            const piecesList = [...activePieces].sort((a, b) => a - b);
 
             piecesList.forEach(num => {
                 const label = document.createElement('label');
-                label.className = 'flex items-center p-2.5 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50 transition';
+                label.className = 'flex items-center p-2.5 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50 transition relative select-none';
                 label.innerHTML = `
                     <input type="radio" name="slices-pieces-choice" value="${num}" class="h-4 w-4 text-blue-600">
                     <span class="ml-2 text-sm font-bold text-gray-800">${num} pieces</span>
                 `;
                 groupEl.appendChild(label);
+
+                addLongPressListener(label, () => {
+                    if (confirm(`Delete '${num} pieces' option from choices and reports?`)) {
+                        if (!deletedSlicesPieces.includes(num)) {
+                            deletedSlicesPieces.push(num);
+                            localStorage.setItem('deleted_slices_pieces', JSON.stringify(deletedSlicesPieces));
+                        }
+                        const countInput = document.getElementById('slices-count-input');
+                        if (countInput && parseInt(countInput.value) === num) {
+                            countInput.value = '';
+                            renderSlicesRemarksRadioGroup('');
+                        }
+                        renderSlicesPiecesRadioGroup();
+                    }
+                });
             });
 
             const customLabel = document.createElement('label');
-            customLabel.className = 'flex items-center p-2.5 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50 transition';
+            customLabel.className = 'flex items-center p-2.5 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50 transition select-none';
             customLabel.innerHTML = `
                 <input type="radio" name="slices-pieces-choice" value="custom" class="h-4 w-4 text-blue-600">
                 <span class="ml-2 text-sm font-bold text-gray-800">Custom...</span>
@@ -803,21 +857,30 @@
 
             const titleDiv = document.createElement('div');
             titleDiv.className = 'text-xs font-bold text-gray-500 mb-1';
-            titleDiv.textContent = `Saved remarks for ${key} pieces:`;
+            titleDiv.textContent = `Saved remarks for ${key} pieces (Long-press to delete):`;
             remarkGroupEl.appendChild(titleDiv);
 
             remarks.forEach(rem => {
                 const label = document.createElement('label');
-                label.className = 'flex items-center p-1.5 bg-white rounded border border-gray-200 cursor-pointer hover:bg-blue-50 text-xs';
+                label.className = 'flex items-center p-1.5 bg-white rounded border border-gray-200 cursor-pointer hover:bg-blue-50 text-xs select-none';
                 label.innerHTML = `
                     <input type="radio" name="slices-remark-choice" value="${rem}" class="h-3.5 w-3.5 text-blue-600">
                     <span class="ml-2 font-semibold text-gray-800">${rem}</span>
                 `;
                 remarkGroupEl.appendChild(label);
+
+                addLongPressListener(label, () => {
+                    if (confirm(`Delete remark '${rem}' for ${key} pieces?`)) {
+                        storedSlicesRemarksMap[key] = storedSlicesRemarksMap[key].filter(r => r !== rem);
+                        localStorage.setItem('slices_remarks_map', JSON.stringify(storedSlicesRemarksMap));
+                        if (remarkInput && remarkInput.value === rem) remarkInput.value = '';
+                        renderSlicesRemarksRadioGroup(key);
+                    }
+                });
             });
 
             const customLabel = document.createElement('label');
-            customLabel.className = 'flex items-center p-1.5 bg-white rounded border border-gray-200 cursor-pointer hover:bg-blue-50 text-xs';
+            customLabel.className = 'flex items-center p-1.5 bg-white rounded border border-gray-200 cursor-pointer hover:bg-blue-50 text-xs select-none';
             customLabel.innerHTML = `
                 <input type="radio" name="slices-remark-choice" value="" class="h-3.5 w-3.5 text-blue-600">
                 <span class="ml-2 font-semibold text-gray-500">None / Clear</span>
@@ -857,6 +920,12 @@
             const remarkInput = document.getElementById('slices-remark-input');
             const remark = remarkInput ? remarkInput.value.trim() : '';
             const isAyamLama = document.getElementById('slices-ayam-lama').checked;
+
+            // Restore/recreate if it was previously deleted
+            if (deletedSlicesPieces.includes(count)) {
+                deletedSlicesPieces = deletedSlicesPieces.filter(n => n !== count);
+                localStorage.setItem('deleted_slices_pieces', JSON.stringify(deletedSlicesPieces));
+            }
 
             // Save piece count to storedSlicesPieces list
             if (!storedSlicesPieces.includes(count)) {

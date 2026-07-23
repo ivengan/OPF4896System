@@ -1054,11 +1054,29 @@
                 // Ayam B, Golek and Slices Record DOM Injection
                 setTxt('ab-golek-slices-date', todayStr);
 
+                let deletedSlicesPieces = JSON.parse(localStorage.getItem('deleted_slices_pieces')) || [];
+
+                const isSubKeyDeleted = (subKey) => {
+                    if (!deletedSlicesPieces || deletedSlicesPieces.length === 0) return false;
+                    let match = subKey.match(/^(\d+)\s*pieces/i);
+                    if (match) {
+                        let pieceNum = parseInt(match[1]);
+                        if (deletedSlicesPieces.includes(pieceNum)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+
                 const renderSubSection = (tbodyId, groupKey, defaultSubCategories, prefixId) => {
                     let tbody = document.getElementById(tbodyId);
                     if (!tbody) return;
                     let dataMap = specialRecordsData[groupKey];
                     let keys = Object.keys(dataMap);
+
+                    if (groupKey === 'chickenslices') {
+                        keys = keys.filter(sub => !isSubKeyDeleted(sub));
+                    }
 
                     if (keys.length === 0 && defaultSubCategories && defaultSubCategories.length > 0) {
                         defaultSubCategories.forEach(sub => {
