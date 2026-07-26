@@ -484,8 +484,23 @@
         const notificationArea = document.getElementById('notification-area');
         
         function showNotification(message, type) {
-             notificationArea.innerHTML = `<div class="px-4 py-2 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">${message}</div>`;
-            setTimeout(() => { notificationArea.innerHTML = ''; }, 3000);
+            if (type === 'success') {
+                notificationArea.className = "fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900 bg-opacity-50 transition-opacity duration-150";
+                notificationArea.innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-2xl p-6 text-center max-w-sm w-full border border-gray-200 transform scale-100 transition-transform duration-150">
+                        <div class="text-green-500 text-5xl mb-3">✔️</div>
+                        <div class="text-lg font-bold text-gray-900">${message}</div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    notificationArea.innerHTML = '';
+                    notificationArea.className = "mb-4 fixed top-20 right-4 z-50";
+                }, 500);
+            } else {
+                notificationArea.className = "mb-4 fixed top-20 right-4 z-50";
+                notificationArea.innerHTML = `<div class="px-4 py-2 rounded-lg shadow-lg bg-red-500 text-white">${message}</div>`;
+                setTimeout(() => { notificationArea.innerHTML = ''; }, 3000);
+            }
         }
 
         let activeUnsubscribe = null;

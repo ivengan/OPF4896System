@@ -301,7 +301,8 @@
 
                 // Fetch Inventory
                 const inventorySnapshot = await db.collection('inventory').orderBy('name').get();
-                allInventory = inventorySnapshot.docs.map(doc => doc.data().displayName);
+                const displayNames = inventorySnapshot.docs.map(doc => doc.data().displayName);
+                allInventory = [...new Set(displayNames.map(n => n.split('(')[0].split('[')[0].trim()))];
                 const il = document.getElementById('item-names-list');
                 il.innerHTML = '';
                 allInventory.forEach(n => il.innerHTML += `<option value="${n}"></option>`);
