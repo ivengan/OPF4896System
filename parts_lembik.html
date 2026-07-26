@@ -300,6 +300,46 @@
         </div>
     </div>
 
+    <div id="reassign-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight">Re-assign Stock Type</h2>
+                <button id="reassign-close-x" class="text-gray-500 hover:text-gray-700 font-bold text-2xl px-2">&times;</button>
+            </div>
+            
+            <p class="text-[17px] text-gray-500">Re-assign <span id="reassign-item-name" class="font-bold text-blue-600"></span> to the other stock type (<span id="reassign-target-type" class="font-bold text-blue-600"></span>).</p>
+            
+            <div class="space-y-4">
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-gray-700">Re-assign Options:</label>
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 border rounded-lg cursor-pointer hover:bg-gray-100" onclick="document.getElementById('reassign-mode-all').checked = true">
+                        <input type="radio" id="reassign-mode-all" name="reassign-mode" value="all" checked class="h-5 w-5 text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <span id="reassign-mode-all-label" class="font-bold block text-gray-900">Re-assign ALL</span>
+                            <span class="text-xs text-gray-500">Move the entire item to the other page.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 border rounded-lg cursor-pointer hover:bg-gray-100" onclick="document.getElementById('reassign-mode-split').checked = true">
+                        <input type="radio" id="reassign-mode-split" name="reassign-mode" value="split" class="h-5 w-5 text-blue-600 focus:ring-blue-500">
+                        <div class="flex-grow">
+                            <span class="font-bold block text-gray-900">Split & Re-assign</span>
+                            <span class="text-xs text-gray-500">Keep some qty here, move the rest to the other page.</span>
+                            <div class="flex gap-2 mt-2 items-center">
+                                <span class="text-sm text-gray-600">Qty to move:</span>
+                                <input type="number" id="reassign-split-qty" step="0.1" min="0.1" class="w-24 border border-gray-300 rounded p-1 text-center font-bold" placeholder="0.0">
+                                <span id="reassign-split-unit" class="text-sm font-bold text-gray-700"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6">
+                <button id="reassign-submit-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition shadow-sm">Confirm Re-assign</button>
+            </div>
+        </div>
+    </div>
+
     <div id="verify-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4 text-center">
             <h2 class="text-xl font-bold text-gray-900 tracking-tight">Staff Verification</h2>
@@ -337,6 +377,8 @@
         let activeUnsubscribe = null;
         let currentEditCustomerOrder = null;
         let currentEditItemOrder = null;
+        let currentReassignTarget = null;
+        const reassignModal = document.getElementById('reassign-modal');
 
         const dispatchListDiv = document.getElementById('dispatch-list');
         const sortSelect = document.getElementById('sort-select');
@@ -346,8 +388,23 @@
         const verifyModal = document.getElementById('verify-modal');
         
         function showNotification(message, type) {
-            notificationArea.innerHTML = `<div class="px-4 py-2 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">${message}</div>`;
-            setTimeout(() => { notificationArea.innerHTML = ''; }, 3000);
+            if (type === 'success') {
+                notificationArea.className = "fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900 bg-opacity-50 transition-opacity duration-150";
+                notificationArea.innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-2xl p-6 text-center max-w-sm w-full border border-gray-200 transform scale-100 transition-transform duration-150">
+                        <div class="text-green-500 text-5xl mb-3">✔️</div>
+                        <div class="text-lg font-bold text-gray-900">${message}</div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    notificationArea.innerHTML = '';
+                    notificationArea.className = "mb-4 fixed top-20 right-4 z-50";
+                }, 500);
+            } else {
+                notificationArea.className = "mb-4 fixed top-20 right-4 z-50";
+                notificationArea.innerHTML = `<div class="px-4 py-2 rounded-lg shadow-lg bg-red-500 text-white">${message}</div>`;
+                setTimeout(() => { notificationArea.innerHTML = ''; }, 3000);
+            }
         }
 
         async function initialize() {
@@ -517,15 +574,31 @@
                         <span class="text-gray-400 text-xs">/${item.targetWeightKg} KG</span>
                     </div>
                 </div>
-                <!-- Movement to Freeze Option -->
-                <div class="mt-2 text-xs font-bold text-blue-600">Move to Freeze Board ➔</div>
-                <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1"><div class="${isCompleted ? 'bg-green-500' : 'bg-pink-600'} h-1.5 rounded-full" style="width: ${percent}%"></div></div>
-                <div class="part-actions flex justify-between">
-                    <button class="px-3 py-1 bg-white text-red-600 border rounded font-bold" onclick="initiateDelete(${JSON.stringify(item)})">DEL</button>
-                    ${!item.isInvoiced ? `<button class="px-4 py-1 bg-green-500 text-white rounded font-bold" onclick="handleInvoice(${JSON.stringify(item)})">Submit</button>` : '<span class="text-xs text-gray-500">Invoiced</span>'}
+                <div class="part-actions flex justify-between gap-1">
+                    <button class="del-btn px-2.5 py-1 bg-white text-red-600 border rounded font-bold">DEL</button>
+                    <button class="reassign-btn px-2.5 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-bold">Re-assign</button>
+                    ${!item.isInvoiced ? `<button class="submit-btn px-3 py-1 bg-green-500 text-white rounded font-bold">Submit</button>` : '<span class="text-xs text-gray-500">Invoiced</span>'}
                 </div>
             `;
             row.querySelector('.part-main').onclick = () => openDispatchModal(item);
+            row.querySelector('.del-btn').onclick = (e) => {
+                e.stopPropagation();
+                initiateDelete(item);
+            };
+            const reassignBtn = row.querySelector('.reassign-btn');
+            if (reassignBtn) {
+                reassignBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openReassignModal(item);
+                };
+            }
+            const submitBtn = row.querySelector('.submit-btn');
+            if (submitBtn) {
+                submitBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    handleInvoice(item);
+                };
+            }
             return row;
         }
 
@@ -618,6 +691,75 @@
                 alert("Failed to update remark.");
             } finally {
                 btn.disabled = false; btn.textContent = "Save Changes";
+            }
+        });
+
+        function openReassignModal(item) {
+            currentReassignTarget = item;
+            document.getElementById('reassign-item-name').textContent = item.itemName;
+            const targetType = 'Freeze';
+            document.getElementById('reassign-target-type').textContent = targetType;
+            document.getElementById('reassign-mode-all').checked = true;
+            document.getElementById('reassign-mode-all-label').textContent = `Re-assign ALL (${item.orderedQty} ${item.itemUnit})`;
+            document.getElementById('reassign-split-qty').value = '';
+            document.getElementById('reassign-split-unit').textContent = item.itemUnit;
+            reassignModal.classList.remove('hidden');
+        }
+
+        document.getElementById('reassign-close-x').addEventListener('click', () => {
+            reassignModal.classList.add('hidden');
+        });
+
+        document.getElementById('reassign-submit-btn').addEventListener('click', async () => {
+            if (!currentReassignTarget) return;
+            const btn = document.getElementById('reassign-submit-btn');
+            const mode = document.getElementById('reassign-mode-all').checked ? 'all' : 'split';
+            const targetType = 'Freeze';
+            
+            btn.disabled = true;
+            btn.textContent = "Processing...";
+            
+            try {
+                const orderRef = db.collection('orders').doc(currentReassignTarget.orderId);
+                await db.runTransaction(async (transaction) => {
+                    const doc = await transaction.get(orderRef);
+                    if (!doc.exists) throw "Order does not exist.";
+                    
+                    const data = doc.data();
+                    const parts = [...data.parts];
+                    const partIndex = currentReassignTarget.partIndex;
+                    const originalPart = parts[partIndex];
+                    
+                    if (mode === 'all') {
+                        originalPart.stockType = targetType;
+                    } else {
+                        const splitQty = parseFloat(document.getElementById('reassign-split-qty').value);
+                        if (isNaN(splitQty) || splitQty <= 0 || splitQty >= originalPart.qty) {
+                            throw "Invalid split quantity. Must be greater than 0 and less than " + originalPart.qty;
+                        }
+                        
+                        originalPart.qty -= splitQty;
+                        const splitPart = {
+                            ...originalPart,
+                            qty: splitQty,
+                            dispatchedQty: 0,
+                            stockType: targetType,
+                            history: []
+                        };
+                        parts.push(splitPart);
+                    }
+                    
+                    transaction.update(orderRef, { parts });
+                });
+                
+                showNotification("Successfully re-assigned!", "success");
+                reassignModal.classList.add('hidden');
+            } catch (e) {
+                console.error(e);
+                alert(e);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Confirm Re-assign";
             }
         });
         document.getElementById('modal-submit-btn').onclick = async () => {
