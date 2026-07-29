@@ -127,12 +127,15 @@
             position: absolute;
             left: -9999px;
             top: 0;
-            width: 210mm; /* A4 width */
-            padding: 10mm;
+            width: 210mm; /* A5 Landscape width / A4 width */
+            min-height: 148mm; /* A5 height */
+            padding: 6mm 8mm;
             background: white;
             color: black;
-            font-family: 'Courier New', Courier, monospace; 
-            font-size: 14px;
+            font-family: Arial, Helvetica, system-ui, sans-serif;
+            font-size: 11px;
+            box-sizing: border-box;
+            line-height: 1.35;
         }
 
         /* Native Browser Print CSS overriding */
@@ -145,7 +148,10 @@
                 top: auto !important; 
                 width: 100% !important; 
             }
-            @page { margin: 5mm; }
+            @page { 
+                size: A5 landscape;
+                margin: 5mm; 
+            }
         }
             .whitespace-nowrap { white-space: nowrap; }
         .inline-flex { display: inline-flex; }
@@ -210,43 +216,154 @@
     </div>
 
     <div id="print-section">
-        <div style="text-align: center; margin-bottom: 10px;">
-            <h2 id="print-company-name" style="margin: 0; font-size: 18px; font-weight: bold;">Ophir Food Marketing Sdn Bhd</h2>
-            <div id="print-company-ssm" style="font-size: 12px; margin-top: 3px; display: none;"></div>
-            <div id="print-company-address" style="font-size: 12px; margin-top: 2px; display: none;"></div>
-            <div id="print-company-contact" style="font-size: 12px; margin-top: 2px; display: none;"></div>
-            <h3 style="margin: 6px 0 0 0; font-size: 16px; font-weight: bold;">DELIVERY ORDER</h3>
+        <!-- Company Header (Left-aligned) -->
+        <div style="margin-bottom: 6px;">
+            <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+                <span id="print-company-name" style="font-size: 17px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #111827;">TANGKAK AUTO PARTS</span>
+                <span id="print-company-ssm" style="font-size: 12px; font-weight: 600; color: #374151; display: none;"></span>
+            </div>
+            <div id="print-company-address" style="font-size: 11px; color: #374151; margin-top: 2px; line-height: 1.3; display: none;"></div>
+            <div id="print-company-contact" style="font-size: 11px; color: #374151; margin-top: 1px; line-height: 1.3; display: none;"></div>
         </div>
-        <div style="border-top: 1px dashed black; border-bottom: 1px dashed black; padding: 5px 0; margin-bottom: 10px;">
-            <div style="display: flex; justify-content: space-between;">
-                <strong>D/O No:</strong> <span id="print-do-no"></span>
+
+        <!-- Document Title (Centered) -->
+        <div style="text-align: center; margin: 4px 0 8px 0;">
+            <h3 style="margin: 0; font-size: 15px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">DELIVERY ORDER</h3>
+        </div>
+
+        <!-- 2-Column Info Section -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; font-size: 11px; line-height: 1.4;">
+            <!-- Customer Information (Left) -->
+            <div style="width: 54%;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                    <tr>
+                        <td style="width: 85px; vertical-align: top; font-weight: bold;">Customer A/C</td>
+                        <td style="width: 15px; vertical-align: top;">:</td>
+                        <td id="print-cust-ac" style="vertical-align: top; font-weight: bold;">-</td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top;"></td>
+                        <td></td>
+                        <td style="vertical-align: top;">
+                            <div id="print-cust" style="font-weight: bold; font-size: 12px; margin-bottom: 2px; text-transform: uppercase;"></div>
+                            <div id="print-cust-address" style="color: #374151; white-space: pre-line; line-height: 1.3; text-transform: uppercase;"></div>
+                            <div id="print-cust-phone" style="color: #374151; margin-top: 2px; text-transform: uppercase;"></div>
+                        </td>
+                    </tr>
+                </table>
             </div>
-            <div style="display: flex; justify-content: space-between;">
-                <strong>Date:</strong> <span id="print-date"></span>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <strong>Lorry:</strong> <span id="print-lorry"></span>
-            </div>
-            <div style="margin-top: 5px;">
-                <strong>Customer:</strong><br>
-                <span id="print-cust" style="font-size: 16px; font-weight: bold;"></span>
+
+            <!-- D/O Information (Right) -->
+            <div style="width: 44%;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                    <tr>
+                        <td style="width: 80px; font-weight: bold; padding: 1px 0;">DO No.</td>
+                        <td style="width: 15px;">:</td>
+                        <td id="print-do-no" style="font-weight: bold;"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 1px 0;">Dated</td>
+                        <td>:</td>
+                        <td id="print-date"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 1px 0;">Salesman</td>
+                        <td>:</td>
+                        <td id="print-lorry" style="text-transform: uppercase;"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 1px 0;">Terms</td>
+                        <td>:</td>
+                        <td id="print-terms">0 days</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 1px 0;">Order No.</td>
+                        <td>:</td>
+                        <td id="print-order-no">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 1px 0;">Currency</td>
+                        <td>:</td>
+                        <td>MYR</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 1px 0;">Printed Date</td>
+                        <td>:</td>
+                        <td id="print-timestamp"></td>
+                    </tr>
+                </table>
+                <div style="text-align: right; font-size: 10px; margin-top: 4px; font-weight: bold;">
+                    Page No. : 1 / 1
+                </div>
             </div>
         </div>
         
-        <table style="width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 10px;">
+        <!-- Items Table -->
+        <table style="width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 8px; font-size: 11px;">
             <thead>
-                <tr style="border-bottom: 1px solid black;">
-                    <th style="padding-bottom: 5px;">Item Description</th>
-                    <th style="text-align: right; padding-bottom: 5px;">Qty/Wt</th>
+                <tr style="border-top: 1px solid black; border-bottom: 1px solid black; background-color: #f9fafb;">
+                    <th style="padding: 5px 2px; width: 6%;">No.</th>
+                    <th style="padding: 5px 2px; width: 16%;">Part No.</th>
+                    <th style="padding: 5px 2px; width: 34%;">Description</th>
+                    <th style="padding: 5px 2px; width: 12%;">Model</th>
+                    <th style="text-align: right; padding: 5px 2px; width: 11%;">Qty.</th>
+                    <th style="text-align: right; padding: 5px 2px; width: 11%;">Unit Price</th>
+                    <th style="text-align: right; padding: 5px 2px; width: 10%;">Amount</th>
                 </tr>
             </thead>
-            <tbody id="print-items">
-                </tbody>
+            <tbody id="print-items" style="border-bottom: 1px solid black;">
+            </tbody>
         </table>
         
-        <div style="border-top: 1px dashed black; padding-top: 15px; margin-top: 20px; text-align: center;">
-            <p style="margin: 0 0 40px 0;">Received in good condition</p>
-            <p style="margin: 0; border-top: 1px solid black; display: inline-block; padding-top: 5px; width: 80%;">Signature / Chop</p>
+        <!-- Bottom Summary Area (Remarks & Totals) -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; font-size: 11px;">
+            <!-- Left: Remarks -->
+            <div style="width: 58%;">
+                <div style="font-weight: bold; font-style: italic; margin-bottom: 2px;">Remarks:</div>
+                <div id="print-remarks" style="color: #374151; font-size: 10px; line-height: 1.3; white-space: pre-line;"></div>
+            </div>
+
+            <!-- Right: Totals -->
+            <div style="width: 38%;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                    <tr>
+                        <td style="text-align: right; padding: 2px 4px;">Total Qty :</td>
+                        <td id="print-total-qty" style="text-align: right; font-weight: bold; width: 60px;">0</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; padding: 2px 4px;">Total Weight :</td>
+                        <td id="print-total-weight" style="text-align: right; font-weight: bold;">0.00 KG</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; padding: 2px 4px;">Round Adj :</td>
+                        <td style="text-align: right;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; padding: 4px 4px; font-weight: bold;">Total :</td>
+                        <td id="print-total-amount" style="text-align: right; font-weight: bold; border-bottom: 3px double black; padding: 4px 0;">-</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Signature Area -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; font-size: 11px; padding-top: 5px;">
+            <!-- Left Signatures -->
+            <div style="width: 50%; display: flex; gap: 25px;">
+                <div>
+                    <div style="margin-bottom: 30px; font-weight: bold;">Issued By</div>
+                    <div style="border-top: 1px solid black; width: 110px; padding-top: 2px;">COUNTER</div>
+                </div>
+                <div>
+                    <div style="margin-bottom: 30px; font-weight: bold;">Checked By</div>
+                    <div style="border-top: 1px solid black; width: 110px; padding-top: 2px;"></div>
+                </div>
+            </div>
+            <!-- Right Signature -->
+            <div style="width: 45%; text-align: center;">
+                <div style="margin-bottom: 30px; font-weight: bold;">Received In Good Order & Condition</div>
+                <div style="border-top: 1px solid black; width: 85%; margin: 0 auto; padding-top: 2px; color: #6b7281;">Signature / Chop</div>
+            </div>
         </div>
     </div>
 
@@ -579,7 +696,7 @@
                     const ssmVal = (doSettings.ssm || "").trim();
                     if (ssmVal) {
                         ssmEl.textContent = /ssm|reg|co\./i.test(ssmVal) ? ssmVal : `(SSM: ${ssmVal})`;
-                        ssmEl.style.display = "block";
+                        ssmEl.style.display = "inline";
                     } else {
                         ssmEl.style.display = "none";
                     }
@@ -602,48 +719,122 @@
                     const telVal = (doSettings.tel || "").trim();
                     const faxVal = (doSettings.fax || "").trim();
                     const emailVal = (doSettings.email || "").trim();
-                    if (telVal) contactParts.push(/^tel/i.test(telVal) ? telVal : `Tel: ${telVal}`);
-                    if (faxVal) contactParts.push(/^fax/i.test(faxVal) ? faxVal : `Fax: ${faxVal}`);
-                    if (emailVal) contactParts.push(/^email|^e-mail/i.test(emailVal) ? emailVal : `Email: ${emailVal}`);
+                    if (telVal) contactParts.push(/^tel/i.test(telVal) ? telVal : `TEL: ${telVal}`);
+                    if (faxVal) contactParts.push(/^fax/i.test(faxVal) ? faxVal : `FAX: ${faxVal}`);
+                    if (emailVal) contactParts.push(/^email|^e-mail/i.test(emailVal) ? emailVal : `EMAIL: ${emailVal}`);
 
                     if (contactParts.length > 0) {
-                        contactEl.textContent = contactParts.join(" | ");
+                        contactEl.textContent = contactParts.join("  |  ");
                         contactEl.style.display = "block";
                     } else {
                         contactEl.style.display = "none";
                     }
                 }
 
+                // Customer Info (Left Box)
+                const custData = customerMap[pendingPrintTrip.custName] || {};
+                const acEl = document.getElementById('print-cust-ac');
+                if (acEl) {
+                    acEl.textContent = custData.accountCode || custData.code || custData.id || '-';
+                }
+                const custNameEl = document.getElementById('print-cust');
+                if (custNameEl) custNameEl.textContent = pendingPrintTrip.custName || '';
+                
+                const custAddrEl = document.getElementById('print-cust-address');
+                if (custAddrEl) {
+                    custAddrEl.textContent = custData.address || '';
+                }
+                
+                const custPhoneEl = document.getElementById('print-cust-phone');
+                if (custPhoneEl) {
+                    const phoneVal = pendingPrintTrip.customerPhone || custData.phone || '';
+                    custPhoneEl.textContent = phoneVal ? `TEL : ${phoneVal}` : '';
+                }
+
+                // D/O Info (Right Box)
                 document.getElementById('print-do-no').textContent = doNumber;
                 document.getElementById('print-date').textContent = displayDate;
-                document.getElementById('print-cust').textContent = pendingPrintTrip.custName;
-                document.getElementById('print-lorry').textContent = pendingPrintTrip.lorry;
+                document.getElementById('print-lorry').textContent = pendingPrintTrip.lorry || '-';
+                
+                const orderNoEl = document.getElementById('print-order-no');
+                if (orderNoEl) {
+                    const oIds = trip.orderIds || [];
+                    orderNoEl.textContent = oIds.length > 0 ? oIds.join(', ') : '-';
+                }
 
+                const timestampEl = document.getElementById('print-timestamp');
+                if (timestampEl) {
+                    const timeStr = tDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    timestampEl.textContent = `${displayDate} ${timeStr}`;
+                }
+
+                // Aggregate and Render Items Table
                 let printAggregated = {};
                 trip.items.forEach(i => {
                     let key = i.name + '|||' + (i.remark || '');
                     if (!printAggregated[key]) printAggregated[key] = { ...i };
                     else {
-                        printAggregated[key].qty += i.qty;
-                        printAggregated[key].weight += i.weight;
+                        printAggregated[key].qty += (i.qty || 0);
+                        printAggregated[key].weight += (i.weight || 0);
                     }
                 });
 
                 const tbody = document.getElementById('print-items');
                 tbody.innerHTML = '';
+                let rowIdx = 1;
+                let totalQty = 0;
+                let totalWeight = 0;
+                let totalAmount = 0;
+                let hasPrice = false;
+
                 Object.values(printAggregated).forEach(i => {
+                    let noDisplay = `${rowIdx}.`;
+                    let partNoDisplay = i.partNo || i.code || '-';
+                    let descDisplay = `<span style="font-weight: 700;">${i.name}</span>`;
+                    if (i.remark) descDisplay += `<br><span style="font-size: 10px; color: #4b5563; font-style: italic;">(${i.remark})</span>`;
+                    let modelDisplay = i.model || '-';
+                    
                     let qtyDisplay = i.type === 'part' && i.unit ? `${i.qty} ${i.unit}` : `${i.qty}`;
-                    let weightDisplay = `${i.weight.toFixed(2)}KG`;
-                    let descDisplay = i.name;
-                    if (i.remark) descDisplay += `<br><small style="font-style: italic;">(${i.remark})</small>`;
+                    if (i.weight && i.weight > 0) {
+                        qtyDisplay += `<br><small style="color:#4b5563;">(${i.weight.toFixed(2)} KG)</small>`;
+                    }
+                    
+                    let unitPriceDisplay = '-';
+                    let amountDisplay = '-';
+                    if (i.price !== undefined && !isNaN(i.price) && parseFloat(i.price) > 0) {
+                        hasPrice = true;
+                        unitPriceDisplay = parseFloat(i.price).toFixed(2);
+                        let amt = parseFloat(i.price) * (i.weight > 0 ? i.weight : i.qty);
+                        amountDisplay = amt.toFixed(2);
+                        totalAmount += amt;
+                    }
+
+                    totalQty += (i.qty || 0);
+                    totalWeight += (i.weight || 0);
                     
                     tbody.innerHTML += `
-                        <tr>
-                            <td style="padding: 8px 0;">${descDisplay}</td>
-                            <td style="text-align: right; padding: 8px 0;">${qtyDisplay}<br>${weightDisplay}</td>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 5px 2px; vertical-align: top;">${noDisplay}</td>
+                            <td style="padding: 5px 2px; vertical-align: top;">${partNoDisplay}</td>
+                            <td style="padding: 5px 2px; vertical-align: top;">${descDisplay}</td>
+                            <td style="padding: 5px 2px; vertical-align: top;">${modelDisplay}</td>
+                            <td style="text-align: right; padding: 5px 2px; vertical-align: top; font-weight: 600;">${qtyDisplay}</td>
+                            <td style="text-align: right; padding: 5px 2px; vertical-align: top;">${unitPriceDisplay}</td>
+                            <td style="text-align: right; padding: 5px 2px; vertical-align: top; font-weight: 600;">${amountDisplay}</td>
                         </tr>
                     `;
+                    rowIdx++;
                 });
+
+                document.getElementById('print-total-qty').textContent = totalQty;
+                document.getElementById('print-total-weight').textContent = totalWeight.toFixed(2) + ' KG';
+                document.getElementById('print-total-amount').textContent = hasPrice ? totalAmount.toFixed(2) : '-';
+
+                // Remarks Area
+                const remarksEl = document.getElementById('print-remarks');
+                if (remarksEl) {
+                    remarksEl.textContent = trip.desc || 'Received in good order and condition.';
+                }
 
                 // 3. Automated WhatsApp PDF Generator Logic
                 let pdfDownloadUrl = null;
@@ -651,11 +842,11 @@
                     btn.textContent = "Generating PDF...";
                     // Use html2pdf to create a Blob from the rendered HTML
                     const opt = {
-                        margin:       5,
+                        margin:       4,
                         filename:     doNumber + '.pdf',
                         image:        { type: 'jpeg', quality: 0.98 },
                         html2canvas:  { scale: 2 },
-                        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                        jsPDF:        { unit: 'mm', format: 'a5', orientation: 'landscape' }
                     };
                     
                     const pdfBlob = await html2pdf().set(opt).from(document.getElementById('print-section')).output('blob');
