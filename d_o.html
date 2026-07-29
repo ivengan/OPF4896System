@@ -211,8 +211,11 @@
 
     <div id="print-section">
         <div style="text-align: center; margin-bottom: 10px;">
-            <h2 style="margin: 0; font-size: 18px; font-weight: bold;">Ophir Food Marketing Sdn Bhd</h2>
-            <h3 style="margin: 5px 0 0 0; font-size: 16px;">DELIVERY ORDER</h3>
+            <h2 id="print-company-name" style="margin: 0; font-size: 18px; font-weight: bold;">Ophir Food Marketing Sdn Bhd</h2>
+            <div id="print-company-ssm" style="font-size: 12px; margin-top: 3px; display: none;"></div>
+            <div id="print-company-address" style="font-size: 12px; margin-top: 2px; display: none;"></div>
+            <div id="print-company-contact" style="font-size: 12px; margin-top: 2px; display: none;"></div>
+            <h3 style="margin: 6px 0 0 0; font-size: 16px; font-weight: bold;">DELIVERY ORDER</h3>
         </div>
         <div style="border-top: 1px dashed black; border-bottom: 1px dashed black; padding: 5px 0; margin-bottom: 10px;">
             <div style="display: flex; justify-content: space-between;">
@@ -279,7 +282,16 @@
         let pendingPrintTrip = null; 
         
         // System Settings
-        let doSettings = { autoPrint: false, autoWhatsapp: false };
+        let doSettings = {
+            autoPrint: false,
+            autoWhatsapp: false,
+            companyName: "Ophir Food Marketing Sdn Bhd",
+            ssm: "",
+            address: "",
+            email: "",
+            tel: "",
+            fax: ""
+        };
 
         const doListDiv = document.getElementById('do-list');
         const notificationArea = document.getElementById('notification-area');
@@ -292,9 +304,12 @@
 
         async function initialize() {
             try {
-                // Fetch Settings
-                const configDoc = await db.collection('config').doc('do_settings').get();
-                if(configDoc.exists) doSettings = { ...doSettings, ...configDoc.data() };
+                // Fetch Settings with real-time updates
+                db.collection('config').doc('do_settings').onSnapshot(configDoc => {
+                    if (configDoc.exists) {
+                        doSettings = { ...doSettings, ...configDoc.data() };
+                    }
+                });
 
                 // Fetch Customers for Lorry/Driver & Phone mapping
                 const custSnap = await db.collection('customers').get();
@@ -555,6 +570,50 @@
                 const tDate = new Date();
                 const displayDate = `${String(tDate.getDate()).padStart(2, '0')}/${String(tDate.getMonth() + 1).padStart(2, '0')}/${tDate.getFullYear()}`;
                 
+                // Populate D/O Header from doSettings
+                const compNameEl = document.getElementById('print-company-name');
+                if (compNameEl) compNameEl.textContent = (doSettings.companyName || "Ophir Food Marketing Sdn Bhd").trim();
+
+                const ssmEl = document.getElementById('print-company-ssm');
+                if (ssmEl) {
+                    const ssmVal = (doSettings.ssm || "").trim();
+                    if (ssmVal) {
+                        ssmEl.textContent = /ssm|reg|co\./i.test(ssmVal) ? ssmVal : `(SSM: ${ssmVal})`;
+                        ssmEl.style.display = "block";
+                    } else {
+                        ssmEl.style.display = "none";
+                    }
+                }
+
+                const addrEl = document.getElementById('print-company-address');
+                if (addrEl) {
+                    const addrVal = (doSettings.address || "").trim();
+                    if (addrVal) {
+                        addrEl.textContent = addrVal;
+                        addrEl.style.display = "block";
+                    } else {
+                        addrEl.style.display = "none";
+                    }
+                }
+
+                const contactEl = document.getElementById('print-company-contact');
+                if (contactEl) {
+                    const contactParts = [];
+                    const telVal = (doSettings.tel || "").trim();
+                    const faxVal = (doSettings.fax || "").trim();
+                    const emailVal = (doSettings.email || "").trim();
+                    if (telVal) contactParts.push(/^tel/i.test(telVal) ? telVal : `Tel: ${telVal}`);
+                    if (faxVal) contactParts.push(/^fax/i.test(faxVal) ? faxVal : `Fax: ${faxVal}`);
+                    if (emailVal) contactParts.push(/^email|^e-mail/i.test(emailVal) ? emailVal : `Email: ${emailVal}`);
+
+                    if (contactParts.length > 0) {
+                        contactEl.textContent = contactParts.join(" | ");
+                        contactEl.style.display = "block";
+                    } else {
+                        contactEl.style.display = "none";
+                    }
+                }
+
                 document.getElementById('print-do-no').textContent = doNumber;
                 document.getElementById('print-date').textContent = displayDate;
                 document.getElementById('print-cust').textContent = pendingPrintTrip.custName;

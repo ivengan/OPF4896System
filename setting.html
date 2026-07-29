@@ -40,6 +40,22 @@
         .input-suffix { display: flex; align-items: center; gap: 0.5rem; justify-content: flex-end; }
         .text-17px-bold { font-size: 0.75rem; font-weight: 700; color: #4b5563; }
 
+        .text-input-group { display: flex; flex-direction: column; width: 220px; flex-shrink: 0; }
+        @media (min-width: 480px) {
+            .text-input-group { width: 260px; }
+        }
+        .text-input-group input { padding: 0.5rem 0.65rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-weight: 600; color: #1f2937; font-size: 0.78rem; width: 100%; transition: border-color 0.2s, box-shadow 0.2s; }
+        .text-input-group input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .text-input-group input::placeholder { color: #9ca3af; font-weight: 500; }
+        
+        .dual-input-group { display: flex; flex-direction: column; gap: 0.4rem; width: 220px; flex-shrink: 0; }
+        @media (min-width: 480px) {
+            .dual-input-group { width: 260px; }
+        }
+        .dual-input-group input { padding: 0.5rem 0.65rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-weight: 600; color: #1f2937; font-size: 0.78rem; width: 100%; transition: border-color 0.2s, box-shadow 0.2s; }
+        .dual-input-group input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .dual-input-group input::placeholder { color: #9ca3af; font-weight: 500; }
+
         .save-btn { width: 100%; background: #10b981; color: white; border: none; padding: 0.75rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: background 0.2s; margin-bottom: 2rem;}
         .save-btn:hover { background: #059669; }
         .save-btn:disabled { opacity: 0.7; cursor: not-allowed; }
@@ -103,6 +119,61 @@
                     <input type="checkbox" id="toggle-wa">
                     <span class="slider"></span>
                 </label>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight card-title">D/O settings</h2>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Company name</span>
+                    <span class="setting-desc">Company name displayed at the top of the Delivery Order</span>
+                </div>
+                <div class="text-input-group">
+                    <input type="text" id="do-company-name" placeholder="Ophir Food Marketing Sdn Bhd">
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">SSM</span>
+                    <span class="setting-desc">Company business registration number</span>
+                </div>
+                <div class="text-input-group">
+                    <input type="text" id="do-ssm" placeholder="e.g. 1234567-X / 202001000000">
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Address</span>
+                    <span class="setting-desc">Company registered address on D/O header</span>
+                </div>
+                <div class="text-input-group">
+                    <input type="text" id="do-address" placeholder="e.g. No 123, Jalan Besar, 50000 KL">
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Email</span>
+                    <span class="setting-desc">Company email address on D/O header</span>
+                </div>
+                <div class="text-input-group">
+                    <input type="text" id="do-email" placeholder="e.g. info@ophirfood.com">
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-title">Telephone and Fax machine</span>
+                    <span class="setting-desc">Contact numbers for telephone and fax machine</span>
+                </div>
+                <div class="dual-input-group">
+                    <input type="text" id="do-tel" placeholder="Tel: e.g. 03-1234 5678">
+                    <input type="text" id="do-fax" placeholder="Fax: e.g. 03-1234 5679">
+                </div>
             </div>
         </div>
 
@@ -198,6 +269,13 @@
         const waToggle = document.getElementById('toggle-wa');
         const bioToggle = document.getElementById('toggle-bio');
         
+        const doCompanyNameInput = document.getElementById('do-company-name');
+        const doSsmInput = document.getElementById('do-ssm');
+        const doAddressInput = document.getElementById('do-address');
+        const doEmailInput = document.getElementById('do-email');
+        const doTelInput = document.getElementById('do-tel');
+        const doFaxInput = document.getElementById('do-fax');
+
         const tareCrateInput = document.getElementById('tare-crate');
         const tareBasketInput = document.getElementById('tare-basket');
         const tareBarrelInput = document.getElementById('tare-barrel');
@@ -233,6 +311,19 @@
                     const data = doDoc.data();
                     printToggle.checked = data.autoPrint || false;
                     waToggle.checked = data.autoWhatsapp || false;
+                    doCompanyNameInput.value = data.companyName !== undefined ? data.companyName : 'Ophir Food Marketing Sdn Bhd';
+                    doSsmInput.value = data.ssm || '';
+                    doAddressInput.value = data.address || '';
+                    doEmailInput.value = data.email || '';
+                    doTelInput.value = data.tel || '';
+                    doFaxInput.value = data.fax || '';
+                } else {
+                    doCompanyNameInput.value = 'Ophir Food Marketing Sdn Bhd';
+                    doSsmInput.value = '';
+                    doAddressInput.value = '';
+                    doEmailInput.value = '';
+                    doTelInput.value = '';
+                    doFaxInput.value = '';
                 }
 
                 // Load Container Pricing/Tare Settings
@@ -288,7 +379,13 @@
                 const doRef = db.collection('config').doc('do_settings');
                 batch.set(doRef, {
                     autoPrint: printToggle.checked,
-                    autoWhatsapp: waToggle.checked
+                    autoWhatsapp: waToggle.checked,
+                    companyName: doCompanyNameInput.value.trim(),
+                    ssm: doSsmInput.value.trim(),
+                    address: doAddressInput.value.trim(),
+                    email: doEmailInput.value.trim(),
+                    tel: doTelInput.value.trim(),
+                    fax: doFaxInput.value.trim()
                 }, { merge: true });
 
                 const pricingRef = db.collection('config').doc('pricing');
