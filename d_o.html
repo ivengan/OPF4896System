@@ -685,7 +685,7 @@
                             return `
                                 <div class="item-row">
                                     <div class="flex flex-col">
-                                        <span class="font-semibold text-gray-700">${i.name}</span>
+                                        <span class="font-semibold text-gray-700 uppercase">${(i.name || '').toUpperCase()}</span>
                                         ${remarkDisplay}
                                     </div>
                                     <span class="font-bold text-gray-900">${qtyDisplay} - ${weightDisplay}</span>
@@ -897,7 +897,7 @@
 
             Object.values(printAggregated).forEach(i => {
                 let noDisplay = `${rowIdx}.`;
-                let descDisplay = `<span style="font-weight: 700;">${i.name}</span>`;
+                let descDisplay = `<span style="font-weight: 700; text-transform: uppercase;">${(i.name || '').toUpperCase()}</span>`;
                 let remarkDisplay = i.remark ? `<span style="color: #374151;">${i.remark}</span>` : '-';
                 
                 let isKgUnit = (i.unit && String(i.unit).toUpperCase() === 'KG');
