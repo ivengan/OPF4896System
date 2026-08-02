@@ -116,11 +116,24 @@
         .do-card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; overflow: hidden; margin-bottom: 1rem; }
         .do-header { padding: 1rem; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; }
         .do-body { padding: 1rem; }
-        .do-footer { padding: 1rem; background-color: #f9fafb; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; }
+        .do-footer { padding: 1rem; background-color: #f9fafb; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
         .item-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f3f4f6; }
         .item-row:last-child { border-bottom: none; padding-bottom: 0; }
         
-        @media (min-width: 640px) { .sm\:w-auto { width: auto; } }
+        .bg-blue-500 { background-color: #3b82f6; }
+        .hover\:bg-blue-600:hover { background-color: #2563eb; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .hover\:bg-blue-700:hover { background-color: #1d4ed8; }
+        .text-blue-400 { color: #60a5fa; }
+        .max-w-4xl { max-width: 56rem; }
+        .max-h-\[90vh\] { max-height: 90vh; }
+        .overflow-hidden { overflow: hidden; }
+        .overflow-auto { overflow: auto; }
+
+        @media (min-width: 640px) {
+            .sm\:w-auto { width: auto; }
+            .sm\:flex-initial { flex: 0 1 auto; }
+        }
 
         /* Off-screen Print Section (So html2pdf can read it without it being display:none) */
         #print-section {
@@ -211,6 +224,39 @@
             <div class="flex gap-3 pt-4">
                 <button id="cancel-print-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-xl transition">Cancel</button>
                 <button id="confirm-print-btn" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 rounded-xl transition shadow-md">Depart & Process</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- D/O Preview Modal -->
+    <div id="do-preview-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden text-left">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center px-6 py-4 bg-gray-800 text-white border-b border-gray-700">
+                <div class="flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-400" style="width: 1.5rem; height: 1.5rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    <h2 id="do-preview-title" class="text-xl font-bold tracking-tight">D/O Preview</h2>
+                </div>
+                <button id="close-preview-x-btn" class="text-gray-400 hover:text-white transition p-1 rounded-lg focus:outline-none">
+                    <svg class="w-6 h-6" style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Modal Body (Preview Container) -->
+            <div class="flex-1 overflow-auto p-4 sm:p-6 bg-gray-200 flex justify-center items-start">
+                <div id="do-preview-content" class="bg-white shadow-xl rounded-lg overflow-hidden border border-gray-300 w-full" style="width: 210mm; min-width: 210mm; min-height: 148mm; box-sizing: border-box; padding: 6mm 8mm; color: black; font-family: Arial, Helvetica, system-ui, sans-serif; font-size: 11px; line-height: 1.35; margin: 0 auto;">
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end items-center gap-3 px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <button id="print-from-preview-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition shadow-md inline-flex items-center gap-2">
+                    <svg class="w-5 h-5" style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    <span>Print D/O</span>
+                </button>
+                <button id="close-preview-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2.5 px-6 rounded-xl transition">
+                    Close
+                </button>
             </div>
         </div>
     </div>
@@ -465,6 +511,7 @@
                     data.broilers.forEach(b => {
                         if (b.isInvoiced) {
                             invoicedItems.push({
+                                ...b,
                                 name: b.description || 'Broiler',
                                 qty: b.dispatchedQty !== undefined ? b.dispatchedQty : (b.qty || 0),
                                 weight: parseFloat(b.totalWeight) || 0,
@@ -479,6 +526,7 @@
                     data.parts.forEach(p => {
                         if (p.isInvoiced) {
                             invoicedItems.push({
+                                ...p,
                                 name: p.name || 'Part',
                                 qty: p.dispatchedQty !== undefined ? p.dispatchedQty : (p.qty || 0),
                                 weight: parseFloat(p.totalWeight) || 0,
@@ -496,15 +544,18 @@
                         groupedByLorry[lorry][custName] = {
                             phone: phone, // Attach phone specifically for routing
                             trips: {
-                                'pending': { items: [], orderIds: [], status: 'pending', desc: desc },
-                                'delivering': { items: [], orderIds: [], status: 'delivering', desc: desc },
-                                'delivered': { items: [], orderIds: [], status: 'delivered', desc: desc }
+                                'pending': { items: [], orderIds: [], status: 'pending', desc: desc, doNumber: null },
+                                'delivering': { items: [], orderIds: [], status: 'delivering', desc: desc, doNumber: null },
+                                'delivered': { items: [], orderIds: [], status: 'delivered', desc: desc, doNumber: null }
                             }
                         };
                     }
                     
                     groupedByLorry[lorry][custName].trips[deliveryStatus].items.push(...invoicedItems);
                     groupedByLorry[lorry][custName].trips[deliveryStatus].orderIds.push(doc.id);
+                    if (data.doNumber && !groupedByLorry[lorry][custName].trips[deliveryStatus].doNumber) {
+                        groupedByLorry[lorry][custName].trips[deliveryStatus].doNumber = data.doNumber;
+                    }
                 }
             });
 
@@ -582,12 +633,19 @@
 
                         let btnHtml = '';
                         if (trip.status === 'pending') {
-                            btnHtml = `<button class="depart-btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-md w-full sm:w-auto" data-lorry="${lorry}" data-cust="${custName}">Depart</button>`;
+                            btnHtml = `<button class="depart-btn flex-1 sm:flex-initial bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-md text-center" data-lorry="${lorry}" data-cust="${custName}">Depart</button>`;
                         } else if (trip.status === 'delivering') {
-                            btnHtml = `<div class="bg-yellow-500 text-white font-bold py-3 px-8 rounded-lg shadow-sm text-center w-full sm:w-auto cursor-not-allowed select-none">Delivering...</div>`;
+                            btnHtml = `<div class="flex-1 sm:flex-initial bg-yellow-500 text-white font-bold py-3 px-8 rounded-lg shadow-sm text-center cursor-not-allowed select-none">Delivering...</div>`;
                         } else if (trip.status === 'delivered') {
-                            btnHtml = `<div class="bg-red-500 text-white font-bold py-3 px-8 rounded-lg shadow-sm text-center w-full sm:w-auto cursor-not-allowed select-none">Delivered</div>`;
+                            btnHtml = `<div class="flex-1 sm:flex-initial bg-red-500 text-white font-bold py-3 px-8 rounded-lg shadow-sm text-center cursor-not-allowed select-none">Delivered</div>`;
                         }
+
+                        let previewBtnHtml = `
+                            <button class="preview-do-btn flex-1 sm:flex-initial bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition shadow-md flex items-center justify-center gap-2" data-lorry="${lorry}" data-cust="${custName}" data-status="${status}">
+                                <svg class="w-5 h-5" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <span>D/O preview</span>
+                            </button>
+                        `;
 
                         card.innerHTML = `
                             <div class="do-header">
@@ -597,7 +655,8 @@
                             <div class="do-body">
                                 ${itemsHtml}
                             </div>
-                            <div class="do-footer">
+                            <div class="do-footer flex items-center justify-end gap-3 flex-wrap">
+                                ${previewBtnHtml}
                                 ${btnHtml}
                             </div>
                         `;
@@ -647,6 +706,183 @@
             });
         }
 
+        async function previewNextDONumber() {
+            const tDate = new Date();
+            const dd = String(tDate.getDate()).padStart(2, '0');
+            const mm = String(tDate.getMonth() + 1).padStart(2, '0');
+            const yyyy = tDate.getFullYear();
+            const dateStr = `${dd}${mm}${yyyy}`; 
+
+            try {
+                const counterRef = db.collection('metadata').doc('do_counter');
+                const doc = await counterRef.get();
+                let nextCount = 1;
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.date === dateStr) {
+                        nextCount = (data.count || 0) + 1;
+                    }
+                }
+                const paddedCount = String(nextCount).padStart(3, '0');
+                return `OFM${dateStr}DO${paddedCount}`;
+            } catch (err) {
+                return `OFM${dateStr}DO001`;
+            }
+        }
+
+        function populatePrintSection(trip, lorry, custName, customerPhone, doNumber, tDate = new Date()) {
+            const displayDate = `${String(tDate.getDate()).padStart(2, '0')}/${String(tDate.getMonth() + 1).padStart(2, '0')}/${tDate.getFullYear()}`;
+            
+            // Populate D/O Header from doSettings
+            const compNameEl = document.getElementById('print-company-name');
+            if (compNameEl) compNameEl.textContent = (doSettings.companyName || "Ophir Food Marketing Sdn Bhd").trim();
+
+            const ssmEl = document.getElementById('print-company-ssm');
+            if (ssmEl) {
+                const ssmVal = (doSettings.ssm || "").trim();
+                if (ssmVal) {
+                    ssmEl.textContent = /ssm|reg|co\./i.test(ssmVal) ? ssmVal : `(SSM: ${ssmVal})`;
+                    ssmEl.style.display = "inline";
+                } else {
+                    ssmEl.style.display = "none";
+                }
+            }
+
+            const addrEl = document.getElementById('print-company-address');
+            if (addrEl) {
+                const addrVal = (doSettings.address || "").trim();
+                if (addrVal) {
+                    addrEl.textContent = addrVal;
+                    addrEl.style.display = "block";
+                } else {
+                    addrEl.style.display = "none";
+                }
+            }
+
+            const contactEl = document.getElementById('print-company-contact');
+            if (contactEl) {
+                const contactParts = [];
+                const telVal = (doSettings.tel || "").trim();
+                const faxVal = (doSettings.fax || "").trim();
+                const emailVal = (doSettings.email || "").trim();
+                if (telVal) contactParts.push(/^tel/i.test(telVal) ? telVal : `TEL: ${telVal}`);
+                if (faxVal) contactParts.push(/^fax/i.test(faxVal) ? faxVal : `FAX: ${faxVal}`);
+                if (emailVal) contactParts.push(/^email|^e-mail/i.test(emailVal) ? emailVal : `EMAIL: ${emailVal}`);
+
+                if (contactParts.length > 0) {
+                    contactEl.textContent = contactParts.join("  |  ");
+                    contactEl.style.display = "block";
+                } else {
+                    contactEl.style.display = "none";
+                }
+            }
+
+            // Customer Info (Left Box)
+            const custData = customerMap[custName] || {};
+            const acEl = document.getElementById('print-cust-ac');
+            if (acEl) {
+                acEl.textContent = custData.accountCode || custData.code || custData.id || '-';
+            }
+            const custNameEl = document.getElementById('print-cust');
+            if (custNameEl) custNameEl.textContent = custName || '';
+            
+            const custAddrEl = document.getElementById('print-cust-address');
+            if (custAddrEl) {
+                custAddrEl.textContent = custData.address || '';
+            }
+            
+            const custPhoneEl = document.getElementById('print-cust-phone');
+            if (custPhoneEl) {
+                const phoneVal = customerPhone || custData.phone || '';
+                custPhoneEl.textContent = phoneVal ? `TEL : ${phoneVal}` : '';
+            }
+
+            // D/O Info (Right Box)
+            document.getElementById('print-do-no').textContent = doNumber || '-';
+            document.getElementById('print-date').textContent = displayDate;
+            document.getElementById('print-lorry').textContent = lorry || '-';
+            
+            const orderNoEl = document.getElementById('print-order-no');
+            if (orderNoEl) {
+                const oIds = trip.orderIds || [];
+                orderNoEl.textContent = oIds.length > 0 ? oIds.join(', ') : '-';
+            }
+
+            const timestampEl = document.getElementById('print-timestamp');
+            if (timestampEl) {
+                const timeStr = tDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                timestampEl.textContent = `${displayDate} ${timeStr}`;
+            }
+
+            // Aggregate and Render Items Table
+            let printAggregated = {};
+            trip.items.forEach(i => {
+                let key = i.name + '|||' + (i.remark || '');
+                if (!printAggregated[key]) printAggregated[key] = { ...i };
+                else {
+                    printAggregated[key].qty += (i.qty || 0);
+                    printAggregated[key].weight += (i.weight || 0);
+                }
+            });
+
+            const tbody = document.getElementById('print-items');
+            tbody.innerHTML = '';
+            let rowIdx = 1;
+            let totalQty = 0;
+            let totalWeight = 0;
+            let totalAmount = 0;
+            let hasPrice = false;
+
+            Object.values(printAggregated).forEach(i => {
+                let noDisplay = `${rowIdx}.`;
+                let partNoDisplay = i.partNo || i.code || '-';
+                let descDisplay = `<span style="font-weight: 700;">${i.name}</span>`;
+                if (i.remark) descDisplay += `<br><span style="font-size: 10px; color: #4b5563; font-style: italic;">(${i.remark})</span>`;
+                let modelDisplay = i.model || '-';
+                
+                let qtyDisplay = i.type === 'part' && i.unit ? `${i.qty} ${i.unit}` : `${i.qty}`;
+                if (i.weight && i.weight > 0) {
+                    qtyDisplay += `<br><small style="color:#4b5563;">(${i.weight.toFixed(2)} KG)</small>`;
+                }
+                
+                let unitPriceDisplay = '-';
+                let amountDisplay = '-';
+                if (i.price !== undefined && !isNaN(i.price) && parseFloat(i.price) > 0) {
+                    hasPrice = true;
+                    unitPriceDisplay = parseFloat(i.price).toFixed(2);
+                    let amt = parseFloat(i.price) * (i.weight > 0 ? i.weight : i.qty);
+                    amountDisplay = amt.toFixed(2);
+                    totalAmount += amt;
+                }
+
+                totalQty += (i.qty || 0);
+                totalWeight += (i.weight || 0);
+                
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 5px 2px; vertical-align: top;">${noDisplay}</td>
+                        <td style="padding: 5px 2px; vertical-align: top;">${partNoDisplay}</td>
+                        <td style="padding: 5px 2px; vertical-align: top;">${descDisplay}</td>
+                        <td style="padding: 5px 2px; vertical-align: top;">${modelDisplay}</td>
+                        <td style="text-align: right; padding: 5px 2px; vertical-align: top; font-weight: 600;">${qtyDisplay}</td>
+                        <td style="text-align: right; padding: 5px 2px; vertical-align: top;">${unitPriceDisplay}</td>
+                        <td style="text-align: right; padding: 5px 2px; vertical-align: top; font-weight: 600;">${amountDisplay}</td>
+                    </tr>
+                `;
+                rowIdx++;
+            });
+
+            document.getElementById('print-total-qty').textContent = totalQty;
+            document.getElementById('print-total-weight').textContent = totalWeight.toFixed(2) + ' KG';
+            document.getElementById('print-total-amount').textContent = hasPrice ? totalAmount.toFixed(2) : '-';
+
+            // Remarks Area
+            const remarksEl = document.getElementById('print-remarks');
+            if (remarksEl) {
+                remarksEl.textContent = trip.desc || 'Received in good order and condition.';
+            }
+        }
+
         // Trigger Modal
         document.addEventListener('click', (e) => {
             if (e.target && e.target.classList.contains('depart-btn')) {
@@ -685,156 +921,7 @@
                 
                 // 2. Populate Hidden Print Div BEFORE taking screenshots
                 const tDate = new Date();
-                const displayDate = `${String(tDate.getDate()).padStart(2, '0')}/${String(tDate.getMonth() + 1).padStart(2, '0')}/${tDate.getFullYear()}`;
-                
-                // Populate D/O Header from doSettings
-                const compNameEl = document.getElementById('print-company-name');
-                if (compNameEl) compNameEl.textContent = (doSettings.companyName || "Ophir Food Marketing Sdn Bhd").trim();
-
-                const ssmEl = document.getElementById('print-company-ssm');
-                if (ssmEl) {
-                    const ssmVal = (doSettings.ssm || "").trim();
-                    if (ssmVal) {
-                        ssmEl.textContent = /ssm|reg|co\./i.test(ssmVal) ? ssmVal : `(SSM: ${ssmVal})`;
-                        ssmEl.style.display = "inline";
-                    } else {
-                        ssmEl.style.display = "none";
-                    }
-                }
-
-                const addrEl = document.getElementById('print-company-address');
-                if (addrEl) {
-                    const addrVal = (doSettings.address || "").trim();
-                    if (addrVal) {
-                        addrEl.textContent = addrVal;
-                        addrEl.style.display = "block";
-                    } else {
-                        addrEl.style.display = "none";
-                    }
-                }
-
-                const contactEl = document.getElementById('print-company-contact');
-                if (contactEl) {
-                    const contactParts = [];
-                    const telVal = (doSettings.tel || "").trim();
-                    const faxVal = (doSettings.fax || "").trim();
-                    const emailVal = (doSettings.email || "").trim();
-                    if (telVal) contactParts.push(/^tel/i.test(telVal) ? telVal : `TEL: ${telVal}`);
-                    if (faxVal) contactParts.push(/^fax/i.test(faxVal) ? faxVal : `FAX: ${faxVal}`);
-                    if (emailVal) contactParts.push(/^email|^e-mail/i.test(emailVal) ? emailVal : `EMAIL: ${emailVal}`);
-
-                    if (contactParts.length > 0) {
-                        contactEl.textContent = contactParts.join("  |  ");
-                        contactEl.style.display = "block";
-                    } else {
-                        contactEl.style.display = "none";
-                    }
-                }
-
-                // Customer Info (Left Box)
-                const custData = customerMap[pendingPrintTrip.custName] || {};
-                const acEl = document.getElementById('print-cust-ac');
-                if (acEl) {
-                    acEl.textContent = custData.accountCode || custData.code || custData.id || '-';
-                }
-                const custNameEl = document.getElementById('print-cust');
-                if (custNameEl) custNameEl.textContent = pendingPrintTrip.custName || '';
-                
-                const custAddrEl = document.getElementById('print-cust-address');
-                if (custAddrEl) {
-                    custAddrEl.textContent = custData.address || '';
-                }
-                
-                const custPhoneEl = document.getElementById('print-cust-phone');
-                if (custPhoneEl) {
-                    const phoneVal = pendingPrintTrip.customerPhone || custData.phone || '';
-                    custPhoneEl.textContent = phoneVal ? `TEL : ${phoneVal}` : '';
-                }
-
-                // D/O Info (Right Box)
-                document.getElementById('print-do-no').textContent = doNumber;
-                document.getElementById('print-date').textContent = displayDate;
-                document.getElementById('print-lorry').textContent = pendingPrintTrip.lorry || '-';
-                
-                const orderNoEl = document.getElementById('print-order-no');
-                if (orderNoEl) {
-                    const oIds = trip.orderIds || [];
-                    orderNoEl.textContent = oIds.length > 0 ? oIds.join(', ') : '-';
-                }
-
-                const timestampEl = document.getElementById('print-timestamp');
-                if (timestampEl) {
-                    const timeStr = tDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    timestampEl.textContent = `${displayDate} ${timeStr}`;
-                }
-
-                // Aggregate and Render Items Table
-                let printAggregated = {};
-                trip.items.forEach(i => {
-                    let key = i.name + '|||' + (i.remark || '');
-                    if (!printAggregated[key]) printAggregated[key] = { ...i };
-                    else {
-                        printAggregated[key].qty += (i.qty || 0);
-                        printAggregated[key].weight += (i.weight || 0);
-                    }
-                });
-
-                const tbody = document.getElementById('print-items');
-                tbody.innerHTML = '';
-                let rowIdx = 1;
-                let totalQty = 0;
-                let totalWeight = 0;
-                let totalAmount = 0;
-                let hasPrice = false;
-
-                Object.values(printAggregated).forEach(i => {
-                    let noDisplay = `${rowIdx}.`;
-                    let partNoDisplay = i.partNo || i.code || '-';
-                    let descDisplay = `<span style="font-weight: 700;">${i.name}</span>`;
-                    if (i.remark) descDisplay += `<br><span style="font-size: 10px; color: #4b5563; font-style: italic;">(${i.remark})</span>`;
-                    let modelDisplay = i.model || '-';
-                    
-                    let qtyDisplay = i.type === 'part' && i.unit ? `${i.qty} ${i.unit}` : `${i.qty}`;
-                    if (i.weight && i.weight > 0) {
-                        qtyDisplay += `<br><small style="color:#4b5563;">(${i.weight.toFixed(2)} KG)</small>`;
-                    }
-                    
-                    let unitPriceDisplay = '-';
-                    let amountDisplay = '-';
-                    if (i.price !== undefined && !isNaN(i.price) && parseFloat(i.price) > 0) {
-                        hasPrice = true;
-                        unitPriceDisplay = parseFloat(i.price).toFixed(2);
-                        let amt = parseFloat(i.price) * (i.weight > 0 ? i.weight : i.qty);
-                        amountDisplay = amt.toFixed(2);
-                        totalAmount += amt;
-                    }
-
-                    totalQty += (i.qty || 0);
-                    totalWeight += (i.weight || 0);
-                    
-                    tbody.innerHTML += `
-                        <tr style="border-bottom: 1px solid #e5e7eb;">
-                            <td style="padding: 5px 2px; vertical-align: top;">${noDisplay}</td>
-                            <td style="padding: 5px 2px; vertical-align: top;">${partNoDisplay}</td>
-                            <td style="padding: 5px 2px; vertical-align: top;">${descDisplay}</td>
-                            <td style="padding: 5px 2px; vertical-align: top;">${modelDisplay}</td>
-                            <td style="text-align: right; padding: 5px 2px; vertical-align: top; font-weight: 600;">${qtyDisplay}</td>
-                            <td style="text-align: right; padding: 5px 2px; vertical-align: top;">${unitPriceDisplay}</td>
-                            <td style="text-align: right; padding: 5px 2px; vertical-align: top; font-weight: 600;">${amountDisplay}</td>
-                        </tr>
-                    `;
-                    rowIdx++;
-                });
-
-                document.getElementById('print-total-qty').textContent = totalQty;
-                document.getElementById('print-total-weight').textContent = totalWeight.toFixed(2) + ' KG';
-                document.getElementById('print-total-amount').textContent = hasPrice ? totalAmount.toFixed(2) : '-';
-
-                // Remarks Area
-                const remarksEl = document.getElementById('print-remarks');
-                if (remarksEl) {
-                    remarksEl.textContent = trip.desc || 'Received in good order and condition.';
-                }
+                populatePrintSection(trip, pendingPrintTrip.lorry, pendingPrintTrip.custName, pendingPrintTrip.customerPhone, doNumber, tDate);
 
                 // 3. Automated WhatsApp PDF Generator Logic
                 let pdfDownloadUrl = null;
@@ -913,6 +1000,79 @@
                 btn.textContent = "Depart & Process";
                 pendingPrintTrip = null;
             }
+        });
+
+        document.addEventListener('click', async (e) => {
+            const previewBtn = e.target.closest('.preview-do-btn');
+            if (previewBtn) {
+                const lorry = previewBtn.getAttribute('data-lorry');
+                const custName = previewBtn.getAttribute('data-cust');
+                const status = previewBtn.getAttribute('data-status');
+
+                if (!globalTripsData || !globalTripsData[lorry] || !globalTripsData[lorry][custName]) return;
+
+                const customerData = globalTripsData[lorry][custName];
+                const trip = customerData.trips[status];
+                if (!trip) return;
+
+                const originalBtnText = previewBtn.innerHTML;
+                previewBtn.disabled = true;
+                previewBtn.innerHTML = `<svg class="animate-spin spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Loading...</span>`;
+
+                try {
+                    let doNumber = trip.doNumber || null;
+                    if (!doNumber) {
+                        doNumber = await previewNextDONumber();
+                    }
+
+                    const tDate = new Date();
+                    populatePrintSection(
+                        trip,
+                        lorry,
+                        custName,
+                        customerData.phone,
+                        doNumber,
+                        tDate
+                    );
+
+                    const printSec = document.getElementById('print-section');
+                    const previewContainer = document.getElementById('do-preview-content');
+                    previewContainer.innerHTML = printSec.innerHTML;
+
+                    previewContainer.querySelectorAll('[id]').forEach(el => {
+                        el.removeAttribute('id');
+                    });
+
+                    const titleEl = document.getElementById('do-preview-title');
+                    if (titleEl) {
+                        titleEl.textContent = `D/O Preview - ${doNumber}`;
+                    }
+
+                    document.getElementById('do-preview-modal').classList.remove('hidden');
+                } catch (err) {
+                    console.error("Error generating D/O preview:", err);
+                    showNotification("Failed to load D/O preview.", "error");
+                } finally {
+                    previewBtn.disabled = false;
+                    previewBtn.innerHTML = originalBtnText;
+                }
+            }
+        });
+
+        function closeDOPreview() {
+            document.getElementById('do-preview-modal').classList.add('hidden');
+        }
+
+        document.getElementById('close-preview-btn').addEventListener('click', closeDOPreview);
+        document.getElementById('close-preview-x-btn').addEventListener('click', closeDOPreview);
+        document.getElementById('do-preview-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('do-preview-modal')) {
+                closeDOPreview();
+            }
+        });
+
+        document.getElementById('print-from-preview-btn').addEventListener('click', () => {
+            window.print();
         });
 
         function updateHeaderDate() {
