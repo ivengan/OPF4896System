@@ -291,7 +291,8 @@
                         <td style="vertical-align: top;"></td>
                         <td></td>
                         <td style="vertical-align: top;">
-                            <div id="print-cust" style="font-weight: bold; font-size: 12px; margin-bottom: 2px; text-transform: uppercase;"></div>
+                            <div id="print-cust" style="font-weight: bold; font-size: 12px; margin-bottom: 1px; text-transform: uppercase;"></div>
+                            <div id="print-cust-remark" style="font-weight: bold; font-size: 11px; color: #1f2937; margin-bottom: 3px; text-transform: uppercase;"></div>
                             <div id="print-cust-address" style="color: #374151; white-space: pre-line; line-height: 1.3; text-transform: uppercase;"></div>
                             <div id="print-cust-phone" style="color: #374151; margin-top: 2px; text-transform: uppercase;"></div>
                         </td>
@@ -313,32 +314,17 @@
                         <td id="print-date"></td>
                     </tr>
                     <tr>
-                        <td style="font-weight: bold; padding: 1px 0;">Salesman</td>
+                        <td style="font-weight: bold; padding: 1px 0;">Driver</td>
                         <td>:</td>
                         <td id="print-lorry" style="text-transform: uppercase;"></td>
                     </tr>
                     <tr>
                         <td style="font-weight: bold; padding: 1px 0;">Terms</td>
                         <td>:</td>
-                        <td id="print-terms">0 days</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold; padding: 1px 0;">Order No.</td>
-                        <td>:</td>
-                        <td id="print-order-no">-</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold; padding: 1px 0;">Currency</td>
-                        <td>:</td>
-                        <td>MYR</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold; padding: 1px 0;">Printed Date</td>
-                        <td>:</td>
-                        <td id="print-timestamp"></td>
+                        <td id="print-terms">-</td>
                     </tr>
                 </table>
-                <div style="text-align: right; font-size: 10px; margin-top: 4px; font-weight: bold;">
+                <div style="text-align: right; font-size: 10px; margin-top: 6px; font-weight: bold;">
                     Page No. : 1 / 1
                 </div>
             </div>
@@ -351,8 +337,8 @@
                     <th style="padding: 5px 2px; width: 6%;">No.</th>
                     <th style="padding: 5px 2px; width: 16%;">Part No.</th>
                     <th style="padding: 5px 2px; width: 34%;">Description</th>
-                    <th style="padding: 5px 2px; width: 12%;">Model</th>
-                    <th style="text-align: right; padding: 5px 2px; width: 11%;">Qty.</th>
+                    <th style="text-align: right; padding: 5px 2px; width: 12%;">Qty.</th>
+                    <th style="text-align: right; padding: 5px 2px; width: 11%;">Weight</th>
                     <th style="text-align: right; padding: 5px 2px; width: 11%;">Unit Price</th>
                     <th style="text-align: right; padding: 5px 2px; width: 10%;">Amount</th>
                 </tr>
@@ -361,14 +347,8 @@
             </tbody>
         </table>
         
-        <!-- Bottom Summary Area (Remarks & Totals) -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; font-size: 11px;">
-            <!-- Left: Remarks -->
-            <div style="width: 58%;">
-                <div style="font-weight: bold; font-style: italic; margin-bottom: 2px;">Remarks:</div>
-                <div id="print-remarks" style="color: #374151; font-size: 10px; line-height: 1.3; white-space: pre-line;"></div>
-            </div>
-
+        <!-- Bottom Summary Area (Totals) -->
+        <div style="display: flex; justify-content: flex-end; align-items: flex-start; margin-bottom: 14px; font-size: 11px;">
             <!-- Right: Totals -->
             <div style="width: 38%;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
@@ -395,14 +375,10 @@
         <!-- Signature Area -->
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; font-size: 11px; padding-top: 5px;">
             <!-- Left Signatures -->
-            <div style="width: 50%; display: flex; gap: 25px;">
+            <div style="width: 50%;">
                 <div>
                     <div style="margin-bottom: 30px; font-weight: bold;">Issued By</div>
-                    <div style="border-top: 1px solid black; width: 110px; padding-top: 2px;">COUNTER</div>
-                </div>
-                <div>
-                    <div style="margin-bottom: 30px; font-weight: bold;">Checked By</div>
-                    <div style="border-top: 1px solid black; width: 110px; padding-top: 2px;"></div>
+                    <div id="print-issued-by" style="border-top: 1px solid black; width: 160px; padding-top: 2px; font-weight: bold; text-transform: uppercase;">COUNTER</div>
                 </div>
             </div>
             <!-- Right Signature -->
@@ -443,7 +419,31 @@
         let customerMap = {};
         let globalTripsData = {}; 
         let pendingPrintTrip = null; 
-        
+        let verifiedUserName = localStorage.getItem('user_name') || localStorage.getItem('user_phone') || 'COUNTER';
+
+        async function verifyUserForDepart() {
+            if (window.PublicKeyCredential) {
+                try {
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge);
+                    const assertion = await navigator.credentials.get({
+                        publicKey: {
+                            challenge: challenge,
+                            userVerification: 'required',
+                            timeout: 60000
+                        }
+                    });
+                    if (assertion) {
+                        return true;
+                    }
+                } catch (err) {
+                    console.log("Biometric verification cancelled or unavailable:", err);
+                    return confirm(`Biometric verification unavailable. Confirm departure as ${verifiedUserName}?`);
+                }
+            }
+            return confirm(`Confirm departure as ${verifiedUserName}?`);
+        }
+
         // System Settings
         let doSettings = {
             autoPrint: false,
@@ -467,6 +467,20 @@
 
         async function initialize() {
             try {
+                // Resolve user name from staff collection
+                const userPhone = localStorage.getItem('user_phone');
+                if (userPhone) {
+                    try {
+                        const snap = await db.collection('staff').where('phoneNumber', '==', userPhone).limit(1).get();
+                        if (!snap.empty) {
+                            const data = snap.docs[0].data();
+                            verifiedUserName = data.name || data.displayName || data.staffName || userPhone;
+                        }
+                    } catch (e) {
+                        console.warn("Could not resolve staff name:", e);
+                    }
+                }
+
                 // Fetch Settings with real-time updates
                 db.collection('config').doc('do_settings').onSnapshot(configDoc => {
                     if (configDoc.exists) {
@@ -786,6 +800,12 @@
             const custNameEl = document.getElementById('print-cust');
             if (custNameEl) custNameEl.textContent = custName || '';
             
+            const custRemarkEl = document.getElementById('print-cust-remark');
+            if (custRemarkEl) {
+                custRemarkEl.textContent = trip.desc || '';
+                custRemarkEl.style.display = trip.desc ? 'block' : 'none';
+            }
+
             const custAddrEl = document.getElementById('print-cust-address');
             if (custAddrEl) {
                 custAddrEl.textContent = custData.address || '';
@@ -800,18 +820,12 @@
             // D/O Info (Right Box)
             document.getElementById('print-do-no').textContent = doNumber || '-';
             document.getElementById('print-date').textContent = displayDate;
-            document.getElementById('print-lorry').textContent = lorry || '-';
+            document.getElementById('print-lorry').textContent = custData.driver || lorry || '-';
             
-            const orderNoEl = document.getElementById('print-order-no');
-            if (orderNoEl) {
-                const oIds = trip.orderIds || [];
-                orderNoEl.textContent = oIds.length > 0 ? oIds.join(', ') : '-';
-            }
-
-            const timestampEl = document.getElementById('print-timestamp');
-            if (timestampEl) {
-                const timeStr = tDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                timestampEl.textContent = `${displayDate} ${timeStr}`;
+            const termsEl = document.getElementById('print-terms');
+            if (termsEl) {
+                const termVal = custData.terms || custData.term || custData.creditTerms || custData.paymentTerms || '';
+                termsEl.textContent = termVal ? termVal : '-';
             }
 
             // Aggregate and Render Items Table
@@ -838,12 +852,9 @@
                 let partNoDisplay = i.partNo || i.code || '-';
                 let descDisplay = `<span style="font-weight: 700;">${i.name}</span>`;
                 if (i.remark) descDisplay += `<br><span style="font-size: 10px; color: #4b5563; font-style: italic;">(${i.remark})</span>`;
-                let modelDisplay = i.model || '-';
                 
                 let qtyDisplay = i.type === 'part' && i.unit ? `${i.qty} ${i.unit}` : `${i.qty}`;
-                if (i.weight && i.weight > 0) {
-                    qtyDisplay += `<br><small style="color:#4b5563;">(${i.weight.toFixed(2)} KG)</small>`;
-                }
+                let weightDisplay = (i.weight && i.weight > 0) ? `${parseFloat(i.weight).toFixed(2)} KG` : '-';
                 
                 let unitPriceDisplay = '-';
                 let amountDisplay = '-';
@@ -863,8 +874,8 @@
                         <td style="padding: 5px 2px; vertical-align: top;">${noDisplay}</td>
                         <td style="padding: 5px 2px; vertical-align: top;">${partNoDisplay}</td>
                         <td style="padding: 5px 2px; vertical-align: top;">${descDisplay}</td>
-                        <td style="padding: 5px 2px; vertical-align: top;">${modelDisplay}</td>
                         <td style="text-align: right; padding: 5px 2px; vertical-align: top; font-weight: 600;">${qtyDisplay}</td>
+                        <td style="text-align: right; padding: 5px 2px; vertical-align: top;">${weightDisplay}</td>
                         <td style="text-align: right; padding: 5px 2px; vertical-align: top;">${unitPriceDisplay}</td>
                         <td style="text-align: right; padding: 5px 2px; vertical-align: top; font-weight: 600;">${amountDisplay}</td>
                     </tr>
@@ -876,19 +887,22 @@
             document.getElementById('print-total-weight').textContent = totalWeight.toFixed(2) + ' KG';
             document.getElementById('print-total-amount').textContent = hasPrice ? totalAmount.toFixed(2) : '-';
 
-            // Remarks Area
-            const remarksEl = document.getElementById('print-remarks');
-            if (remarksEl) {
-                remarksEl.textContent = trip.desc || 'Received in good order and condition.';
+            // Issued By Signature Area
+            const issuedByEl = document.getElementById('print-issued-by');
+            if (issuedByEl) {
+                issuedByEl.textContent = verifiedUserName || 'COUNTER';
             }
         }
 
         // Trigger Modal
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', async (e) => {
             if (e.target && e.target.classList.contains('depart-btn')) {
                 const lorry = e.target.getAttribute('data-lorry');
                 const custName = e.target.getAttribute('data-cust');
                 
+                const isVerified = await verifyUserForDepart();
+                if (!isVerified) return;
+
                 pendingPrintTrip = { 
                     lorry: lorry, 
                     custName: custName, 
