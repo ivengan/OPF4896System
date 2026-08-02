@@ -417,6 +417,8 @@
         });
 
         let customerMap = {};
+        let pricingData = {};
+        let lastOrdersDocs = [];
         let globalTripsData = {}; 
         let pendingPrintTrip = null; 
         let verifiedUserName = localStorage.getItem('user_name') || localStorage.getItem('user_phone') || 'COUNTER';
@@ -488,21 +490,75 @@
                     }
                 });
 
-                // Fetch Customers for Lorry/Driver & Phone mapping
-                const custSnap = await db.collection('customers').get();
-                custSnap.forEach(doc => {
-                    customerMap[doc.data().displayName] = doc.data();
+                // Fetch Pricing with real-time updates (from edit_price.html)
+                db.collection('config').doc('pricing').onSnapshot(pricingDoc => {
+                    if (pricingDoc.exists) {
+                        pricingData = pricingDoc.data() || {};
+                        if (lastOrdersDocs.length > 0) processDeliveryOrders(lastOrdersDocs);
+                    }
+                });
+
+                // Fetch Customers for Lorry/Driver & Phone mapping with real-time updates
+                db.collection('customers').onSnapshot(custSnap => {
+                    custSnap.forEach(doc => {
+                        customerMap[doc.data().displayName] = doc.data();
+                    });
+                    if (lastOrdersDocs.length > 0) processDeliveryOrders(lastOrdersDocs);
                 });
 
                 // Fetch real-time active orders
                 db.collection('orders').where('status', '==', 'pending').onSnapshot(snapshot => {
-                    processDeliveryOrders(snapshot.docs);
+                    lastOrdersDocs = snapshot.docs;
+                    processDeliveryOrders(lastOrdersDocs);
                 });
 
             } catch (error) {
                 console.error(error);
                 doListDiv.innerHTML = `<p class="text-center text-red-500">Error loading data.</p>`;
             }
+        }
+
+        function getItemPrice(itemName, itemType, customer, rawItem) {
+            if (rawItem && rawItem.price !== undefined && !isNaN(rawItem.price) && parseFloat(rawItem.price) > 0) {
+                return parseFloat(rawItem.price);
+            }
+            
+            const tier = (customer && customer.priceTier) ? customer.priceTier : 'Wholesale';
+            const specialPrices = (customer && customer.specialPrices) ? customer.specialPrices : {};
+            
+            if (itemName && specialPrices[itemName] !== undefined && !isNaN(specialPrices[itemName]) && parseFloat(specialPrices[itemName]) > 0) {
+                return parseFloat(specialPrices[itemName]);
+            }
+
+            if (itemType === 'broiler') {
+                if (tier && specialPrices[tier] !== undefined && !isNaN(specialPrices[tier]) && parseFloat(specialPrices[tier]) > 0) {
+                    return parseFloat(specialPrices[tier]);
+                }
+                const lowerName = (itemName || '').toLowerCase();
+                if (lowerName === 'slices') {
+                    return parseFloat(pricingData.broiler_slices || 0);
+                } else if (tier === 'MSRP') {
+                    return parseFloat(pricingData.broiler_msrp || 0);
+                } else if (tier === 'Slices') {
+                    return parseFloat(pricingData.broiler_slices || 0);
+                } else {
+                    return parseFloat(pricingData.broiler_wholesale || 0);
+                }
+            }
+
+            if (itemType === 'part' && pricingData && pricingData.parts && itemName) {
+                if (pricingData.parts[itemName] !== undefined && !isNaN(pricingData.parts[itemName])) {
+                    return parseFloat(pricingData.parts[itemName]);
+                }
+                const lowerName = itemName.trim().toLowerCase();
+                for (const key of Object.keys(pricingData.parts)) {
+                    if (key.trim().toLowerCase() === lowerName && !isNaN(pricingData.parts[key])) {
+                        return parseFloat(pricingData.parts[key]);
+                    }
+                }
+            }
+
+            return 0;
         }
 
         function processDeliveryOrders(docs) {
@@ -524,13 +580,15 @@
                 if (data.broilers) {
                     data.broilers.forEach(b => {
                         if (b.isInvoiced) {
+                            const name = b.description || 'Broiler';
                             invoicedItems.push({
                                 ...b,
-                                name: b.description || 'Broiler',
+                                name: name,
                                 qty: b.dispatchedQty !== undefined ? b.dispatchedQty : (b.qty || 0),
                                 weight: parseFloat(b.totalWeight) || 0,
                                 type: 'broiler',
-                                remark: b.remark || ''
+                                remark: b.remark || '',
+                                price: getItemPrice(name, 'broiler', customerMap[custName], b)
                             });
                         }
                     });
@@ -539,14 +597,16 @@
                 if (data.parts) {
                     data.parts.forEach(p => {
                         if (p.isInvoiced) {
+                            const name = p.name || 'Part';
                             invoicedItems.push({
                                 ...p,
-                                name: p.name || 'Part',
+                                name: name,
                                 qty: p.dispatchedQty !== undefined ? p.dispatchedQty : (p.qty || 0),
                                 weight: parseFloat(p.totalWeight) || 0,
                                 unit: p.unit || 'KG',
                                 type: 'part',
-                                remark: p.remark || ''
+                                remark: p.remark || '',
+                                price: getItemPrice(name, 'part', customerMap[custName], p)
                             });
                         }
                     });
@@ -831,7 +891,7 @@
             // Aggregate and Render Items Table
             let printAggregated = {};
             trip.items.forEach(i => {
-                let key = i.name + '|||' + (i.remark || '') + '|||' + (i.unit || '');
+                let key = i.name + '|||' + (i.remark || '') + '|||' + (i.unit || '') + '|||' + (i.price || 0);
                 if (!printAggregated[key]) printAggregated[key] = { ...i };
                 else {
                     printAggregated[key].qty += (i.qty || 0);
