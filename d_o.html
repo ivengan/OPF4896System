@@ -343,34 +343,18 @@
                     <th style="text-align: right; padding: 5px 2px; width: 10%;">Amount</th>
                 </tr>
             </thead>
-            <tbody id="print-items" style="border-bottom: 1px solid black;">
+            <tbody id="print-items">
             </tbody>
+            <tfoot style="border-top: 1px solid black; border-bottom: 2px solid black; background-color: #f9fafb;">
+                <tr>
+                    <td colspan="3" style="text-align: right; padding: 5px 2px; font-weight: bold;">Total :</td>
+                    <td id="print-total-qty" style="text-align: right; padding: 5px 2px; font-weight: bold;">0</td>
+                    <td id="print-total-weight" style="text-align: right; padding: 5px 2px; font-weight: bold;">0.00 KG</td>
+                    <td style="text-align: right; padding: 5px 2px; font-weight: bold;">Total :</td>
+                    <td id="print-total-amount" style="text-align: right; padding: 5px 2px; font-weight: bold; border-bottom: 3px double black;">-</td>
+                </tr>
+            </tfoot>
         </table>
-        
-        <!-- Bottom Summary Area (Totals) -->
-        <div style="display: flex; justify-content: flex-end; align-items: flex-start; margin-bottom: 14px; font-size: 11px;">
-            <!-- Right: Totals -->
-            <div style="width: 38%;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                    <tr>
-                        <td style="text-align: right; padding: 2px 4px;">Total Qty :</td>
-                        <td id="print-total-qty" style="text-align: right; font-weight: bold; width: 60px;">0</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: right; padding: 2px 4px;">Total Weight :</td>
-                        <td id="print-total-weight" style="text-align: right; font-weight: bold;">0.00 KG</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: right; padding: 2px 4px;">Round Adj :</td>
-                        <td style="text-align: right;">0.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: right; padding: 4px 4px; font-weight: bold;">Total :</td>
-                        <td id="print-total-amount" style="text-align: right; font-weight: bold; border-bottom: 3px double black; padding: 4px 0;">-</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
 
         <!-- Signature Area -->
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; font-size: 11px; padding-top: 5px;">
