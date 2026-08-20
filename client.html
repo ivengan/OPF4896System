@@ -87,26 +87,34 @@
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
                     <h3 class="font-bold text-gray-800 text-lg mb-4 pb-2 border-b">Broiler & Slices</h3>
                     
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Whole Chicken (Qty)</label>
-                            <input type="number" id="broiler-qty" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg font-bold" min="0" placeholder="0">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Broiler Remark</label>
-                            <input type="text" id="broiler-remark" class="w-full border border-gray-300 rounded-lg p-3 text-sm" placeholder="e.g. Size 1.8">
-                        </div>
+                    <div id="broilers-list" class="space-y-3 mb-4">
+                        <p class="text-gray-400 italic text-sm text-center py-2" id="empty-broilers-msg">No broiler/slices added yet.</p>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Slices / Potong (Qty)</label>
-                            <input type="number" id="slices-qty" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg font-bold" min="0" placeholder="0">
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1">Whole Chicken (Qty)</label>
+                                <input type="number" id="broiler-qty" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg font-bold" min="0" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1">Broiler Remark</label>
+                                <input type="text" id="broiler-remark" class="w-full border border-gray-300 rounded-lg p-3 text-sm" placeholder="e.g. Size 1.8">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Slices Remark</label>
-                            <input type="text" id="slices-remark" class="w-full border border-gray-300 rounded-lg p-3 text-sm" placeholder="e.g. Potong 8">
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1">Slices / Potong (Qty)</label>
+                                <input type="number" id="slices-qty" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg font-bold" min="0" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1">Slices Remark</label>
+                                <input type="text" id="slices-remark" class="w-full border border-gray-300 rounded-lg p-3 text-sm" placeholder="e.g. Potong 8">
+                            </div>
                         </div>
+
+                        <button type="button" id="btn-add-broiler" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition shadow-md">Add broiler/ Slices</button>
                     </div>
                 </div>
 
@@ -150,7 +158,7 @@
 
                 <button type="submit" id="btn-submit-order" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition shadow-lg text-lg flex justify-center items-center gap-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    Send Order to Admin
+                    Send Order
                 </button>
             </form>
         </main>
@@ -208,6 +216,7 @@
 
         // State
         let currentParts = [];
+        let currentBroilers = [];
         let loggedInCustomerName = null;
         let loggedInCustomerId = null;
 
@@ -384,6 +393,64 @@
             list.innerHTML = html;
         }
 
+        function renderBroilers() {
+            const list = document.getElementById('broilers-list');
+            const empty = document.getElementById('empty-broilers-msg');
+            
+            if (currentBroilers.length === 0) {
+                list.innerHTML = '';
+                list.appendChild(empty);
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            let html = '';
+            currentBroilers.forEach((b, i) => {
+                html += `
+                    <div class="flex justify-between items-center bg-white border rounded p-2 text-sm shadow-sm">
+                        <div>
+                            <span class="font-bold text-gray-800">${b.description}</span> 
+                            <span class="text-blue-600 font-semibold mx-1">(${b.qty} Qty)</span>
+                            ${b.remark ? `<br><span class="text-gray-500 italic text-xs">${b.remark}</span>` : ''}
+                        </div>
+                        <button type="button" onclick="removeBroiler(${i})" class="text-red-500 font-bold hover:bg-red-50 px-2 py-1 rounded">&times;</button>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        document.getElementById('btn-add-broiler').addEventListener('click', () => {
+            const wholeQty = parseInt(document.getElementById('broiler-qty').value) || 0;
+            const wholeRemark = document.getElementById('broiler-remark').value.trim();
+            const slicesQty = parseInt(document.getElementById('slices-qty').value) || 0;
+            const slicesRemark = document.getElementById('slices-remark').value.trim();
+
+            if (wholeQty <= 0 && slicesQty <= 0) {
+                return alert("Please enter quantity for Whole Chicken or Slices.");
+            }
+
+            if (wholeQty > 0) {
+                currentBroilers.push({ description: 'Broiler', qty: wholeQty, remark: wholeRemark });
+            }
+            if (slicesQty > 0) {
+                currentBroilers.push({ description: 'Slices', qty: slicesQty, remark: slicesRemark });
+            }
+
+            renderBroilers();
+
+            document.getElementById('broiler-qty').value = '';
+            document.getElementById('broiler-remark').value = '';
+            document.getElementById('slices-qty').value = '';
+            document.getElementById('slices-remark').value = '';
+        });
+
+        window.removeBroiler = (index) => {
+            currentBroilers.splice(index, 1);
+            renderBroilers();
+        };
+
         document.getElementById('btn-add-part').addEventListener('click', () => {
             const name = document.getElementById('part-name').value.trim();
             const qty = parseFloat(document.getElementById('part-qty').value);
@@ -412,20 +479,12 @@
             const selectedDate = document.getElementById('order-date').value;
             if(!selectedDate) return alert("Delivery Date required.");
 
-            const wholeQty = parseInt(document.getElementById('broiler-qty').value) || 0;
-            const wholeRemark = document.getElementById('broiler-remark').value.trim();
-            const slicesQty = parseInt(document.getElementById('slices-qty').value) || 0;
-            const slicesRemark = document.getElementById('slices-remark').value.trim();
             const generalRemark = document.getElementById('general-remark').value.trim();
 
             let pendingOrders = [];
-            let broilerItems = [];
-            
-            if (wholeQty > 0) broilerItems.push({ description: 'Broiler', qty: wholeQty, remark: wholeRemark });
-            if (slicesQty > 0) broilerItems.push({ description: 'Slices', qty: slicesQty, remark: slicesRemark });
 
             // Create Broiler Doc if needed
-            if(broilerItems.length > 0) {
+            if(currentBroilers.length > 0) {
                 pendingOrders.push({
                     customerName: loggedInCustomerName, 
                     customerRemark: generalRemark,
@@ -434,8 +493,8 @@
                     source: 'b2b_portal', // To differentiate
                     deliveryDate: selectedDate,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    broilers: broilerItems, 
-                    processedText: broilerItems.map(b => `${b.qty} ${b.description}`).join(', ')
+                    broilers: currentBroilers, 
+                    processedText: currentBroilers.map(b => `${b.qty} ${b.description}`).join(', ')
                 });
             }
 
@@ -466,7 +525,9 @@
                 // Clear form
                 document.getElementById('order-form').reset();
                 currentParts = [];
+                currentBroilers = [];
                 renderParts();
+                renderBroilers();
                 document.getElementById('order-date').value = tomorrowStr;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -475,7 +536,7 @@
                 showNotify('order-notification', 'Error saving order.', 'error');
             } finally {
                 btn.disabled = false; 
-                btn.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Send Order to Admin`;
+                btn.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Send Order`;
             }
         });
         function updateHeaderDate() {
