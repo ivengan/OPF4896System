@@ -306,13 +306,7 @@
                 const doc = snapshot.docs[0];
                 const data = doc.data();
 
-                if (!data.portalPassword) {
-                    // First time
-                    loggedInCustomerId = doc.id;
-                    loggedInCustomerName = data.displayName;
-                    document.getElementById('new-password').value = pwdInput;
-                    openModal('modal-set-password');
-                } else if (data.portalPassword === pwdInput) {
+                if (pwdInput === data.phone) {
                     // Success
                     loggedInCustomerId = doc.id;
                     loggedInCustomerName = data.displayName;
@@ -320,7 +314,7 @@
                     localStorage.setItem('client_name', loggedInCustomerName);
                     showOrderScreen();
                 } else {
-                    throw new Error("Incorrect password.");
+                    throw new Error("Incorrect password. The password is your registered phone number.");
                 }
             } catch(e) {
                 showNotify('login-notification', e.message, 'error');
