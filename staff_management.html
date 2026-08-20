@@ -44,6 +44,14 @@
                     <input type="text" id="staff-password" placeholder="Enter password" required
                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">System Role</label>
+                    <select id="staff-role" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                        <option value="staff">Staff (Standard)</option>
+                        <option value="worker">Worker (Landscape Dashboard)</option>
+                        <option value="admin">Admin / Boss</option>
+                    </select>
+                </div>
                 <button type="submit" id="submit-btn" 
                     class="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 active:scale-95 transition shadow-lg">
                     CREATE ACCOUNT
@@ -104,11 +112,12 @@
                     const data = doc.data();
                     const phone = data.phoneNumber || data.PhoneNumber || 'Unknown';
                     const pass = data.password || data.Password || '****';
+                    const role = data.role || data.Role || 'staff';
                     return `
                         <div class="py-4 flex items-center justify-between">
                             <div>
-                                <div class="font-bold text-gray-900">${phone}</div>
-                                <div class="text-sm text-gray-400 font-mono">PWD: ${pass}</div>
+                                <div class="font-bold text-gray-900">${phone} <span class="ml-2 text-[10px] font-bold px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full uppercase align-middle">${role}</span></div>
+                                <div class="text-sm text-gray-400 font-mono mt-1">PWD: ${pass}</div>
                             </div>
                             <button onclick="deleteStaff('${doc.id}', '${phone}')" class="p-2 text-red-400 hover:text-red-600 transition">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -127,6 +136,7 @@
             e.preventDefault();
             const phone = document.getElementById('staff-phone').value.replace(/\D/g, '');
             const pass = document.getElementById('staff-password').value.trim();
+            const role = document.getElementById('staff-role').value;
             const btn = document.getElementById('submit-btn');
 
             if (!/^01\d{7,10}$/.test(phone)) return showMsg('Invalid phone format (01xxxxxxxx)', 'error');
@@ -145,6 +155,7 @@
                 await db.collection('staff').add({
                     phoneNumber: phone,
                     password: pass,
+                    role: role,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     isAdminCreated: true
                 });
