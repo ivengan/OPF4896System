@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Worker Dashboard</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7FFFD4">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="icon" href="icons/icon-192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Landscape enforcement: Show overlay if in portrait */
+        @media screen and (orientation: portrait) {
+            #portrait-overlay {
+                display: flex !important;
+            }
+        }
+        
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            overflow: hidden; 
+            background-color: #f3f4f6; 
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #1f2937;
+            height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .content {
+            flex-grow: 1;
+            height: 100vh;
+            background-color: #ffffff;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .menu-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background-color: #374151;
+            color: white;
+            text-align: left;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        .menu-btn:hover {
+            background-color: #4b5563;
+        }
+
+        .menu-btn.active {
+            background-color: #3b82f6;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            background-color: #ef4444;
+        }
+        
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body class="flex">
+
+    <!-- Portrait Overlay -->
+    <div id="portrait-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-95 z-50 flex-col items-center justify-center text-white hidden" style="backdrop-filter: blur(10px);">
+        <svg class="w-20 h-20 mb-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+        </svg>
+        <h2 class="text-2xl font-bold text-center px-4">Please Rotate Your Device</h2>
+        <p class="mt-2 text-gray-300 text-center px-4">This dashboard is designed for landscape mode only.</p>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar shadow-2xl z-10">
+        <h2 class="text-xl font-bold mb-6 text-center text-blue-400 border-b border-gray-600 pb-4">Worker Panel</h2>
+        
+        <button class="menu-btn active" onclick="loadPage('order.html', this)">Order</button>
+        <button class="menu-btn" onclick="loadPage('d_o.html', this)">Delivery Order</button>
+        <button class="menu-btn" onclick="loadPage('broiler_dsptch.html', this)">Broiler Dispatch</button>
+        <button class="menu-btn" onclick="loadPage('parts_dsptch.html', this)">Parts Dispatch</button>
+        <button class="menu-btn" onclick="loadPage('parts_lembik.html', this)">Parts Lembik</button>
+        <button class="menu-btn" onclick="loadPage('broiler_rcd.html', this)">Broiler Record</button>
+        <button class="menu-btn" onclick="loadPage('stock_in.html', this)">Stock In</button>
+
+        <button class="menu-btn logout-btn mt-6" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content">
+        <iframe id="content-frame" src="order.html?mode=worker"></iframe>
+    </div>
+
+    <script>
+        // Check simple authentication flag
+        if (!localStorage.getItem('user_phone')) {
+            window.location.href = 'index.html';
+        }
+
+        function loadPage(page, btnElement) {
+            // Update iframe source with worker mode parameter
+            document.getElementById('content-frame').src = page + '?mode=worker';
+            
+            // Update active state on buttons
+            document.querySelectorAll('.menu-btn:not(.logout-btn)').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            btnElement.classList.add('active');
+        }
+
+        function logout() {
+            localStorage.removeItem('user_phone');
+            localStorage.removeItem('loginExpiry');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

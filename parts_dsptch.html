@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parts Dispatch (Freeze) - Multi-Function System</title>
+    <script>
+        if (window.location.search.includes('mode=worker')) {
+            document.documentElement.classList.add('worker-mode');
+        }
+    </script>
+    <style>
+        .worker-mode header { display: none !important; }
+    </style>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
     <style>
