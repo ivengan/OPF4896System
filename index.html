@@ -230,6 +230,7 @@
         let currentPhone = '';
         let currentDocId = null;
         let currentPasswordForBio = ''; // For prompted bio enablement
+        let currentUserRole = ''; // Role from database
         const DEFAULT_ADMIN = { phone: '0176405645', pass: 'admin123' };
         
         const notification = document.getElementById('main-notification');
@@ -297,6 +298,7 @@
                     const doc = query.docs[0];
                     const data = doc.data();
                     const dbPassword = data.password || data.Password || null;
+                    currentUserRole = data.role || data.Role || '';
 
                     if (!dbPassword) {
                         currentDocId = doc.id; 
@@ -316,7 +318,11 @@
         });
 
         function proceedWithLoginFlow() {
-            if (localStorage.getItem('bioEnabled') === 'true' && window.PublicKeyCredential) {
+            if (currentUserRole === 'worker') {
+                document.getElementById('login-password-input').value = ''; 
+                openModal('modal-enter-password');
+                setTimeout(() => document.getElementById('login-password-input').focus(), 100);
+            } else if (localStorage.getItem('bioEnabled') === 'true' && window.PublicKeyCredential) {
                 executeBiometricLogin();
             } else {
                 document.getElementById('login-password-input').value = ''; 
@@ -437,7 +443,9 @@
 
                     if (dbPassword === pwd) {
                         // Check if biometric should be enabled for regular staff too if not already
-                        if (window.PublicKeyCredential) {
+                        if (currentUserRole === 'worker') {
+                            performLogin();
+                        } else if (window.PublicKeyCredential) {
                             currentPasswordForBio = pwd;
                             closeModal('modal-enter-password');
                             openModal('modal-enable-bio');
@@ -551,6 +559,12 @@
             const sessionDuration = 12 * 60 * 60 * 1000;
             localStorage.setItem('loginExpiry', Date.now() + sessionDuration);
             localStorage.setItem('user_phone', currentPhone);
+            
+            if (currentUserRole === 'worker') {
+                window.location.href = 'worker_dashboard.html';
+                return;
+            }
+
             closeModal('modal-enter-password');
             closeModal('modal-login-choice');
             closeModal('modal-unregistered');
