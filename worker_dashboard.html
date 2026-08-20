@@ -41,7 +41,6 @@
             padding: 1rem;
             overflow-y: auto;
             flex-shrink: 0;
-            touch-action: none; /* Helps with custom touch events */
         }
 
         .content {
@@ -168,12 +167,22 @@
 
             // Long press logic
             let pressTimer;
+            let startX = 0;
+            let startY = 0;
             const workerPanel = document.getElementById('worker-panel');
             
             const startPress = (e) => {
                 if(e.target.classList.contains('logout-btn')) return;
                 isLongPress = false;
                 
+                if (e.touches && e.touches.length > 0) {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+
                 pressTimer = setTimeout(() => {
                     isLongPress = true;
                     toggleArrangeMode();
@@ -184,13 +193,31 @@
                 clearTimeout(pressTimer);
             };
 
+            const handleMove = (e) => {
+                let currentX = 0;
+                let currentY = 0;
+                if (e.touches && e.touches.length > 0) {
+                    currentX = e.touches[0].clientX;
+                    currentY = e.touches[0].clientY;
+                } else {
+                    currentX = e.clientX;
+                    currentY = e.clientY;
+                }
+
+                // Cancel long press if finger/mouse moves more than 15 pixels
+                const distance = Math.sqrt(Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2));
+                if (distance > 15) {
+                    cancelPress();
+                }
+            };
+
             workerPanel.addEventListener('touchstart', startPress, {passive: true});
             workerPanel.addEventListener('touchend', cancelPress);
-            workerPanel.addEventListener('touchmove', cancelPress, {passive: true});
+            workerPanel.addEventListener('touchmove', handleMove, {passive: true});
             
             workerPanel.addEventListener('mousedown', startPress);
             workerPanel.addEventListener('mouseup', cancelPress);
-            workerPanel.addEventListener('mousemove', cancelPress);
+            workerPanel.addEventListener('mousemove', handleMove);
             workerPanel.addEventListener('mouseleave', cancelPress);
         });
 
