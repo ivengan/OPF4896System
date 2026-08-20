@@ -11,6 +11,8 @@
     <link rel="icon" href="icons/icon-192.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    
     <style>
         /* Landscape enforcement: Show overlay if in portrait */
         @media screen and (orientation: portrait) {
@@ -25,6 +27,8 @@
             height: 100%; 
             overflow: hidden; 
             background-color: #f3f4f6; 
+            user-select: none; /* Prevent text selection on long press */
+            -webkit-user-select: none;
         }
         
         .sidebar {
@@ -37,6 +41,7 @@
             padding: 1rem;
             overflow-y: auto;
             flex-shrink: 0;
+            touch-action: none; /* Helps with custom touch events */
         }
 
         .content {
@@ -82,6 +87,26 @@
         .logout-btn:hover {
             background-color: #dc2626;
         }
+
+        /* Arrange Mode Styles */
+        @keyframes shake {
+            0% { transform: rotate(-1deg); }
+            50% { transform: rotate(1deg); }
+            100% { transform: rotate(-1deg); }
+        }
+        .arrange-mode .menu-btn:not(.logout-btn) {
+            animation: shake 0.3s infinite;
+            cursor: grab;
+            border: 2px dashed #9ca3af;
+            opacity: 0.9;
+        }
+        .arrange-mode .menu-btn:not(.logout-btn):active {
+            cursor: grabbing;
+        }
+        .arrange-mode .logout-btn {
+            opacity: 0.5;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="flex">
@@ -96,16 +121,18 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="sidebar shadow-2xl z-10">
-        <h2 class="text-xl font-bold mb-6 text-center text-blue-400 border-b border-gray-600 pb-4">Worker Panel</h2>
+    <div class="sidebar shadow-2xl z-10" id="worker-panel">
+        <h2 id="panel-title" class="text-xl font-bold mb-6 text-center text-blue-400 border-b border-gray-600 pb-4 select-none pointer-events-none transition-colors">Worker Panel</h2>
         
-        <button class="menu-btn active" onclick="loadPage('order.html', this)">Order</button>
-        <button class="menu-btn" onclick="loadPage('d_o.html', this)">Delivery Order</button>
-        <button class="menu-btn" onclick="loadPage('broiler_dsptch.html', this)">Broiler Dispatch</button>
-        <button class="menu-btn" onclick="loadPage('parts_dsptch.html', this)">Parts Dispatch</button>
-        <button class="menu-btn" onclick="loadPage('parts_lembik.html', this)">Parts Lembik</button>
-        <button class="menu-btn" onclick="loadPage('broiler_rcd.html', this)">Broiler Record</button>
-        <button class="menu-btn" onclick="loadPage('stock_in.html', this)">Stock In</button>
+        <div id="sortable-menu" class="flex flex-col">
+            <button id="btn-order" class="menu-btn active" onclick="loadPage('order.html', this)">Order</button>
+            <button id="btn-do" class="menu-btn" onclick="loadPage('d_o.html', this)">Delivery Order</button>
+            <button id="btn-broiler-dsptch" class="menu-btn" onclick="loadPage('broiler_dsptch.html', this)">Broiler Dispatch</button>
+            <button id="btn-parts-dsptch" class="menu-btn" onclick="loadPage('parts_dsptch.html', this)">Parts Dispatch</button>
+            <button id="btn-parts-lembik" class="menu-btn" onclick="loadPage('parts_lembik.html', this)">Parts Lembik</button>
+            <button id="btn-broiler-rcd" class="menu-btn" onclick="loadPage('broiler_rcd.html', this)">Broiler Record</button>
+            <button id="btn-stock-in" class="menu-btn" onclick="loadPage('stock_in.html', this)">Stock In</button>
+        </div>
 
         <button class="menu-btn logout-btn mt-6" onclick="logout()">Logout</button>
     </div>
@@ -121,7 +148,100 @@
             window.location.href = 'index.html';
         }
 
+        let arrangeMode = false;
+        let isLongPress = false;
+        let sortableInstance;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrder();
+            
+            const sortableMenu = document.getElementById('sortable-menu');
+            sortableInstance = new Sortable(sortableMenu, {
+                animation: 150,
+                disabled: true,
+                delay: 100, // Helps prevent accidental drags on touch devices
+                delayOnTouchOnly: true,
+                onEnd: () => {
+                    saveOrder();
+                }
+            });
+
+            // Long press logic
+            let pressTimer;
+            const workerPanel = document.getElementById('worker-panel');
+            
+            const startPress = (e) => {
+                if(e.target.classList.contains('logout-btn')) return;
+                isLongPress = false;
+                
+                pressTimer = setTimeout(() => {
+                    isLongPress = true;
+                    toggleArrangeMode();
+                }, 2000); // 2 seconds
+            };
+            
+            const cancelPress = () => {
+                clearTimeout(pressTimer);
+            };
+
+            workerPanel.addEventListener('touchstart', startPress, {passive: true});
+            workerPanel.addEventListener('touchend', cancelPress);
+            workerPanel.addEventListener('touchmove', cancelPress, {passive: true});
+            
+            workerPanel.addEventListener('mousedown', startPress);
+            workerPanel.addEventListener('mouseup', cancelPress);
+            workerPanel.addEventListener('mousemove', cancelPress);
+            workerPanel.addEventListener('mouseleave', cancelPress);
+        });
+
+        function toggleArrangeMode() {
+            arrangeMode = !arrangeMode;
+            const title = document.getElementById('panel-title');
+            
+            if (arrangeMode) {
+                sortableInstance.option('disabled', false);
+                document.body.classList.add('arrange-mode');
+                title.innerText = "Arrange Mode (Drag)";
+                title.classList.remove('text-blue-400');
+                title.classList.add('text-yellow-400');
+                if (navigator.vibrate) navigator.vibrate(100);
+            } else {
+                sortableInstance.option('disabled', true);
+                document.body.classList.remove('arrange-mode');
+                title.innerText = "Worker Panel";
+                title.classList.remove('text-yellow-400');
+                title.classList.add('text-blue-400');
+                saveOrder();
+                if (navigator.vibrate) navigator.vibrate(50);
+            }
+        }
+
+        function loadOrder() {
+            try {
+                const savedOrder = JSON.parse(localStorage.getItem('workerMenuOrder'));
+                if (savedOrder && Array.isArray(savedOrder) && savedOrder.length > 0) {
+                    const container = document.getElementById('sortable-menu');
+                    savedOrder.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) container.appendChild(el);
+                    });
+                }
+            } catch(e) {}
+        }
+
+        function saveOrder() {
+            const container = document.getElementById('sortable-menu');
+            const order = Array.from(container.children).map(el => el.id);
+            localStorage.setItem('workerMenuOrder', JSON.stringify(order));
+        }
+
         function loadPage(page, btnElement) {
+            // Prevent navigation if in arrange mode or just completed a long press
+            if (arrangeMode || isLongPress) {
+                isLongPress = false;
+                return;
+            }
+            
             // Update iframe source with worker mode parameter
             document.getElementById('content-frame').src = page + '?mode=worker';
             
@@ -133,6 +253,7 @@
         }
 
         function logout() {
+            if (arrangeMode) return;
             localStorage.removeItem('user_phone');
             localStorage.removeItem('loginExpiry');
             window.location.href = 'index.html';
