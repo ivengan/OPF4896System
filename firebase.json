@@ -15,5 +15,8 @@
       "package.json",
       "package-lock.json"
     ]
+  },
+  "storage": {
+    "rules": "storage.rules"
   }
 }
