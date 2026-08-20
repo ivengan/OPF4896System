@@ -231,6 +231,7 @@
         let currentDocId = null;
         let currentPasswordForBio = ''; // For prompted bio enablement
         let currentUserRole = ''; // Role from database
+        let currentUserDBPassword = ''; // Cache to avoid slow redundant queries
         const DEFAULT_ADMIN = { phone: '0176405645', pass: 'admin123' };
         
         const notification = document.getElementById('main-notification');
@@ -299,6 +300,7 @@
                     const data = doc.data();
                     const dbPassword = data.password || data.Password || null;
                     currentUserRole = data.role || data.Role || '';
+                    currentUserDBPassword = dbPassword;
 
                     if (!dbPassword) {
                         currentDocId = doc.id; 
@@ -437,11 +439,7 @@
                 if (currentDocId === 'fixed-admin') {
                      alert("Incorrect Password for Master Account.");
                 } else {
-                    const doc = await db.collection('staff').doc(currentDocId).get();
-                    const data = doc.data();
-                    const dbPassword = data.password || data.Password || null;
-
-                    if (dbPassword === pwd) {
+                    if (currentUserDBPassword === pwd) {
                         // Check if biometric should be enabled for regular staff too if not already
                         if (currentUserRole === 'worker') {
                             performLogin();
