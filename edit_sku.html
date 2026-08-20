@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add/Edit SKU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden { display: none !important; }
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
+        @keyframes popIn { 
+            0% { transform: scale(0.9); opacity: 0; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+        .animate-pop { animation: popIn 0.2s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen">
+    
+    <!-- Top Header -->
+    <div class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Add/Edit SKU</h1>
+            <a href="admin.html" class="text-blue-600 hover:text-blue-800 font-semibold text-sm transition">Back</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        
+        <!-- Add Button -->
+        <div class="mb-6 flex justify-end">
+            <button onclick="openSkuModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Add SKU
+            </button>
+        </div>
+
+        <div id="loading-spinner" class="text-center py-10 text-gray-500 font-semibold">Loading products...</div>
+
+        <!-- Product Grid -->
+        <div id="sku-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 hidden">
+            <!-- Product cards will be injected here -->
+        </div>
+
+    </main>
+
+    <!-- SKU Modal -->
+    <div id="modal-sku" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-pop relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeSkuModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 id="modal-title" class="text-xl font-bold text-gray-900 tracking-tight mb-4">Add SKU</h2>
+            
+            <form id="sku-form" class="space-y-4">
+                <input type="hidden" id="sku-id">
+                <input type="hidden" id="sku-existing-image">
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+                    <select id="sku-category" required class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="Broiler">Broiler</option>
+                        <option value="Slices">Slices</option>
+                        <option value="Chicken Parts">Chicken Parts</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">SKU Number</label>
+                    <input type="text" id="sku-number" required placeholder="e.g. BRL-001" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Product Name</label>
+                    <input type="text" id="sku-name" required placeholder="e.g. Whole Chicken" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Product Image</label>
+                    <input type="file" id="sku-image" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <div id="image-preview-container" class="mt-2 hidden">
+                        <img id="image-preview" src="" class="h-24 w-24 object-cover rounded-lg border border-gray-200">
+                    </div>
+                </div>
+
+                <div id="modal-status" class="hidden text-sm font-semibold rounded-lg p-3 text-center"></div>
+
+                <button type="submit" id="btn-save-sku" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-md mt-2 flex justify-center items-center">
+                    Save Product
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="modal-delete" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-pop">
+            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">Delete Product</h2>
+            <p class="text-gray-600 mb-6 text-sm">Are you sure you want to delete this product? This cannot be undone.</p>
+            <div class="flex gap-3">
+                <button onclick="document.getElementById('modal-delete').classList.add('hidden')" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-xl transition">Cancel</button>
+                <button id="btn-confirm-delete" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQAKliT1QN8H-FOuNzvUGArbyQfM_U5MA",
+            authDomain: "opf4896system.firebaseapp.com",
+            projectId: "opf4896system",
+            storageBucket: "opf4896system.firebasestorage.app",
+            messagingSenderId: "150864121707",
+            appId: "1:150864121707:web:b3161a86514c1d86dd062e"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        let products = [];
+        let productToDelete = null;
+
+        // Load Products
+        function loadProducts() {
+            document.getElementById('loading-spinner').classList.remove('hidden');
+            document.getElementById('sku-grid').classList.add('hidden');
+            
+            db.collection('skus').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                products = [];
+                snapshot.forEach(doc => {
+                    products.push({ id: doc.id, ...doc.data() });
+                });
+                renderProducts();
+            }, err => {
+                console.error(err);
+                alert("Error loading products");
+            });
+        }
+
+        function renderProducts() {
+            document.getElementById('loading-spinner').classList.add('hidden');
+            const grid = document.getElementById('sku-grid');
+            grid.innerHTML = '';
+            
+            if (products.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500 font-medium">No products found. Add one!</div>';
+            } else {
+                products.forEach(p => {
+                    grid.innerHTML += `
+                        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col">
+                            <div class="h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                ${p.imageUrl ? `<img src="${p.imageUrl}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`}
+                            </div>
+                            <div class="p-4 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full mb-2">${p.category}</span>
+                                    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1">${p.name}</h3>
+                                    <p class="text-gray-500 text-sm font-mono mb-4">SKU: ${p.sku}</p>
+                                </div>
+                                <div class="flex gap-2 border-t border-gray-100 pt-3">
+                                    <button onclick="editProduct('${p.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold text-sm transition">Edit</button>
+                                    <button onclick="confirmDelete('${p.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-lg font-semibold text-sm transition">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            grid.classList.remove('hidden');
+        }
+
+        // Modal Logic
+        function openSkuModal() {
+            document.getElementById('sku-form').reset();
+            document.getElementById('sku-id').value = '';
+            document.getElementById('sku-existing-image').value = '';
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('modal-title').textContent = 'Add SKU';
+            hideStatus();
+            document.getElementById('modal-sku').classList.remove('hidden');
+        }
+
+        function closeSkuModal() {
+            document.getElementById('modal-sku').classList.add('hidden');
+        }
+
+        function editProduct(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+            
+            document.getElementById('sku-id').value = p.id;
+            document.getElementById('sku-category').value = p.category;
+            document.getElementById('sku-number').value = p.sku;
+            document.getElementById('sku-name').value = p.name;
+            document.getElementById('sku-existing-image').value = p.imageUrl || '';
+            document.getElementById('sku-image').value = '';
+            
+            if (p.imageUrl) {
+                document.getElementById('image-preview').src = p.imageUrl;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+            } else {
+                document.getElementById('image-preview-container').classList.add('hidden');
+            }
+            
+            document.getElementById('modal-title').textContent = 'Edit SKU';
+            hideStatus();
+            document.getElementById('modal-sku').classList.remove('hidden');
+        }
+
+        function confirmDelete(id) {
+            productToDelete = id;
+            document.getElementById('modal-delete').classList.remove('hidden');
+        }
+
+        document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+            if (!productToDelete) return;
+            const btn = document.getElementById('btn-confirm-delete');
+            btn.disabled = true;
+            btn.textContent = 'Deleting...';
+            
+            try {
+                // Find product to check for image URL
+                const p = products.find(x => x.id === productToDelete);
+                if (p && p.imageUrl) {
+                    // Try to delete image from storage
+                    try {
+                        const imgRef = storage.refFromURL(p.imageUrl);
+                        await imgRef.delete();
+                    } catch (e) {
+                        console.warn("Could not delete image from storage", e);
+                    }
+                }
+                await db.collection('skus').doc(productToDelete).delete();
+                document.getElementById('modal-delete').classList.add('hidden');
+            } catch(e) {
+                console.error(e);
+                alert("Error deleting product");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Delete';
+                productToDelete = null;
+            }
+        });
+
+        // Form Submit
+        document.getElementById('sku-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-sku');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            hideStatus();
+
+            const id = document.getElementById('sku-id').value;
+            const category = document.getElementById('sku-category').value;
+            const sku = document.getElementById('sku-number').value.trim();
+            const name = document.getElementById('sku-name').value.trim();
+            const imageFile = document.getElementById('sku-image').files[0];
+            let imageUrl = document.getElementById('sku-existing-image').value;
+
+            try {
+                if (imageFile) {
+                    btn.textContent = 'Uploading Image...';
+                    const fileName = `${Date.now()}_${imageFile.name}`;
+                    const storageRef = storage.ref(`products/${fileName}`);
+                    await storageRef.put(imageFile);
+                    imageUrl = await storageRef.getDownloadURL();
+                }
+
+                btn.textContent = 'Saving Data...';
+                const data = {
+                    category,
+                    sku,
+                    name,
+                    imageUrl,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (id) {
+                    await db.collection('skus').doc(id).update(data);
+                } else {
+                    data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('skus').add(data);
+                }
+
+                showStatus('Product saved successfully!', 'success');
+                setTimeout(() => closeSkuModal(), 1500);
+            } catch (err) {
+                console.error(err);
+                showStatus('Error saving product.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Product';
+            }
+        });
+
+        function showStatus(msg, type) {
+            const el = document.getElementById('modal-status');
+            el.textContent = msg;
+            el.className = `mt-3 p-3 text-sm font-bold rounded-xl text-center ${type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} block`;
+        }
+        function hideStatus() {
+            document.getElementById('modal-status').className = 'hidden';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadProducts);
+    </script>
+</body>
+</html>

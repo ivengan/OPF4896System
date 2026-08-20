@@ -16,189 +16,210 @@
             100% { transform: scale(1); opacity: 1; } 
         }
         .animate-pop { animation: popIn 0.2s ease-out forwards; }
+        /* Clean and minimalist specific styling */
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen">
+<body class="bg-gray-50 font-sans text-gray-800 antialiased min-h-screen">
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl relative z-0">
+        <div class="w-full max-w-md p-8 bg-white rounded-3xl shadow-xl relative z-0">
             <div class="text-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Client Portal</h1>
-                
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Client Portal</h1>
+                <p class="text-gray-500 mt-2 text-sm font-medium">Please login to continue</p>
             </div>
 
             <div id="login-notification" class="hidden mb-4 p-3 rounded-lg text-center font-bold text-sm"></div>
 
-            <form id="login-form" class="space-y-6">
+            <form id="login-form" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Phone Number</label>
                     <input type="tel" id="login-phone" placeholder="01xxxxxxxx" maxlength="12"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold" autocomplete="tel">
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition font-medium" autocomplete="tel">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Password</label>
-                    <input type="password" id="login-password" placeholder="Password" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" autocomplete="current-password">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Password</label>
+                    <input type="password" id="login-password" placeholder="Your Phone Number" 
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition" autocomplete="current-password">
                 </div>
                 
-                <button type="submit" id="btn-login" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 active:scale-95 transition shadow-lg">
-                    CLIENT LOGIN
+                <button type="submit" id="btn-login" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 active:scale-95 transition shadow-lg mt-2">
+                    Login
                 </button>
             </form>
         </div>
     </div>
 
     <!-- ORDER SCREEN -->
-    <div id="order-screen" class="hidden min-h-screen pb-20">
-        <header class="bg-white shadow-md sticky top-0 z-10 safe-top">
+    <div id="order-screen" class="hidden min-h-screen pb-24">
+        <header class="bg-white shadow-sm sticky top-0 z-10 safe-top glass">
             <div class="max-w-3xl mx-auto px-4">
                 <div class="flex justify-between items-center py-4">
-                    <div class="flex flex-col">
-                        <h1 class="text-xl font-bold text-gray-900 tracking-tight">Submit Order</h1>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900 tracking-tight">Order Portal</h1>
+                        <p id="header-today-date" class="text-xs font-semibold text-gray-500 uppercase tracking-widest mt-1"></p>
                     </div>
-                    <button id="btn-logout" style="background-color: #7FFFD4 !important; color: #111827 !important;" class="font-bold hover:opacity-80 text-sm px-3 py-1 rounded-lg">Logout</button>
+                    <button id="btn-logout" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs px-4 py-2 rounded-lg transition">Logout</button>
                 </div>
             </div>
         </header>
 
-        <!-- Date Sub-Header -->
-        <div class="max-w-3xl mx-auto px-4 py-2 bg-gray-50 border-b border-gray-100">
-            <div id="header-today-date" style="font-weight: bold; font-size: 12px; color: #6b7281; text-transform: uppercase; letter-spacing: 0.05em;"></div>
-        </div>
+        <main class="max-w-3xl mx-auto py-6 px-4 space-y-6">
+            <div id="order-notification" class="hidden"></div>
 
-        <main class="max-w-3xl mx-auto py-6 px-4">
-            <div id="order-notification" class="hidden mb-4"></div>
-
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 shadow-sm">
-                <p class="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">Authenticated As:</p>
-                <div id="display-company-name" class="text-2xl font-bold text-gray-900">Loading...</div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h2 id="display-company-name" class="text-2xl font-bold text-gray-900 tracking-tight">Loading...</h2>
+                <p class="text-gray-500 text-sm mt-1 font-medium">What would you like to order today?</p>
             </div>
 
-            <form id="order-form" class="space-y-6">
-                
-                <!-- Date Selection -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg mb-3 flex items-center gap-2">Delivery Date</h3>
-                    <input type="date" id="order-date" required class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none text-lg font-bold text-gray-700">
-                </div>
+            <!-- Date Selection -->
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                <label class="block font-bold text-gray-800 mb-2">Delivery Date</label>
+                <input type="date" id="order-date" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none font-bold text-gray-700 transition focus:bg-white">
+            </div>
 
-                <!-- Broiler Section -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg mb-4 pb-2 border-b">Broiler & Slices</h3>
-                    
-                    <div id="broilers-list" class="space-y-3 mb-4">
-                        <p class="text-gray-400 italic text-sm text-center py-2" id="empty-broilers-msg">No broiler/slices added yet.</p>
+            <!-- Main Categories -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button onclick="openCategoryModal('Broiler')" class="bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-2xl p-6 text-center transition shadow-sm group">
+                    <div class="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
                     </div>
-
-                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-600 mb-1">Whole Chicken (Qty)</label>
-                                <input type="number" id="broiler-qty" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg font-bold" min="0" placeholder="0">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-600 mb-1">Broiler Remark</label>
-                                <input type="text" id="broiler-remark" class="w-full border border-gray-300 rounded-lg p-3 text-sm" placeholder="e.g. Size 1.8">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-600 mb-1">Slices / Potong (Qty)</label>
-                                <input type="number" id="slices-qty" class="w-full border border-gray-300 rounded-lg p-3 text-center text-lg font-bold" min="0" placeholder="0">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-600 mb-1">Slices Remark</label>
-                                <input type="text" id="slices-remark" class="w-full border border-gray-300 rounded-lg p-3 text-sm" placeholder="e.g. Potong 8">
-                            </div>
-                        </div>
-
-                        <button type="button" id="btn-add-broiler" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition shadow-md">Add broiler/ Slices</button>
-                    </div>
-                </div>
-
-                <!-- Parts Section -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg mb-4 pb-2 border-b">Chicken Parts</h3>
-                    
-                    <div id="parts-list" class="space-y-3 mb-4">
-                        <p class="text-gray-400 italic text-sm text-center py-2" id="empty-parts-msg">No parts added yet.</p>
-                    </div>
-
-                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                        <div class="grid grid-cols-12 gap-2 mb-2">
-                            <div class="col-span-12 sm:col-span-6">
-                                <label class="block text-xs font-bold text-gray-500 mb-1">PART NAME</label>
-                                <input type="text" id="part-name" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="e.g. Dada, Peha">
-                            </div>
-                            <div class="col-span-6 sm:col-span-3">
-                                <label class="block text-xs font-bold text-gray-500 mb-1">QTY</label>
-                                <input type="number" id="part-qty" class="w-full border border-gray-300 rounded p-2 text-sm" step="0.5" placeholder="0">
-                            </div>
-                            <div class="col-span-6 sm:col-span-3">
-                                <label class="block text-xs font-bold text-gray-500 mb-1">UNIT</label>
-                                <select id="part-unit" class="w-full border border-gray-300 rounded p-2 text-sm bg-white">
-                                    <option value="KG">KG</option>
-                                    <option value="BAG">BAG</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <input type="text" id="part-remark" class="flex-1 border border-gray-300 rounded p-2 text-sm" placeholder="Remark (Optional)">
-                            <button type="button" id="btn-add-part" class="bg-indigo-600 text-white font-bold px-4 rounded hover:bg-indigo-700 transition">Add Part</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200">
-                     <h3 class="font-bold text-gray-800 text-lg mb-2">General Order Remark</h3>
-                    <textarea id="general-remark" rows="2" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Any special instructions for the whole order..."></textarea>
-                </div>
-
-                <button type="submit" id="btn-submit-order" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition shadow-lg text-lg flex justify-center items-center gap-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    Send Order
+                    <h3 class="font-bold text-gray-900 text-lg">Broiler</h3>
                 </button>
-            </form>
+                <button onclick="openCategoryModal('Slices')" class="bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-2xl p-6 text-center transition shadow-sm group">
+                    <div class="w-16 h-16 mx-auto bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-gray-900 text-lg">Slices</h3>
+                </button>
+                <button onclick="openCategoryModal('Chicken Parts')" class="bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-2xl p-6 text-center transition shadow-sm group">
+                    <div class="w-16 h-16 mx-auto bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-gray-900 text-lg">Chicken Parts</h3>
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                <label class="block font-bold text-gray-800 mb-2">General Order Remark</label>
+                <textarea id="general-remark" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition" placeholder="Any special instructions for the whole order..."></textarea>
+            </div>
         </main>
-    </div>
 
-    <!-- Set Password Modal (First Time) -->
-    <div id="modal-set-password" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-pop">
-            <h2 class="text-xl font-bold text-gray-900 tracking-tight mb-2">First Time Login</h2>
-            <p class="text-gray-600 mb-6 text-sm">Welcome! Please set a password to use for future logins.</p>
-            
-            <input type="password" id="new-password" placeholder="Create a new password" 
-                class="w-full px-4 py-3 mb-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-left">
-            
-            <button id="btn-save-password" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition shadow-md">
-                Save & Continue
+        <!-- Floating View Cart Button -->
+        <div class="fixed bottom-6 left-0 right-0 z-40 px-4 max-w-3xl mx-auto">
+            <button onclick="openCartModal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition flex justify-between items-center px-6">
+                <span class="flex items-center gap-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <span class="text-lg">View Cart</span>
+                </span>
+                <span id="cart-count" class="bg-white text-blue-600 py-1 px-3 rounded-full text-sm font-black">0 items</span>
             </button>
-            <button onclick="document.getElementById('modal-set-password').classList.add('hidden')" class="w-full mt-3 text-gray-500 font-semibold hover:text-gray-700">Cancel</button>
         </div>
     </div>
 
-    <!-- PWA Installation Guide -->
-    <div id="pwa-guide" class="hidden fixed bottom-6 left-6 right-6 z-[60] animate-pop">
-        <div class="bg-blue-600 text-white p-5 rounded-2xl shadow-2xl relative">
-            <button onclick="document.getElementById('pwa-guide').classList.add('hidden')" class="absolute top-2 right-3 text-white opacity-60 hover:opacity-100 text-xl font-bold">&times;</button>
-            <div class="flex items-center gap-4 mb-3">
-                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-inner">
-                    <img src="icons/icon-192.png" alt="App" class="w-10 h-10 rounded">
+    <!-- Category Modal -->
+    <div id="modal-category" class="hidden fixed inset-0 z-50 modal-overlay flex flex-col justify-end sm:items-center sm:justify-center p-0 sm:p-4">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-lg animate-pop relative h-[85vh] sm:h-auto sm:max-h-[85vh] flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center shrink-0">
+                <h2 id="category-title" class="text-2xl font-bold text-gray-900">Category</h2>
+                <button onclick="closeModal('modal-category')" class="bg-gray-100 hover:bg-gray-200 rounded-full p-2 text-gray-500 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div id="product-list" class="p-4 overflow-y-auto flex-grow space-y-4 bg-gray-50">
+                <!-- Products dynamically injected -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="modal-add-item" class="hidden fixed inset-0 z-[60] modal-overlay flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 animate-pop relative">
+            <button onclick="closeModal('modal-add-item')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="mb-5 flex flex-col items-center text-center">
+                <div id="add-item-img-container" class="w-24 h-24 bg-gray-100 rounded-2xl mb-4 flex items-center justify-center overflow-hidden border border-gray-100 shadow-sm">
+                    <img id="add-item-img" src="" class="w-full h-full object-cover hidden">
+                    <svg id="add-item-no-img" class="w-8 h-8 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg>
                 </div>
+                <h3 id="add-item-name" class="font-bold text-xl text-gray-900 leading-tight">Product Name</h3>
+            </div>
+            
+            <form id="add-item-form" class="space-y-4">
+                <input type="hidden" id="add-item-category">
+                
                 <div>
-                    <h4 class="font-bold text-lg leading-tight">Install Ordering App</h4>
-                    <p class="text-xs text-blue-100 italic">Fast orders, no web link needed!</p>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Quantity</label>
+                    <input type="number" id="add-item-qty" required step="0.5" min="0.5" class="w-full border border-gray-300 bg-gray-50 rounded-xl p-3 text-center text-xl font-bold focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none" placeholder="0">
                 </div>
+                
+                <div id="unit-container" class="hidden">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Unit</label>
+                    <select id="add-item-unit" class="w-full border border-gray-300 bg-gray-50 rounded-xl p-3 font-semibold focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none">
+                        <option value="KG">KG</option>
+                        <option value="BAG">BAG</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Remark (Optional)</label>
+                    <input type="text" id="add-item-remark" class="w-full border border-gray-300 bg-gray-50 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none" placeholder="e.g. Potong 8, Size 1.8">
+                </div>
+                
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition shadow-md text-lg">
+                        Add to Cart
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Cart Modal -->
+    <div id="modal-cart" class="hidden fixed inset-0 z-50 modal-overlay flex flex-col justify-end sm:items-center sm:justify-center p-0 sm:p-4">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-lg animate-pop relative h-[90vh] flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center shrink-0">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight">View Cart</h2>
+                    <p class="text-sm font-medium text-gray-500" id="cart-modal-count">0 items</p>
+                </div>
+                <button onclick="closeModal('modal-cart')" class="bg-gray-100 hover:bg-gray-200 rounded-full p-2 text-gray-500 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
-            <div id="pwa-instructions" class="text-sm font-semibold bg-blue-700 bg-opacity-40 p-3 rounded-xl border border-blue-400 border-opacity-30">
-                <!-- Dynamic text based on OS -->
+            
+            <div id="cart-list" class="p-6 overflow-y-auto flex-grow space-y-4 bg-gray-50">
+                <!-- Cart items dynamically injected -->
+            </div>
+            
+            <div class="p-6 bg-white border-t border-gray-100 shrink-0">
+                <button id="btn-submit-order" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-2xl transition shadow-lg text-lg">
+                    Submit Order
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- PWA Guide -->
+    <div id="pwa-guide" class="hidden fixed bottom-24 left-4 right-4 z-30 animate-pop max-w-md mx-auto">
+        <div class="bg-gray-900 text-white p-4 rounded-2xl shadow-xl relative">
+            <button onclick="document.getElementById('pwa-guide').classList.add('hidden')" class="absolute top-2 right-2 text-gray-400 hover:text-white p-1">&times;</button>
+            <div class="flex items-center gap-3">
+                <img src="icons/icon-192.png" alt="App" class="w-10 h-10 rounded-lg">
+                <div>
+                    <h4 class="font-bold text-sm">Install App</h4>
+                    <p id="pwa-instructions" class="text-xs text-gray-300 mt-1"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
@@ -212,86 +233,96 @@
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline persistence error:', err.code));
+        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log('Offline error:', err.code));
 
         // State
-        let currentParts = [];
-        let currentBroilers = [];
         let loggedInCustomerName = null;
         let loggedInCustomerId = null;
+        let allSkus = [];
+        let currentBroilers = [];
+        let currentParts = [];
+        let editingCartItem = null;
 
-        // Elements
         const loginScreen = document.getElementById('login-screen');
         const orderScreen = document.getElementById('order-screen');
-        const setPasswordModal = document.getElementById('modal-set-password');
-        
-        // --- Date Setup ---
+
+        // Setup Dates
         const today = new Date();
-        today.setDate(today.getDate() + 1); // Default to tomorrow
+        today.setDate(today.getDate() + 1);
         const tomorrowStr = today.toISOString().split('T')[0];
         document.getElementById('order-date').value = tomorrowStr;
-        document.getElementById('order-date').min = tomorrowStr; // Can't order for past
+        document.getElementById('order-date').min = tomorrowStr;
+        
+        function updateHeaderDate() {
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2, '0');
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            document.getElementById('header-today-date').textContent = `${d}/${m}/${now.getFullYear()}`;
+        }
+        document.addEventListener('DOMContentLoaded', updateHeaderDate);
 
-        // --- Notifications ---
         function showNotify(id, msg, type) {
             const el = document.getElementById(id);
             el.textContent = msg;
-            el.className = `mb-4 p-3 rounded-lg text-center font-bold text-sm ${type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} animate-pop`;
+            el.className = `mb-4 p-4 rounded-xl text-center font-bold text-sm ${type === 'error' ? 'bg-red-50 border border-red-100 text-red-700' : 'bg-green-50 border border-green-100 text-green-700'} animate-pop`;
             el.classList.remove('hidden');
             setTimeout(() => el.classList.add('hidden'), 4000);
         }
 
-        // --- Helper: Normalize Phone ---
         function normalizePhone(nr) {
             let n = nr.replace(/\D/g, '');
-            if (n.startsWith('60')) n = n.substring(1); // turn 601... to 01...
+            if (n.startsWith('60')) n = n.substring(1);
             if (n.startsWith('0')) return n;
             return '0' + n;
         }
 
-        // --- Session check ---
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
         window.addEventListener('DOMContentLoaded', () => {
             const storedId = localStorage.getItem('client_id');
             const storedName = localStorage.getItem('client_name');
             if (storedId && storedName) {
                 loggedInCustomerId = storedId;
                 loggedInCustomerName = storedName;
-                showOrderScreen();
+                initOrderScreen();
             }
             setupPWAInstructions();
         });
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log("SW Registered"))
-                .catch(err => console.log("SW Failed", err));
-        }
-
         function setupPWAInstructions() {
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
             if (!isStandalone) {
-                const guide = document.getElementById('pwa-guide');
                 const text = document.getElementById('pwa-instructions');
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                 const isAndroid = /Android/.test(navigator.userAgent);
-
                 if (isIOS) {
-                    text.innerHTML = 'Tap the <span class="bg-white text-blue-600 px-2 py-0.5 rounded mx-1">Share</span> icon (bottom center) and select <span class="bg-white text-blue-600 px-2 py-0.5 rounded mx-1">Add to Home Screen</span>.';
-                    guide.classList.remove('hidden');
+                    text.innerHTML = 'Tap Share then Add to Home Screen';
+                    document.getElementById('pwa-guide').classList.remove('hidden');
                 } else if (isAndroid) {
-                    text.innerHTML = 'Tap the <span class="bg-white text-blue-600 px-2 py-0.5 rounded mx-1">Menu</span> (3 dots) and select <span class="bg-white text-blue-600 px-2 py-0.5 rounded mx-1">Add to Home screen / Install</span>.';
-                    guide.classList.remove('hidden');
+                    text.innerHTML = 'Tap Menu then Add to Home screen';
+                    document.getElementById('pwa-guide').classList.remove('hidden');
                 }
             }
         }
 
-        function showOrderScreen() {
+        async function initOrderScreen() {
             loginScreen.classList.add('hidden');
             orderScreen.classList.remove('hidden');
-            document.getElementById('display-company-name').textContent = loggedInCustomerName;
+            
+            const hasLoggedInBefore = localStorage.getItem('has_logged_in_before_id');
+            let greeting = "Hello, ";
+            if (hasLoggedInBefore === loggedInCustomerId) {
+                greeting = "Welcome back, ";
+            } else {
+                localStorage.setItem('has_logged_in_before_id', loggedInCustomerId);
+            }
+            document.getElementById('display-company-name').textContent = greeting + loggedInCustomerName + "!";
+            
+            loadSkus();
+            updateCartCount();
         }
 
-        // --- Login Logic ---
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const phoneInput = document.getElementById('login-phone').value.trim();
@@ -305,192 +336,233 @@
             btn.disabled = true;
 
             try {
-                // We check both "01..." and "601..." just in case
-                const snapshot = await db.collection('customers')
-                    .where('phone', 'in', [normalized, '6' + normalized])
-                    .limit(1).get();
-
+                const snapshot = await db.collection('customers').where('phone', 'in', [normalized, '6' + normalized]).limit(1).get();
                 if (snapshot.empty) throw new Error("Phone number not registered.");
 
                 const doc = snapshot.docs[0];
                 const data = doc.data();
 
                 if (pwdInput === data.phone) {
-                    // Success
                     loggedInCustomerId = doc.id;
                     loggedInCustomerName = data.displayName;
                     localStorage.setItem('client_id', loggedInCustomerId);
                     localStorage.setItem('client_name', loggedInCustomerName);
-                    showOrderScreen();
+                    initOrderScreen();
                 } else {
-                    throw new Error("Incorrect password. The password is your registered phone number.");
+                    throw new Error("Incorrect password. Password is your phone number.");
                 }
             } catch(e) {
                 showNotify('login-notification', e.message, 'error');
             } finally {
-                btn.textContent = "CLIENT LOGIN";
+                btn.textContent = "Login";
                 btn.disabled = false;
             }
         });
 
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        // --- Set Password Logic ---
-        document.getElementById('btn-save-password').addEventListener('click', async () => {
-            const newPwd = document.getElementById('new-password').value.trim();
-            if (!newPwd) return alert("Password required.");
-            const btn = document.getElementById('btn-save-password');
-            btn.disabled = true; btn.textContent = "Saving...";
-            try {
-                await db.collection('customers').doc(loggedInCustomerId).update({
-                    portalPassword: newPwd
-                });
-                closeModal('modal-set-password');
-                localStorage.setItem('client_id', loggedInCustomerId);
-                localStorage.setItem('client_name', loggedInCustomerName);
-                showOrderScreen();
-            } catch(e) {
-                alert("Error setting password.");
-            } finally {
-                btn.disabled = false; btn.textContent = "Save & Continue";
-            }
-        });
-
-        // --- Logout ---
         document.getElementById('btn-logout').addEventListener('click', () => {
             localStorage.removeItem('client_id');
             localStorage.removeItem('client_name');
             window.location.reload();
         });
 
-        // --- Parts Management ---
-        function renderParts() {
-            const list = document.getElementById('parts-list');
-            const empty = document.getElementById('empty-parts-msg');
-            
-            if (currentParts.length === 0) {
-                list.innerHTML = '';
-                list.appendChild(empty);
-                empty.classList.remove('hidden');
-                return;
-            }
-            
-            empty.classList.add('hidden');
-            let html = '';
-            currentParts.forEach((p, i) => {
-                html += `
-                    <div class="flex justify-between items-center bg-white border rounded p-2 text-sm shadow-sm">
-                        <div>
-                            <span class="font-bold text-gray-800">${p.name}</span> 
-                            <span class="text-blue-600 font-semibold mx-1">(${p.qty} ${p.unit})</span>
-                            ${p.remark ? `<br><span class="text-gray-500 italic text-xs">${p.remark}</span>` : ''}
-                        </div>
-                        <button type="button" onclick="removePart(${i})" class="text-red-500 font-bold hover:bg-red-50 px-2 py-1 rounded">&times;</button>
-                    </div>
-                `;
+        // Load SKUs
+        function loadSkus() {
+            db.collection('skus').onSnapshot(snap => {
+                allSkus = [];
+                snap.forEach(doc => allSkus.push({ id: doc.id, ...doc.data() }));
             });
-            list.innerHTML = html;
         }
 
-        function renderBroilers() {
-            const list = document.getElementById('broilers-list');
-            const empty = document.getElementById('empty-broilers-msg');
+        window.openCategoryModal = (category) => {
+            document.getElementById('category-title').textContent = category;
+            const list = document.getElementById('product-list');
+            list.innerHTML = '';
             
-            if (currentBroilers.length === 0) {
-                list.innerHTML = '';
-                list.appendChild(empty);
-                empty.classList.remove('hidden');
-                return;
-            }
+            const filtered = allSkus.filter(s => s.category === category);
             
-            empty.classList.add('hidden');
-            let html = '';
-            currentBroilers.forEach((b, i) => {
-                html += `
-                    <div class="flex justify-between items-center bg-white border rounded p-2 text-sm shadow-sm">
-                        <div>
-                            <span class="font-bold text-gray-800">${b.description}</span> 
-                            <span class="text-blue-600 font-semibold mx-1">(${b.qty} Qty)</span>
-                            ${b.remark ? `<br><span class="text-gray-500 italic text-xs">${b.remark}</span>` : ''}
+            if(filtered.length === 0) {
+                list.innerHTML = '<div class="text-center py-10 text-gray-400 font-medium">No products in this category.</div>';
+            } else {
+                filtered.forEach(p => {
+                    const imgHtml = p.imageUrl ? `<img src="${p.imageUrl}" class="w-full h-full object-cover">` : `<div class="bg-gray-200 w-full h-full"></div>`;
+                    list.innerHTML += `
+                        <div onclick="openAddItemModal('${p.name}', '${p.category}', '${p.imageUrl || ''}')" class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer hover:border-blue-300 transition">
+                            <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0 shadow-sm border border-gray-100">
+                                ${imgHtml}
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-gray-900 text-lg">${p.name}</h4>
+                                <p class="text-blue-600 font-semibold text-sm mt-0.5">Tap to add</p>
+                            </div>
+                            <div class="text-gray-300 shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </div>
                         </div>
-                        <button type="button" onclick="removeBroiler(${i})" class="text-red-500 font-bold hover:bg-red-50 px-2 py-1 rounded">&times;</button>
-                    </div>
-                `;
-            });
-            list.innerHTML = html;
-        }
-
-        document.getElementById('btn-add-broiler').addEventListener('click', () => {
-            const wholeQty = parseInt(document.getElementById('broiler-qty').value) || 0;
-            const wholeRemark = document.getElementById('broiler-remark').value.trim();
-            const slicesQty = parseInt(document.getElementById('slices-qty').value) || 0;
-            const slicesRemark = document.getElementById('slices-remark').value.trim();
-
-            if (wholeQty <= 0 && slicesQty <= 0) {
-                return alert("Please enter quantity for Whole Chicken or Slices.");
+                    `;
+                });
             }
-
-            if (wholeQty > 0) {
-                currentBroilers.push({ description: 'Broiler', qty: wholeQty, remark: wholeRemark });
-            }
-            if (slicesQty > 0) {
-                currentBroilers.push({ description: 'Slices', qty: slicesQty, remark: slicesRemark });
-            }
-
-            renderBroilers();
-
-            document.getElementById('broiler-qty').value = '';
-            document.getElementById('broiler-remark').value = '';
-            document.getElementById('slices-qty').value = '';
-            document.getElementById('slices-remark').value = '';
-        });
-
-        window.removeBroiler = (index) => {
-            currentBroilers.splice(index, 1);
-            renderBroilers();
+            openModal('modal-category');
         };
 
-        document.getElementById('btn-add-part').addEventListener('click', () => {
-            const name = document.getElementById('part-name').value.trim();
-            const qty = parseFloat(document.getElementById('part-qty').value);
-            const unit = document.getElementById('part-unit').value;
-            const remark = document.getElementById('part-remark').value.trim();
+        window.openAddItemModal = (name, category, imgUrl, editIndex = null, editType = null) => {
+            editingCartItem = editIndex !== null ? { index: editIndex, type: editType } : null;
+            
+            document.getElementById('add-item-name').textContent = name;
+            document.getElementById('add-item-category').value = category;
+            
+            const imgEl = document.getElementById('add-item-img');
+            const noImgEl = document.getElementById('add-item-no-img');
+            if (imgUrl) {
+                imgEl.src = imgUrl;
+                imgEl.classList.remove('hidden');
+                noImgEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                noImgEl.classList.remove('hidden');
+            }
 
-            if(!name || isNaN(qty) || qty <= 0) return alert("Valid Part Name and Quantity required.");
+            const unitContainer = document.getElementById('unit-container');
+            if (category === 'Chicken Parts') {
+                unitContainer.classList.remove('hidden');
+            } else {
+                unitContainer.classList.add('hidden');
+            }
 
-            currentParts.push({ name, qty, unit, remark });
-            renderParts();
+            // Reset or pre-fill form
+            if (editingCartItem) {
+                let item = editType === 'broiler' ? currentBroilers[editIndex] : currentParts[editIndex];
+                document.getElementById('add-item-qty').value = item.qty;
+                document.getElementById('add-item-remark').value = item.remark || '';
+                if(editType === 'parts') document.getElementById('add-item-unit').value = item.unit;
+            } else {
+                document.getElementById('add-item-qty').value = '';
+                document.getElementById('add-item-remark').value = '';
+                document.getElementById('add-item-unit').value = 'KG';
+            }
 
-            document.getElementById('part-name').value = '';
-            document.getElementById('part-qty').value = '';
-            document.getElementById('part-remark').value = '';
-        });
-
-        window.removePart = (index) => {
-            currentParts.splice(index, 1);
-            renderParts();
+            // Close category modal if it's open, open add item modal
+            closeModal('modal-category');
+            openModal('modal-add-item');
         };
 
-        // --- Submit Order ---
-        document.getElementById('order-form').addEventListener('submit', async (e) => {
+        document.getElementById('add-item-form').addEventListener('submit', (e) => {
             e.preventDefault();
+            const name = document.getElementById('add-item-name').textContent;
+            const category = document.getElementById('add-item-category').value;
+            const qty = parseFloat(document.getElementById('add-item-qty').value);
+            const remark = document.getElementById('add-item-remark').value.trim();
+            const unit = document.getElementById('add-item-unit').value;
+
+            if (category === 'Chicken Parts') {
+                if (editingCartItem && editingCartItem.type === 'parts') {
+                    currentParts[editingCartItem.index] = { name, qty, unit, remark };
+                } else {
+                    currentParts.push({ name, qty, unit, remark });
+                }
+            } else {
+                // Broiler or Slices -> maps to description
+                if (editingCartItem && editingCartItem.type === 'broiler') {
+                    currentBroilers[editingCartItem.index] = { description: name, qty, remark };
+                } else {
+                    currentBroilers.push({ description: name, qty, remark });
+                }
+            }
+
+            updateCartCount();
+            closeModal('modal-add-item');
+            showNotify('order-notification', `${name} added to cart.`, 'success');
             
+            // If we were editing from the cart, re-render cart
+            if (editingCartItem && !document.getElementById('modal-cart').classList.contains('hidden')) {
+                renderCart();
+            }
+        });
+
+        function updateCartCount() {
+            const total = currentBroilers.length + currentParts.length;
+            document.getElementById('cart-count').textContent = `${total} items`;
+            document.getElementById('cart-modal-count').textContent = `${total} items`;
+        }
+
+        window.openCartModal = () => {
+            renderCart();
+            openModal('modal-cart');
+        };
+
+        function renderCart() {
+            const list = document.getElementById('cart-list');
+            list.innerHTML = '';
+            
+            if (currentBroilers.length === 0 && currentParts.length === 0) {
+                list.innerHTML = '<div class="text-center py-12 text-gray-400 font-medium">Your cart is empty.</div>';
+                return;
+            }
+
+            const renderItem = (name, qtyStr, remark, index, type) => {
+                // Find image if possible
+                let p = allSkus.find(s => s.name === name);
+                let imgHtml = p && p.imageUrl ? `<img src="${p.imageUrl}" class="w-full h-full object-cover">` : `<div class="bg-gray-200 w-full h-full"></div>`;
+                let category = type === 'broiler' ? (name.includes('Slices') ? 'Slices' : 'Broiler') : 'Chicken Parts';
+                
+                return `
+                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
+                        <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-gray-100">
+                            ${imgHtml}
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-gray-900">${name}</h4>
+                            <p class="text-blue-600 font-bold text-sm mt-0.5">${qtyStr}</p>
+                            ${remark ? `<p class="text-gray-500 text-xs mt-1 bg-gray-50 p-1.5 rounded-lg inline-block border border-gray-100">${remark}</p>` : ''}
+                        </div>
+                        <div class="flex flex-col gap-2 shrink-0">
+                            <button onclick="openAddItemModal('${name}', '${category}', '${p ? p.imageUrl : ''}', ${index}, '${type}')" class="bg-gray-50 hover:bg-gray-100 text-gray-700 p-2 rounded-lg transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            </button>
+                            <button onclick="removeCartItem(${index}, '${type}')" class="bg-red-50 hover:bg-red-100 text-red-600 p-2 rounded-lg transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            };
+
+            currentBroilers.forEach((b, i) => {
+                list.innerHTML += renderItem(b.description, `${b.qty} Qty`, b.remark, i, 'broiler');
+            });
+            currentParts.forEach((p, i) => {
+                list.innerHTML += renderItem(p.name, `${p.qty} ${p.unit}`, p.remark, i, 'parts');
+            });
+        }
+
+        window.removeCartItem = (index, type) => {
+            if (type === 'broiler') currentBroilers.splice(index, 1);
+            else currentParts.splice(index, 1);
+            updateCartCount();
+            renderCart();
+        };
+
+        // Submit Order
+        document.getElementById('btn-submit-order').addEventListener('click', async () => {
             const selectedDate = document.getElementById('order-date').value;
-            if(!selectedDate) return alert("Delivery Date required.");
+            if(!selectedDate) {
+                closeModal('modal-cart');
+                return showNotify('order-notification', "Delivery Date required.", 'error');
+            }
 
             const generalRemark = document.getElementById('general-remark').value.trim();
+            if (currentBroilers.length === 0 && currentParts.length === 0) {
+                return alert("Cart is empty.");
+            }
 
             let pendingOrders = [];
 
-            // Create Broiler Doc if needed
             if(currentBroilers.length > 0) {
                 pendingOrders.push({
                     customerName: loggedInCustomerName, 
                     customerRemark: generalRemark,
                     productType: 'broiler', 
                     status: 'unapproved', 
-                    source: 'b2b_portal', // To differentiate
+                    source: 'b2b_portal',
                     deliveryDate: selectedDate,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     broilers: currentBroilers, 
@@ -498,7 +570,6 @@
                 });
             }
 
-            // Create Parts Doc if needed
             if(currentParts.length > 0) {
                 pendingOrders.push({
                     customerName: loggedInCustomerName, 
@@ -513,43 +584,31 @@
                 });
             }
 
-            if(pendingOrders.length === 0) return alert("Order is empty. Please add items.");
-
             const btn = document.getElementById('btn-submit-order');
-            btn.disabled = true; btn.textContent = "Sending...";
+            btn.disabled = true; btn.textContent = "Sending Order...";
 
             try {
                 await Promise.all(pendingOrders.map(o => db.collection('orders').add(o)));
-                showNotify('order-notification', 'Your order requires admin approval. Submitted successfully!', 'success');
                 
-                // Clear form
-                document.getElementById('order-form').reset();
+                // Clear state
                 currentParts = [];
                 currentBroilers = [];
-                renderParts();
-                renderBroilers();
+                updateCartCount();
+                document.getElementById('general-remark').value = '';
                 document.getElementById('order-date').value = tomorrowStr;
+                
+                closeModal('modal-cart');
+                showNotify('order-notification', 'Your order was sent successfully!', 'success');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
             } catch(error) {
                 console.error(error);
-                showNotify('order-notification', 'Error saving order.', 'error');
+                alert("Error saving order.");
             } finally {
                 btn.disabled = false; 
-                btn.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Send Order`;
+                btn.textContent = "Submit Order";
             }
         });
-        function updateHeaderDate() {
-            const dateEl = document.getElementById('header-today-date');
-            if (dateEl) {
-                const now = new Date();
-                const d = String(now.getDate()).padStart(2, '0');
-                const m = String(now.getMonth() + 1).padStart(2, '0');
-                const y = now.getFullYear();
-                dateEl.textContent = `${d}/${m}/${y}`;
-            }
-        }
-        document.addEventListener('DOMContentLoaded', updateHeaderDate);
     </script>
 </body>
 </html>
