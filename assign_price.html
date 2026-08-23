@@ -92,6 +92,26 @@
         .inline-flex { display: inline-flex; }
         .min-h-16 { min-height: 4rem; }
             .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .hover\:bg-gray-50:hover { background-color: #f9fafb; }
+        .hover\:bg-gray-100:hover { background-color: #f3f4f6; }
+        .cursor-pointer { cursor: pointer; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .bg-blue-100 { background-color: #dbeafe; }
+        .text-blue-800 { color: #1e40af; }
+        .rounded-full { border-radius: 9999px; }
+        .w-5 { width: 1.25rem; }
+        .h-5 { height: 1.25rem; }
+        .border-t { border-top-width: 1px; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .outline-none { outline: 2px solid transparent; outline-offset: 2px; }
+        .last\:border-b-0:last-child { border-bottom-width: 0; }
+        .border-gray-100 { border-color: #f3f4f6; }
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] > summary svg { transform: rotate(180deg); }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
@@ -224,15 +244,25 @@
             const lorryOrder = ['JUQ 5168', 'JWP 9168', 'JXK 3168', 'JJJ 9528', 'None'];
             lorryOrder.forEach(lorry => {
                 if (groupedByLorry[lorry]) {
-                    const groupContainer = document.createElement('div');
-                    groupContainer.innerHTML = `<h3 class="font-bold text-lg text-gray-700">${lorry}</h3>`;
+                    const groupContainer = document.createElement('details');
+                    groupContainer.className = 'bg-white rounded-lg shadow-sm overflow-hidden mb-4 border border-gray-200';
+                    
+                    const summary = document.createElement('summary');
+                    summary.className = 'px-4 py-3 bg-gray-50 cursor-pointer font-bold text-lg text-gray-700 hover:bg-gray-100 flex justify-between items-center outline-none focus:ring-2 focus:ring-blue-500';
+                    summary.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            ${lorry} 
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">${groupedByLorry[lorry].length}</span>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    `;
+                    
                     const listContainer = document.createElement('div');
-                    listContainer.className = 'bg-white rounded-lg shadow-sm overflow-hidden mt-2';
+                    listContainer.className = 'border-t border-gray-200';
                     
                     groupedByLorry[lorry].forEach(customer => {
                         const custDiv = document.createElement('div');
-                        // NEW COMPACT LAYOUT
-                        custDiv.className = 'flex justify-between items-center p-3 border-b border-gray-200';
+                        custDiv.className = 'flex justify-between items-center p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition';
                         
                         const priceTiers = ['Wholesale', 'MSRP', 'Slices', 'Cash buy'];
                         const optionsHTML = priceTiers.map(tier => 
@@ -242,16 +272,17 @@
                         custDiv.innerHTML = `
                             <div class="flex-grow">
                                 <p class="font-semibold text-gray-800">${customer.displayName}</p>
-                                <p class="text-[17px] text-gray-500">${customer.description || ''}</p>
+                                <p class="text-[15px] text-gray-500">${customer.description || ''}</p>
                             </div>
                             <div class="flex-shrink-0 ml-4">
-                                <select data-cust-id="${customer.id}" class="tier-select w-full sm:w-auto border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                <select data-cust-id="${customer.id}" class="tier-select w-full sm:w-auto border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 bg-white">
                                     ${optionsHTML}
                                 </select>
                             </div>
                         `;
                         listContainer.appendChild(custDiv);
                     });
+                    groupContainer.appendChild(summary);
                     groupContainer.appendChild(listContainer);
                     customerTierListDiv.appendChild(groupContainer);
                 }
