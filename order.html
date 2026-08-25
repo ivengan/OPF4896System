@@ -135,6 +135,19 @@
         .inline-flex { display: inline-flex; }
         .min-h-16 { min-height: 4rem; }
             .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .inset-y-0 { top: 0; bottom: 0; }
+        .right-0 { right: 0; }
+        .pr-3 { padding-right: 0.75rem; }
+        .pr-10 { padding-right: 2.5rem; }
+        .pointer-events-none { pointer-events: none; }
+        .cursor-pointer { cursor: pointer; }
+        .max-h-60 { max-height: 15rem; }
+        .overflow-y-auto { overflow-y: auto; }
+        .hover\:bg-blue-50:hover { background-color: #eff6ff; }
+        .border-b { border-bottom-width: 1px; }
+        .last\:border-b-0:last-child { border-bottom-width: 0; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
@@ -174,8 +187,13 @@
             
             <div>
                 <label for="customer-search" class="text-lg font-bold text-gray-800">1. Customer</label>
-                <input list="customer-names-list" id="customer-search" class="w-full border border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 mt-2" placeholder="Type to search customer...">
-                <datalist id="customer-names-list"></datalist>
+                <div class="relative mt-2">
+                    <input type="text" id="customer-search" class="w-full border border-gray-300 rounded-lg p-3 pr-10 text-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Type to search customer..." autocomplete="off">
+                    <div id="customer-arrow" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-gray-500">
+                        <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div id="customer-dropdown" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
+                </div>
                 <input type="text" id="customer-remark" class="w-full border border-gray-300 rounded-lg p-2 mt-2 text-[17px] text-gray-600 italic focus:ring-2 focus:ring-blue-500" placeholder="Remark for Customer (e.g., Deliver to back door)">
             </div>
 
@@ -214,7 +232,13 @@
                 
                 <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm space-y-2">
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input list="item-names-list" id="part-name" placeholder="Item Name" class="flex-grow w-full border border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500">
+                        <div class="flex-grow relative w-full">
+                            <input type="text" id="part-name" placeholder="Item Name" class="w-full border border-gray-300 rounded-lg p-3 pr-10 text-lg focus:ring-2 focus:ring-blue-500 outline-none" autocomplete="off">
+                            <div id="part-arrow" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-gray-500">
+                                <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                            <div id="part-dropdown" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
+                        </div>
                         <input type="number" id="part-qty" placeholder="Qty" class="w-full sm:w-24 border border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500">
                         <select id="part-unit" class="w-full sm:w-32 border border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500">
                             <option value="KG">KG</option>
@@ -225,8 +249,6 @@
                     <input type="text" id="part-remark" class="w-full border border-gray-300 rounded-lg p-2 text-[17px] text-gray-600 italic focus:ring-2 focus:ring-blue-500" placeholder="Remark for this part (e.g. 2KG packs)...">
                     <button type="button" id="add-part-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition text-[19px]">Add Part</button>
                 </div>
-
-                <datalist id="item-names-list"></datalist>
                 
                 <div id="parts-order-list" class="space-y-2 mt-4">
                     <p class="text-gray-500 italic">No parts added yet.</p>
@@ -298,22 +320,79 @@
             setTimeout(() => { notificationArea.innerHTML = ''; }, 4000);
         }
 
+        function setupCustomDropdown(inputId, arrowId, dropdownId, dataList, onSelect) {
+            const inputEl = document.getElementById(inputId);
+            const arrowEl = document.getElementById(arrowId);
+            const dropdownEl = document.getElementById(dropdownId);
+
+            function renderDropdown(filterText = '') {
+                dropdownEl.innerHTML = '';
+                const lowerFilter = filterText.toLowerCase();
+                const filtered = dataList.filter(item => item.toLowerCase().includes(lowerFilter));
+                
+                if (filtered.length === 0) {
+                    dropdownEl.innerHTML = '<div class="p-3 text-gray-500 italic">No matches found</div>';
+                    dropdownEl.classList.remove('hidden');
+                    return;
+                }
+
+                filtered.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-200 text-gray-800 text-lg last:border-b-0';
+                    div.textContent = item;
+                    div.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        inputEl.value = item;
+                        dropdownEl.classList.add('hidden');
+                        if(onSelect) onSelect(item);
+                    });
+                    dropdownEl.appendChild(div);
+                });
+                dropdownEl.classList.remove('hidden');
+            }
+
+            inputEl.addEventListener('focus', () => renderDropdown(inputEl.value));
+            inputEl.addEventListener('input', (e) => {
+                renderDropdown(e.target.value);
+                if(onSelect) onSelect(e.target.value);
+            });
+            inputEl.addEventListener('blur', () => {
+                setTimeout(() => dropdownEl.classList.add('hidden'), 150);
+            });
+            
+            arrowEl.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                if (dropdownEl.classList.contains('hidden')) {
+                    inputEl.focus();
+                    renderDropdown(inputEl.value);
+                } else {
+                    dropdownEl.classList.add('hidden');
+                }
+            });
+        }
+
         async function loadData() {
             try {
                 // Fetch Customers
                 const customersSnapshot = await db.collection('customers').orderBy('name').get();
                 allCustomers = customersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), searchName: doc.data().description ? `${doc.data().displayName} (${doc.data().description})` : doc.data().displayName }));
-                const dl = document.getElementById('customer-names-list');
-                dl.innerHTML = '';
-                allCustomers.forEach(c => dl.innerHTML += `<option value="${c.searchName}"></option>`);
+                
+                setupCustomDropdown('customer-search', 'customer-arrow', 'customer-dropdown', allCustomers.map(c => c.searchName), (val) => {
+                    const found = allCustomers.find(c => c.searchName === val);
+                    selectedCustomer = found || null;
+                    const tierDisplay = document.getElementById('customer-tier-display');
+                    if (tierDisplay) {
+                        tierDisplay.className = found ? "text-[17px] font-medium text-blue-500" : "hidden";
+                        if (found) tierDisplay.textContent = `Tier: ${found.priceTier || 'Wholesale'}`;
+                    }
+                });
 
                 // Fetch Inventory
                 const inventorySnapshot = await db.collection('inventory').orderBy('name').get();
                 const displayNames = inventorySnapshot.docs.map(doc => doc.data().displayName);
                 allInventory = [...new Set(displayNames.map(n => n.split('(')[0].split('[')[0].trim()))];
-                const il = document.getElementById('item-names-list');
-                il.innerHTML = '';
-                allInventory.forEach(n => il.innerHTML += `<option value="${n}"></option>`);
+                
+                setupCustomDropdown('part-name', 'part-arrow', 'part-dropdown', allInventory);
 
                 // Set default delivery date to tomorrow
                 const tomorrow = new Date();
@@ -322,13 +401,6 @@
 
             } catch (e) { console.error(e); }
         }
-
-        document.getElementById('customer-search').addEventListener('input', (e) => {
-            const found = allCustomers.find(c => c.searchName === e.target.value);
-            selectedCustomer = found || null;
-            document.getElementById('customer-tier-display').className = found ? "text-[17px] font-medium text-blue-500" : "hidden";
-            if(found) document.getElementById('customer-tier-display').textContent = `Tier: ${found.priceTier || 'Wholesale'}`;
-        });
 
         function renderPartsList() {
             partsOrderListDiv.innerHTML = currentPartsOrder.length ? '' : '<p class="text-gray-500 italic">No parts added.</p>';
