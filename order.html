@@ -144,7 +144,7 @@
         .pointer-events-none { pointer-events: none; }
         .cursor-pointer { cursor: pointer; }
         .max-h-60 { max-height: 15rem; }
-        .overflow-y-auto { overflow-y: auto; }
+        .overflow-y-auto { overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .hover\:bg-blue-50:hover { background-color: #eff6ff; }
         .border-b { border-bottom-width: 1px; }
         .last\:border-b-0:last-child { border-bottom-width: 0; }
@@ -351,10 +351,6 @@
                         e.preventDefault();
                         handleSelect(item);
                     });
-                    div.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
-                        handleSelect(item);
-                    }, {passive: false});
                     dropdownEl.appendChild(div);
                 });
                 dropdownEl.classList.remove('hidden');
