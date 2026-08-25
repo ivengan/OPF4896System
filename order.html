@@ -148,6 +148,7 @@
         .hover\:bg-blue-50:hover { background-color: #eff6ff; }
         .border-b { border-bottom-width: 1px; }
         .last\:border-b-0:last-child { border-bottom-width: 0; }
+        .top-full { top: 100%; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 text-[17px] leading-relaxed">
@@ -192,7 +193,7 @@
                     <div id="customer-arrow" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-gray-500">
                         <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
-                    <div id="customer-dropdown" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
+                    <div id="customer-dropdown" class="hidden absolute top-full left-0 z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
                 </div>
                 <input type="text" id="customer-remark" class="w-full border border-gray-300 rounded-lg p-2 mt-2 text-[17px] text-gray-600 italic focus:ring-2 focus:ring-blue-500" placeholder="Remark for Customer (e.g., Deliver to back door)">
             </div>
@@ -237,7 +238,7 @@
                             <div id="part-arrow" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-gray-500">
                                 <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </div>
-                            <div id="part-dropdown" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
+                            <div id="part-dropdown" class="hidden absolute top-full left-0 z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"></div>
                         </div>
                         <input type="number" id="part-qty" placeholder="Qty" class="w-full sm:w-24 border border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500">
                         <select id="part-unit" class="w-full sm:w-32 border border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500">
