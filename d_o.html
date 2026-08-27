@@ -1082,7 +1082,7 @@
                     let doNumber = trip.doNumber || null;
                     let displayDoNumber = doNumber;
                     if (!displayDoNumber) {
-                        displayDoNumber = "[ DRAFT - DEPART TO ASSIGN ]";
+                        displayDoNumber = "-";
                     }
 
                     const tDate = new Date();
@@ -1105,7 +1105,7 @@
 
                     const titleEl = document.getElementById('do-preview-title');
                     if (titleEl) {
-                        titleEl.textContent = `D/O Preview - ${displayDoNumber}`;
+                        titleEl.textContent = doNumber ? `D/O Preview - ${displayDoNumber}` : `D/O Preview`;
                     }
 
                     document.getElementById('do-preview-modal').classList.remove('hidden');

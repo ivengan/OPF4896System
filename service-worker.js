@@ -1,5 +1,5 @@
 // D:\OPF4896System\service-worker.js
-const CACHE_NAME = 'opf-system-v16';
+const CACHE_NAME = 'opf-system-v17';
 const ASSETS = [
   '.',
   'index.html',
