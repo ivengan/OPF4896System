@@ -776,29 +776,6 @@
             });
         }
 
-        async function previewNextDONumber() {
-            const tDate = new Date();
-            const dd = String(tDate.getDate()).padStart(2, '0');
-            const mm = String(tDate.getMonth() + 1).padStart(2, '0');
-            const yyyy = tDate.getFullYear();
-            const dateStr = `${dd}${mm}${yyyy}`; 
-
-            try {
-                const counterRef = db.collection('metadata').doc('do_counter');
-                const doc = await counterRef.get();
-                let nextCount = 1;
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.date === dateStr) {
-                        nextCount = (data.count || 0) + 1;
-                    }
-                }
-                const paddedCount = String(nextCount).padStart(3, '0');
-                return `OFM${dateStr}DO${paddedCount}`;
-            } catch (err) {
-                return `OFM${dateStr}DO001`;
-            }
-        }
 
         function populatePrintSection(trip, lorry, custName, customerPhone, doNumber, tDate = new Date()) {
             const displayDate = `${String(tDate.getDate()).padStart(2, '0')}/${String(tDate.getMonth() + 1).padStart(2, '0')}/${tDate.getFullYear()}`;
@@ -1103,8 +1080,9 @@
 
                 try {
                     let doNumber = trip.doNumber || null;
-                    if (!doNumber) {
-                        doNumber = await previewNextDONumber();
+                    let displayDoNumber = doNumber;
+                    if (!displayDoNumber) {
+                        displayDoNumber = "[ DRAFT - DEPART TO ASSIGN ]";
                     }
 
                     const tDate = new Date();
@@ -1113,7 +1091,7 @@
                         lorry,
                         custName,
                         customerData.phone,
-                        doNumber,
+                        displayDoNumber,
                         tDate
                     );
 
@@ -1127,7 +1105,7 @@
 
                     const titleEl = document.getElementById('do-preview-title');
                     if (titleEl) {
-                        titleEl.textContent = `D/O Preview - ${doNumber}`;
+                        titleEl.textContent = `D/O Preview - ${displayDoNumber}`;
                     }
 
                     document.getElementById('do-preview-modal').classList.remove('hidden');
