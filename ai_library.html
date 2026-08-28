@@ -85,10 +85,10 @@
 
         async function init() {
             // Load Inventory for Datalist
-            const invSnap = await db.collection('inventory').orderBy('name').get();
+            const invSnap = await db.collection('skus').orderBy('name').get();
             const dl = document.getElementById('inventory-list');
             invSnap.forEach(doc => {
-                dl.innerHTML += `<option value="${doc.data().displayName}"></option>`;
+                dl.innerHTML += `<option value="${doc.data().name}"></option>`;
             });
             loadLibrary();
         }

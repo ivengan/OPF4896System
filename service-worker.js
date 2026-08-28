@@ -12,7 +12,7 @@ const ASSETS = [
   'staff_management.html',
   'report.html',
   'setting.html',
-  'edit_inv.html',
+  'edit_sku.html',
   'pwa-install.js',
   'icons/icon-192.png',
   'icons/icon-512.png',
