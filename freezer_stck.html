@@ -331,7 +331,7 @@
                 return inventoryMap[name];
             }
 
-            // 0. PRE-LOAD ALL REGISTERED INVENTORY ITEMS (From edit_inv.html)
+            // 0. PRE-LOAD ALL REGISTERED INVENTORY ITEMS (From edit_sku.html)
             rawInventoryData.forEach(data => {
                 let name = data.itemName || data.name || data.partName || data.description || '';
                 let pack = data.packSize || data.unit || data.pack || '';
@@ -454,7 +454,7 @@
 
         // --- REAL-TIME LISTENERS ---
 
-        db.collection('inventory').onSnapshot(snap => {
+        db.collection('skus').onSnapshot(snap => {
             rawInventoryData = snap.docs.map(d => d.data());
             processInventory();
         }, err => {

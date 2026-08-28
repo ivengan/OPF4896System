@@ -396,8 +396,8 @@
                 });
 
                 // Fetch Inventory
-                const inventorySnapshot = await db.collection('inventory').orderBy('name').get();
-                const displayNames = inventorySnapshot.docs.map(doc => doc.data().displayName);
+                const inventorySnapshot = await db.collection('skus').orderBy('name').get();
+                const displayNames = inventorySnapshot.docs.map(doc => doc.data().name);
                 allInventory = [...new Set(displayNames.map(n => n.split('(')[0].split('[')[0].trim()))];
                 
                 setupCustomDropdown('part-name', 'part-arrow', 'part-dropdown', allInventory);
