@@ -28,8 +28,16 @@
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 py-6">
         
-        <!-- Add Button -->
-        <div class="mb-6 flex justify-end">
+        <!-- Actions -->
+        <div class="mb-6 flex justify-between items-center">
+            <div class="flex bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <button onclick="setViewMode('grid')" id="btn-view-grid" class="p-2 bg-gray-100 text-blue-600 transition" title="Grid View">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                </button>
+                <button onclick="setViewMode('list')" id="btn-view-list" class="p-2 text-gray-500 hover:bg-gray-50 transition" title="List View">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
             <button onclick="openSkuModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Add SKU
@@ -129,6 +137,28 @@
         const storage = firebase.storage();
         let products = [];
         let productToDelete = null;
+        let currentViewMode = localStorage.getItem('skuViewMode') || 'grid';
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            localStorage.setItem('skuViewMode', mode);
+            
+            const btnGrid = document.getElementById('btn-view-grid');
+            const btnList = document.getElementById('btn-view-list');
+            
+            if (btnGrid && btnList) {
+                if (mode === 'grid') {
+                    btnGrid.className = 'p-2 bg-gray-100 text-blue-600 transition';
+                    btnList.className = 'p-2 text-gray-500 hover:bg-gray-50 transition';
+                } else {
+                    btnList.className = 'p-2 bg-gray-100 text-blue-600 transition';
+                    btnGrid.className = 'p-2 text-gray-500 hover:bg-gray-50 transition';
+                }
+            }
+            
+            // Only re-render if we already loaded products
+            if(products.length > 0) renderProducts();
+        }
 
         // Load Products
         function loadProducts() {
@@ -153,29 +183,58 @@
             grid.innerHTML = '';
             
             if (products.length === 0) {
+                grid.className = 'grid grid-cols-1 gap-6 hidden';
                 grid.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500 font-medium">No products found. Add one!</div>';
             } else {
-                products.forEach(p => {
-                    grid.innerHTML += `
-                        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col">
-                            <div class="h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
-                                ${p.imageUrl ? `<img src="${p.imageUrl}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`}
-                            </div>
-                            <div class="p-4 flex-grow flex flex-col justify-between">
-                                <div>
-                                    <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full mb-2">${p.category}</span>
-                                    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1">${p.name}</h3>
-                                    <p class="text-gray-500 text-sm font-mono mb-1">SKU: ${p.sku}</p>
-                                    ${p.description ? `<p class="text-gray-500 text-sm mb-4">${p.description}</p>` : `<div class="mb-4"></div>`}
+                if (currentViewMode === 'grid') {
+                    grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 hidden';
+                    products.forEach(p => {
+                        grid.innerHTML += `
+                            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col">
+                                <div class="h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                    ${p.imageUrl ? `<img src="${p.imageUrl}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-sm">No Image</span>`}
                                 </div>
-                                <div class="flex gap-2 border-t border-gray-100 pt-3">
-                                    <button onclick="editProduct('${p.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold text-sm transition">Edit</button>
-                                    <button onclick="confirmDelete('${p.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-lg font-semibold text-sm transition">Delete</button>
+                                <div class="p-4 flex-grow flex flex-col justify-between">
+                                    <div>
+                                        <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full mb-2">${p.category}</span>
+                                        <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1">${p.name}</h3>
+                                        <p class="text-gray-500 text-sm font-mono mb-1">SKU: ${p.sku}</p>
+                                        ${p.description ? `<p class="text-gray-500 text-sm mb-4">${p.description}</p>` : `<div class="mb-4"></div>`}
+                                    </div>
+                                    <div class="flex gap-2 border-t border-gray-100 pt-3">
+                                        <button onclick="editProduct('${p.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold text-sm transition">Edit</button>
+                                        <button onclick="confirmDelete('${p.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-lg font-semibold text-sm transition">Delete</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                } else {
+                    grid.className = 'flex flex-col gap-3 hidden';
+                    products.forEach(p => {
+                        grid.innerHTML += `
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center justify-between gap-4 hover:shadow-md transition">
+                                <div class="flex items-center gap-4 flex-1">
+                                    <div class="h-16 w-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                        ${p.imageUrl ? `<img src="${p.imageUrl}" class="w-full h-full object-cover">` : `<svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>`}
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-full uppercase tracking-wider">${p.category}</span>
+                                            <span class="text-xs text-gray-500 font-mono">SKU: ${p.sku}</span>
+                                        </div>
+                                        <h3 class="font-bold text-gray-900 leading-tight">${p.name}</h3>
+                                        ${p.description ? `<p class="text-gray-500 text-xs mt-0.5">${p.description}</p>` : ``}
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <button onclick="editProduct('${p.id}')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold text-sm transition">Edit</button>
+                                    <button onclick="confirmDelete('${p.id}')" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg font-semibold text-sm transition">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
             }
             grid.classList.remove('hidden');
         }
@@ -351,7 +410,10 @@
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', loadProducts);
+        document.addEventListener('DOMContentLoaded', () => {
+            setViewMode(currentViewMode);
+            loadProducts();
+        });
     </script>
 </body>
 </html>
