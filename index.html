@@ -208,7 +208,7 @@
         
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        db.enablePersistence({ synchronizeTabs: true }).catch(err => console.log(err.code));
+        db.enablePersistence().catch(err => console.log(err.code));
 
         // --- 2. STATE & HELPERS ---
         function bufferToBase64url(buffer) {
