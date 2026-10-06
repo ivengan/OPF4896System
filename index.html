@@ -253,7 +253,11 @@
         window.addEventListener('DOMContentLoaded', () => {
             const loginExpiry = localStorage.getItem('loginExpiry');
             if (loginExpiry && Date.now() < parseInt(loginExpiry)) {
-                openModal('modal-destination');
+                if (localStorage.getItem('user_role') === 'worker') {
+                    window.location.href = 'worker_dashboard.html';
+                } else {
+                    openModal('modal-destination');
+                }
             }
             if (window.PublicKeyCredential) {
                 document.getElementById('btn-use-biometric').classList.remove('hidden');
@@ -557,6 +561,7 @@
             const sessionDuration = 12 * 60 * 60 * 1000;
             localStorage.setItem('loginExpiry', Date.now() + sessionDuration);
             localStorage.setItem('user_phone', currentPhone);
+            localStorage.setItem('user_role', currentUserRole);
             
             if (currentUserRole === 'worker') {
                 window.location.href = 'worker_dashboard.html';
