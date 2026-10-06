@@ -14,8 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     
     <style>
-        /* Landscape enforcement: Show overlay if in portrait */
-        @media screen and (orientation: portrait) {
+        /* Landscape enforcement: Show overlay if in portrait on mobile/touch devices only */
+        @media screen and (orientation: portrait) and (pointer: coarse) {
             #portrait-overlay {
                 display: flex !important;
             }
